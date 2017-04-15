@@ -25,7 +25,9 @@ Body:
 Registering a camera is done as follows
 
 POST `/api/cameras/discovered`
+
 Headers: `"Authorization: token $CAMIOTOKEN"`
+
 Body: JSON blob with the following structure
 
 ```json
@@ -63,14 +65,12 @@ the video in batch mode.
 
 ### POST to `/box/content` example
 
-Below is a function that I use to test out the batch import API on a running Box. This function serves to take a 
-video file you have locally and post it to the `/content` endpoint on a running Box that has batch-import enabled.
+In the `post_content.sh` script there is a function `post_batch_import` that handles the sending
+of a video file to the Box for segmentation and analysis.
 
 This will only work if you already have a camera registered under your account with the `"acquisition_mode": "batch"` option 
-set in the config for that camera (see *Registering a Camera* section).
-
-This will post that video to the camera with the given `camera_id` and `local_camera_id`, the `camera_id` is generally
-`$user_id:$localcameraid:$localcameraid`
+set in the config for that camera (see *Registering a Camera* section). That camera must then be attached to the
+Box that you are sending this video data to.
 
 ```bash
 # source the script
