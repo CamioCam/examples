@@ -24,7 +24,7 @@ Body:
 
 Registering a camera is done as follows
 
-POST `/api/cameras/discovered'
+POST `/api/cameras/discovered`
 Headers: `"Authorization: token $CAMIOTOKEN"`
 Body: JSON blob with the following structure
 
