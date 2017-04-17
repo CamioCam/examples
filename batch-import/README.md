@@ -10,10 +10,10 @@ POST `/box/content`
 Query args:
 
 - `accesstoken`: `device_id` of the Box being used, serves as some sort of shared secret
-- `local_camera_id`: the local camera ID for the batch input source
+- `local_camera_id`: the ID of the camera as given by the user
 - `camera_id`: the camera ID of the batch input source (TODO: why do we need both of these?)
 - `hash`: SHA sum of the content being posted, used to map segments back to the original source
-- `timestamp`: starting timestamp of the video, the timestamps of the segments are calculated from there.
+- `timestamp`: starting timestamp (ISO8601 YYYY-mm-ddTHH:MM:SS.FFFF format) of the video
 
 Body:
 
@@ -65,7 +65,7 @@ the video in batch mode.
 
 ### POST to `/box/content` example
 
-In the `post_content.sh` script there is a function `post_batch_import` that handles the sending
+In the [`post_content.sh`](batch-import/post-content.sh) script there is a function `post_batch_import` that handles the sending
 of a video file to the Box for segmentation and analysis.
 
 This will only work if you already have a camera registered under your account with the `"acquisition_mode": "batch"` option 
@@ -75,7 +75,7 @@ Box that you are sending this video data to.
 ```bash
 # source the script
 . post_content.sh 
-# setup the parameters
+# set up the parameters
 cameraid="AAAABBBBCCCC.0"
 deviceid="ZXCVZXCVZXCV-QWERTQWERT"
 host="192.168.1.18"

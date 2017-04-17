@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
-# Use this script to register a batch-input source with your Camio account. 
+# Use this script to register a camera source with your Camio account. 
 # You need to know the following information to use this script
 # 1 - Device ID of the Camio-Box you plan on using this batch-input source with
-# 2 - 
+# 2 - Some name for the new camera source
+# 3 - some ID for the new camera
 
 function register_batch_camera {
     # args
-    # 1 - testing/production
-    # 2 - device-id
+    # 1 - either 'test' or 'prod' for testing/production servers
+    # 2 - device_id
     # 3 - local_camera_id
     # 4 - cameraname
 
@@ -40,49 +41,8 @@ function register_batch_camera {
     "local_camera_id": "$localcameraid",
     "name": "$cameraname",
     "mac_address": "$localcameraid",
-    "maker": "",
     "is_authenticated": false,
-    "rtsp_path": "",
-    "rtsp_server": "",
     "should_config": false,
-    "default_values": {
-      "plan": {
-        "is_multiselect": false,
-        "options": [
-          {
-            "name": "Basic",
-            "value": "BASIC"
-          }
-        ]
-      }
-    },
-    "actual_values": {
-      "plan": {
-        "is_multiselect": false,
-        "options": [
-          {
-                        {
-            "name": "Baisc",
-            "value": "BASIC"
-          }
-        ]
-      },
-      "username": {
-        "options": [
-          {
-            "value": "admin"
-          }
-        ]
-      },
-      "password": {
-        "options": [
-          {
-            "value": "admin"
-          }
-        ]
-      }
-    },
-    "rtsp_url_pattern_python": ""
   }
 }
 EOF       

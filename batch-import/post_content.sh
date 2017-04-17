@@ -4,14 +4,14 @@
 # This requires that
 # 1. You have a Camio Box running and you can access it over the network
 # 2. You've registered a batch-import source with Camio
-# 3. That batch-import source is attached to the Box described in #1
+# 3. That batch-import source is 'toggled-on' for the Box described in #1
 
 function post_batch_import {
     host=$1          # IP-address of Box
     port=$2          # port of web-server on Box (normally 8080)
     filepath=$3      # path to video file to send to Box
-    localcameraid=$4 # shortened ID of the batch input source
-    cameraid=$5      # full ID of the batch input source
+    localcameraid=$4 # arbitrary user-chosen ID for the camera
+    cameraid=$5      # full ID of the camera, returned by Camio upon registration
     accesstoken=$6   # device_id of the Box the POST is being sent to 
     timestamp=$7     # YYYY-MM-DDTHH:MM:SS.FF formatted timestamp of the start of the video
     if [ ! -e $filepath ]; then
