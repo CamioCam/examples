@@ -3,10 +3,26 @@ Batch Import Camera Setup / API Docs
 
 This file contains documentation on the design and usage of the batch-import functionality of Camio Box.
 
-### Box API Documenation
+Batch-import is a feature that allows you to send videos to Camio for analysis through a Camio Box. This makes it possible
+to index and label existing videos in the same way that a Camio Box allows one to segment, label, and videos from real-time 
+input sources like cameras that stream over RTSP.
+
+## Overview
+
+At a high-level, the following steps are needed to analyze existing video through Camio.
+
+1. Register an account with Camio
+2. Purchase a Camio Box or download a VM image of one, setup the Box on your local network.
+3. Register a camera source in 'batch' acquisition mode with our service through the Camio API
+4. Send the video content to the web server running on your Camio Box either manually or using our importer script.
+5. Let the Box segment, process, and analyze the video. Once it is done the clips will be available through the Camio webapp.
 
 
-POST `/box/content`
+## Box API Documenation
+
+
+###### POST `/box/content`
+
 
 Query args:
 
@@ -25,7 +41,7 @@ This endpoint is how you get video data onto Box for segmentation and analysis. 
 servers where it is indexed and available for search through the Camio website.
 
 
-GET `/box/settings`
+###### GET `/box/settings`
 
 returns 
 
@@ -42,7 +58,7 @@ To POST content to Box you'll need to supply the device_id as a form of a shared
 when registering a camera as a batch-input source.
 
 
-### Registering a Camera
+## Registering a Camera
 
 Registering a camera is done as follows
 
@@ -81,7 +97,7 @@ a batch-input-source with the Camio servers. Once this is done you need to go to
 the video in batch mode.
 
 
-### POST to `/box/content` example
+## POST to `/box/content` example
 
 In the [`post_content.sh`](batch-import/post-content.sh) script there is a function `post_batch_import` that handles the sending
 of a video file to the Box for segmentation and analysis.
