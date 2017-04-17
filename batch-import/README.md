@@ -5,6 +5,7 @@ This file contains documentation on the design and usage of the batch-import fun
 
 ### Box API Documenation
 
+
 POST `/box/content`
 
 Query args:
@@ -18,6 +19,27 @@ Query args:
 Body:
 
 - H.264 encoded video content in an mp4 container.
+
+This endpoint is how you get video data onto Box for segmentation and analysis. You upload video files to the webserver running on Box through the
+`/box/content` endpoint, associating the video file with a regitered camera in the process. The video is segmented, analyzed, and eventually sent to the Camio
+servers where it is indexed and available for search through the Camio website.
+
+
+GET `/box/settings`
+
+returns 
+
+```json
+
+{
+  "device_id": "SDFSDFSDFSD",
+  "user-agent": "Linux (x86/64) Camio Box VirtualBox 2017-04-22:ab234badsfb293nas9db9f7231arereds",
+}
+```
+
+This endpoint serves as a simple way to get some necessary information about the Camio Box you are using for segmentation.
+To POST content to Box you'll need to supply the device_id as a form of a shared secret and you'll need to supply the same value
+when registering a camera as a batch-input source.
 
 
 ### Registering a Camera
@@ -33,7 +55,7 @@ Body: JSON blob with the following structure
 ```json
 {
     "$localcameraid": {
-    "device_id_discovering": "$deviceid",
+    "device_id_discovering": "$device_id",
     "acquisition_method": "batch",
     "device_user_agent": "",
     "user_id": "$userid",
@@ -44,20 +66,16 @@ Body: JSON blob with the following structure
     "rtsp_path": "",
     "rtsp_server": "",
     "should_config": false,
-    "default_values": {
-    },
-    "actual_values": {
-    },
   }
 }  
 ```
 
 The `"acquisition_method": "batch"` line is important, it is how we tell the server that this is a batch-input
-source instead of a real-time video feed. `$deviceid` is the ID of the Box that will be used to accept videos
+source instead of a real-time video feed. `$device_id` is the ID of the Box that will be used to accept videos
 for this batch-input source. 
 
 
-Inside of `register_batch_source.sh` is a function `register_batch_source` that can be used to register 
+Inside of [`register_batch_source.sh`](batch-import/register_batch_source.sh) is a function `register_batch_source` that can be used to register 
 a batch-input-source with the Camio servers. Once this is done you need to go to your 
 `https://www.camio.com/boxes` page and attach the camera to the Box that you want to process 
 the video in batch mode.
@@ -76,13 +94,14 @@ Box that you are sending this video data to.
 # source the script
 . post_content.sh 
 # set up the parameters
-cameraid="AAAABBBBCCCC.0"
-deviceid="ZXCVZXCVZXCV-QWERTQWERT"
+cameraid="CAMERA_EAST_ONE" # camera ID given to Camio upon registration
+camiocameraid="CAMEAST1_AAAABBBBCCCC.0" # camera ID returned by Camio during registration 
+device_id="ZXCVZXCVZXCV-QWERTQWERT" # ID of the Camio Box (gotten by GET /box/settings)
 host="192.168.1.18"
 port="8080"
 timestamp="2017-04-02T18:48:32.0000"
 
 # post the content
 # assuming the video we want to segment is at /home/$user/movie.mp4
-post_batch_import $host $port ~/movie.mp4 $cameraid $cameraid $deviceid $timestamp
+post_batch_import $host $port ~/movie.mp4 $cameraid $camiocameraid $device_id $timestamp
 ```
