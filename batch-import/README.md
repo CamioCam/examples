@@ -103,7 +103,7 @@ In the [`post_content.sh`](batch-import/post-content.sh) script there is a funct
 of a video file to the Box for segmentation and analysis.
 
 This will only work if you already have a camera registered under your account with the `"acquisition_mode": "batch"` option 
-set in the config for that camera (see *Registering a Camera* section). That camera must then be attached to the
+set in the config for that camera (see [*Registering a Camera*](#registering-a-camera) section). That camera must then be attached to the
 Box that you are sending this video data to.
 
 ```bash
