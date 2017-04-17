@@ -51,10 +51,10 @@ EOF
     success=$?
     rm /tmp/tmp_batch_import.json
     if [ $? -ne 0 ]; then
-        echo "batch import camera registration for camera: $localcameraid failed"
+        echo "camera: (name: $cameraname, ID: $localcameraid) registration failed"
         return 1
     else
-        echo "camera: (name: $cameraname, ID: $localcameraid) registered successfully"
+        echo "camera: (name: $cameraname, ID: $localcameraid) registration succeeded"
         return 0
     fi 
     
