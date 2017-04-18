@@ -58,22 +58,6 @@ def register_camera(camera_name, host=None, port=None, latlong=None):
                  entry. It is required that the "acquisition_method": "batch" set in the camera 
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
-
-    NOTE - the json payload is given as follows
-    {
-	"$localcameraid": {
-	"device_id_discovering": "$deviceid",
-	"acquisition_method": "batch",
-	"discovery_history": {},
-	"device_user_agent": "CamioBox (Linux; virtualbox)",
-	"user_id": "$userid",
-	"local_camera_id": "$localcameraid",
-	"name": "$cameraname",
-	"mac_address": "$localcameraid",
-	"is_authenticated": false,
-	"should_config": false,
-      }
-    }
     """
     access_token = get_access_token()
     user_id = get_user_id()
@@ -114,7 +98,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp):
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "%s:%s" % (host, port)
-    url = urlbase + "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (access_token, camera_name, camera_id, filehash, timestamp)
+    urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (access_token, camera_name, camera_id, filehash, timestamp)
+    url = urlbase + "?" + urlparams
     if not os.path.exists(filepath):
         sys.stderr.print("unable to locate video-file: %s. exiting" % filepath)
         return False
