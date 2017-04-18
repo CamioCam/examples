@@ -1,7 +1,6 @@
-Camio Examples Repository
-===================
+# Camio Hooks
 
-This respository contains example code and documentation on how to interact with the various Camio APIs.
+## Introduction
 
 Camio provides an image processing pipeline. Videos are uploaded to the Camio cloud from
 a phone or an RTSP camera or a Camio Box. The Camio image pipeline provides a labeling 
@@ -65,9 +64,8 @@ The hook-example.py depends on the following function:
     def compute_labels(images):
         labels = []
         for image in images:
-            ... 
-            image_labels = ['cat','dog','mouse']
-            labels.append({'timestamp': image_timestamp, 'labels':image_labels})
+            ...
+        labels = ['cat','dog','mouse']
         return labels
 
 This does nothing more than returning the same three labels (cat, dog, mouse) for each 
@@ -98,7 +96,3 @@ Here "http://{your domain}:8000/tasks/{api_key}" is the location of your hook in
 - labels: a list of labels alreday associated to the event
 - date: the event start date as a python datetime object (date.year, date.day, etc are allowed).
 
-John: Right now the repository looks like this:
-
- - Hooks - everything about registering and customizing custom labeling hooks with Camio
- - batch-import - See how to send videos to a Camio Box for batch-import segmentation and analysis
