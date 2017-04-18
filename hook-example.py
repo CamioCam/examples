@@ -73,7 +73,8 @@ def compute_labels(images):
         image_timestamp = image['timestamp'] # in iso format string
         image_bytes = base64.b64decode(image['image_b64']) # the bytes
         image = Image.open(StringIO.StringIO(image_bytes)) # a PIL image
-    labels = ['cat','dog','mouse']
+        image_labels = ['cat','dog','mouse']
+        labels.append({'timestamp': image_timestamp, 'labels':image_labels})
     return labels
 
 def runtasks():

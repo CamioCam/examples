@@ -64,8 +64,9 @@ The hook-example.py depends on the following function:
     def compute_labels(images):
         labels = []
         for image in images:
-            ...
-        labels = ['cat','dog','mouse']
+            ... 
+            image_labels = ['cat','dog','mouse']
+            labels.append({'timestamp': image_timestamp, 'labels':image_labels})
         return labels
 
 This does nothing more than returning the same three labels (cat, dog, mouse) for each 
