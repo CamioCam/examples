@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 
+import requests
+import re
+import json
+
 """
 Camio-specific hook examples for use with the video import script
 """
+
+CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
+CAMIO_REGISTER_URL_TEST="https://test.camio.com/api/cameras/discovered"
 
 def register_camera(camera_name, latlong=None):
     """
@@ -20,7 +27,22 @@ def register_camera(camera_name, latlong=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
-    pass
+    payload = dict(
+            device_id_discovering=None,
+            acquisition_method='batch',
+            device_user_agent=None,
+            user_id=None,
+            local_camera_id=camera_name,
+            name=camera_name,
+            mac_address=camera_name, # TODO - find out if this is still required.
+            is_authenticated=True,
+            should_config=True # toggles the camera 'ON'
+    )
+    payload = dict(camera_name=payload)
+    headers = {"Authorization", "token %s" % CAMIO_TOKEN}
+    response = requests.post(CAMIO_REGISTER_URL, headers=headers, data=json.dumps(payload))
+    print response
+    return response # @TODO - parse out the camera ID from the response and return that
 
 def post_video_content(camera_name, camera_id, filepath):
     """
