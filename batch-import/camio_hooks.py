@@ -15,6 +15,9 @@ CAMIO_REGISTER_URL_TEST="https://test.camio.com/api/cameras/discovered"
 def get_access_token():
     return None # @TODO - grab access token from env vars
 
+def get_user_id():
+    return None # @TODO - grab userID from env vars
+
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
     entire file in memory (these can be large files) """
@@ -76,13 +79,16 @@ def register_camera(camera_name, latlong=None):
     print response
     return response # @TODO - parse out the camera ID from the response and return that
 
-def post_video_content(camera_name, camera_id, filepath):
+def post_video_content(host, port, camera_name, camera_id, filepath, timestamp):
     """
     arguments:
+        host        - the url of the segmenter
+        port        - the port to access the webserver on the segmenter
         camera_name - the parsed name of the camera
         camera_id   - the ID of the camera as returned from the service
-        filepath    - full path to the video file that needs segmentationl
-    returns: nothing
+        filepath    - full path to the video file that needs segmentation
+        timestamp   - the starting timestamp of the video file
+    returns: true/false based on success
     
     description: this function is called when we find a video for a specific camera, we call
                  this function where the logic should exist to post the file content to a video
@@ -91,5 +97,14 @@ def post_video_content(camera_name, camera_id, filepath):
     filehash = None
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
+    urlbase = "%s:%s" % (host, port)
+    url = urlbase + "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (access_token, camera_name, camera_id, filehash, timestamp)
+    if not os.path.exists(filepath):
+        sys.stderr.print("unable to locate video-file: %s. exiting" % filepath)
+        return False
+    response = requests.post(url, files={'file': open(filepath, 'rb')})
+    return response.status_code in (200, 204)
+
+
 
 
