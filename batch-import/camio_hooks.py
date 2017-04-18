@@ -72,7 +72,7 @@ def register_camera(camera_name, latlong=None):
     payload = dict(camera_name=payload)
     access_token = get_access_token()
     headers = {"Authorization", "token %s" % access_token}
-    response = requests.post(CAMIO_REGISTER_URL, headers=headers, data=json.dumps(payload))
+    response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
     print response
     return response # @TODO - parse out the camera ID from the response and return that
 
