@@ -29,11 +29,25 @@ def hash_file_in_chunks(fh, chunksize=65536):
         sha1.update(data)
     return sha1.hexdigest()
 
-def register_camera(camera_name, latlong=None):
+def get_device_data(host, port):
+    """ 
+    calls the /box/settings endpoint to get (Device_id, user-agent) pair that is needed
+    to register a camera properly
+    """
+    urlbase = "%s:%s" % (host, port)
+    url = urlbase + "/box/content"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def register_camera(camera_name, host=None, port=None, latlong=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
         latlong (opt) - the lat/long of the camera (as parsed from the filename)
+        host          - the URI/IP address of the segmenter being used
+        port          - the port to access the webserver of the segmenter
     returns: this function returns the Camio-specific camera ID.
                  
     description: this function is called when a new camera is found by the import script, 
@@ -61,11 +75,14 @@ def register_camera(camera_name, latlong=None):
       }
     }
     """
+    access_token = get_access_token()
+    user_id = get_user_id()
+    device_id, user_agent = get_device_data(host, port)
     payload = dict(
-            device_id_discovering=None,
+            device_id_discovering=device_id,
             acquisition_method='batch',
-            device_user_agent=None,
-            user_id=None,
+            device_user_agent=user_agent,
+            user_id=user_id,
             local_camera_id=camera_name,
             name=camera_name,
             mac_address=camera_name, # TODO - find out if this is still required.
@@ -73,7 +90,6 @@ def register_camera(camera_name, latlong=None):
             should_config=True # toggles the camera 'ON'
     )
     payload = dict(camera_name=payload)
-    access_token = get_access_token()
     headers = {"Authorization", "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
     print response
