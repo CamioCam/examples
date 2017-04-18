@@ -3,6 +3,7 @@
 import requests
 import re
 import json
+import hashlib
 
 """
 Camio-specific hook examples for use with the video import script
@@ -10,6 +11,20 @@ Camio-specific hook examples for use with the video import script
 
 CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
 CAMIO_REGISTER_URL_TEST="https://test.camio.com/api/cameras/discovered"
+
+def get_access_token():
+    return None # @TODO - grab access token from env vars
+
+def hash_file_in_chunks(fh, chunksize=65536):
+    """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
+    entire file in memory (these can be large files) """
+    sha1 = hashlib.sha1()
+    while True:
+        data = fh.read(chunksize)
+        if not data:
+            break
+        sha1.update(data)
+    return sha1.hexdigest()
 
 def register_camera(camera_name, latlong=None):
     """
@@ -55,7 +70,8 @@ def register_camera(camera_name, latlong=None):
             should_config=True # toggles the camera 'ON'
     )
     payload = dict(camera_name=payload)
-    headers = {"Authorization", "token %s" % CAMIO_TOKEN}
+    access_token = get_access_token()
+    headers = {"Authorization", "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, data=json.dumps(payload))
     print response
     return response # @TODO - parse out the camera ID from the response and return that
@@ -71,5 +87,9 @@ def post_video_content(camera_name, camera_id, filepath):
     description: this function is called when we find a video for a specific camera, we call
                  this function where the logic should exist to post the file content to a video
                  segmenter.
-     """
-    pass
+    """
+    filehash = None
+    with open(filepath) as fh:
+        filehash = hash_file_in_chunks(fh)
+
+
