@@ -6,6 +6,11 @@
 # 2 - Some name for the new camera source
 # 3 - some ID for the new camera
 
+# NOTE - this script assumed that you have some environment variables set, these varibles are
+# CAMIOTOKENPROD - access token (oauth) for you Camio account on the production servers
+# CAMIOIDPROD - ID of your camio account on production servers
+# then the same thing but for our testing server (test.camio.com)
+
 function register_batch_camera {
     # args
     # 1 - either 'test' or 'prod' for testing/production servers
