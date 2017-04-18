@@ -26,6 +26,22 @@ def register_camera(camera_name, latlong=None):
                  entry. It is required that the "acquisition_method": "batch" set in the camera 
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
+
+    NOTE - the json payload is given as follows
+    {
+	"$localcameraid": {
+	"device_id_discovering": "$deviceid",
+	"acquisition_method": "batch",
+	"discovery_history": {},
+	"device_user_agent": "CamioBox (Linux; virtualbox)",
+	"user_id": "$userid",
+	"local_camera_id": "$localcameraid",
+	"name": "$cameraname",
+	"mac_address": "$localcameraid",
+	"is_authenticated": false,
+	"should_config": false,
+      }
+    }
     """
     payload = dict(
             device_id_discovering=None,
