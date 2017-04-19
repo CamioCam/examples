@@ -19,10 +19,10 @@ CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 def get_access_token():
-    return "fSdxve5FVdpJqucsyQzhzN9c6YAE7A_Z" # None # @TODO - grab access token from env vars
+    return None # @TODO - grab access token from env vars
 
 def get_user_id():
-    return "109010722686218614620" #`None # @TODO - grab userID from env vars
+    return None # @TODO - grab userID from env vars
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the

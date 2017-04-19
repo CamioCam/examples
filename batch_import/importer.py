@@ -104,7 +104,7 @@ class GenericImporter(object):
             given_name = params['camera']+'.'+params['timestamp']+'.'+key+'.mp4'
             if key in scheduled:
                 logging.info('%s (duplicate)' % filename)
-            elif key in db and db[key]['uploaded_on']:
+            elif key in db and db[key]['uploaded_on'] is not None:
                 logging.info('%s (uploaded)' % filename)
             else:
                 logging.info('%s (scheduled for upload)' % filename)
@@ -153,7 +153,7 @@ class GenericImporter(object):
                 break
             params['uploaded_on'] = self.now()
             jobs.add((params['job_id'], params['shard_id']))
-            db[key] = params
+            db[params['key']] = params
             db.sync()
 
         self.register_jobs(db, jobs)
@@ -203,7 +203,6 @@ class GenericImporter(object):
         print "hooks module: %r" % self.args.hook_module
         print "cwd: %r" % os.getcwd()
         self.module = __import__(self.args.hook_module)
-        print dir(self.module)
         if self.args.csv:
             print self.listfiles(self.args.folder)
         else:
