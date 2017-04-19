@@ -49,11 +49,11 @@ Here 8000 is the post to be used and 0.0.0.0 refers to (any IP address).
 
 The server will expose three endpoints:
 
-- http://{your domain}:8000/tasks/ (GET) which you can call to check the service is running
-- http://{your domain}:8000/tasks/{api_key} (POST) which will you have to register with Camio and be called by Camio to post event images
-- http://{your domain}:8000/tasks/{api_key} (GET) which you can call to obtain a list of pending tasks
+- http://{{your_domain}}:8000/tasks/ (GET) which you can call to check the service is running
+- http://{{your_domain}}:8000/tasks/{{api_key}} (POST) which will you have to register with Camio and be called by Camio to post event images
+- http://{{your_domain}}:8000/tasks/{{api_key}} (GET) which you can call to obtain a list of pending tasks
 
-The {api_key} is your own API key and you can make it up to be whatever you want. It has to match the API_KEY global variable in the example code. The purpose of the API_KEY is to allow Camio to gain access to your hook and prevent un-authroized access.
+The {{api_key}} is your own API key and you can make it up to be whatever you want. It has to match the API_KEY global variable in the example code. The purpose of the API_KEY is to allow Camio to gain access to your hook and prevent un-authroized access.
 
 Long with the web server you must start the background process:
 
@@ -88,11 +88,11 @@ This is a two step process:
 
     curl \
     -H "Content-Type: application/json" \
-    -H "Authorization: token {your develper oauth token}" \
-    -d '{"callback_url": "http://{your domain}:8000/tasks/{api_key}", "type": "label_hit", "parsedQuery": "camera == 'mycamera'"}
+    -H "Authorization: token {{auth+token}}" \
+    -d '{"callback_url": "http://{{your_domain}}:8000/tasks/{{api_key}}", "type": "label_hit", "parsedQuery": "camera == '{{camera_name}}'"}
     -X POST https://www.camio.com/api/users/me/hooks
 
-Here "http://{your domain}:8000/tasks/{api_key}" is the location of your hook including the api_key you have selected (not the same as your develper oauth token). parsedQuery is a string that will be used to filter which events to send to the hook. In the case of the example all those from the camera called 'mycamera'. The parsedQuery allows a subset of the Python syntax. Namely and, or, not, in, <, <=, >, >=, ==, != operators and the following variables:
+Here "http://{{your_domain}}:8000/tasks/{{api_key}}" is the location of your hook including the api_key you have selected (not the same as your develper oauth token). parsedQuery is a string that will be used to filter which events to send to the hook. In the case of the example all those from the camera called 'mycamera'. The parsedQuery allows a subset of the Python syntax. Namely and, or, not, in, <, <=, >, >=, ==, != operators and the following variables:
 
 - camera: the name of the camera uploading the event
 - labels: a list of labels alreday associated to the event
