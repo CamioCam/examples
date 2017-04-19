@@ -10,6 +10,8 @@ import StringIO
 import re
 import logging
 
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 import requests
 
 re_notascii = re.compile('\W')
@@ -132,6 +134,7 @@ class GenericImporter(object):
             if self.args.verbose:
                 logging.info('     renamed %s' % given_name)
             latlng = (params['lat'], params['lng'])
+            print "Params: %r" % params
             success = self.post_video(params['camera'], params['timestamp'], params['filename'], latlng)
             if success:
                 logging.info('completed')
@@ -187,7 +190,10 @@ class GenericImporter(object):
 
     def run(self):
         self.args = self.parser.parse_args()
+        print "hooks module: %r" % self.args.hook_module
+        print "cwd: %r" % os.getcwd()
         self.module = __import__(self.args.hook_module)
+        print dir(self.module)
         if self.args.csv:
             print self.listfiles(self.args.folder)
         else:
@@ -198,14 +204,17 @@ class GenericImporter(object):
         
     def register_camera(self, camera_name):
         host, port = self.args.host, self.args.port
-        return self.module.register_camera(camera_name, host, port)
+        device_id = self.args.device_id
+        return self.module.register_camera(camera_name, device_id, host, port)
 
     def assign_job_ids(self, db, unscheduled):
+        return
         if 'assign_job_ids' in dir(self.module):
             return self.module.assign_job_ids(self, db, unscheduled)
         return
 
     def register_jobs(self, db, jobs):
+        return
         if 'register_jobs' in dir(self.module):
             return self.module.register_jobs(self, db, jobs)
         return
@@ -213,7 +222,7 @@ class GenericImporter(object):
     def post_video(self, camera_name, timestamp, filepath, latlng):
         host, port = self.args.host, self.args.port
         camera_id = self.cameras[camera_name]
-        return self.module.post_video_content(host, port, camera_name, camera_id, latlng, filepath, timestamp, latlng)
+        return self.module.post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng)
 
 if __name__=='__main__':
     GenericImporter().run()

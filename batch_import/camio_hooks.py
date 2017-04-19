@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import re
+import pprint
 import os
 import sys
 import json
 import logging
 import hashlib
 import requests
+import hashlib
 
 """
 Camio-specific hook examples for use with the video import script
@@ -18,10 +20,10 @@ CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 def get_access_token():
-    return None # @TODO - grab access token from env vars
+    return "fSdxve5FVdpJqucsyQzhzN9c6YAE7A_Z" # None # @TODO - grab access token from env vars
 
 def get_user_id():
-    return None # @TODO - grab userID from env vars
+    return "109010722686218614620" #`None # @TODO - grab userID from env vars
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -39,14 +41,14 @@ def get_device_data(host, port):
     calls the /box/settings endpoint to get (Device_id, user-agent) pair that is needed
     to register a camera properly
     """
-    urlbase = "%s:%s" % (host, port)
+    urlbase = "http://%s:%s" % (host, port)
     url = urlbase + "/box/content"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
     return None
 
-def register_camera(camera_name, host=None, port=None):
+def register_camera(camera_name, device_id=None, host=None, port=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
@@ -65,24 +67,29 @@ def register_camera(camera_name, host=None, port=None):
     """
     access_token = get_access_token()
     user_id = get_user_id()
-    device_id, user_agent = get_device_data(host, port)
+    #device_id, user_agent = get_device_data(host, port)
+    user_agent = "Linux"
     CAMIO_PARAMS.update(device_id=device_id, user_id=user_id, user_agent=user_agent)
+    local_camera_id = hashlib.sha1(camera_name).hexdigest()
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
             user_id=user_id,
-            local_camera_id=camera_name,
+            local_camera_id=local_camera_id,
             name=camera_name,
             mac_address=camera_name, # TODO - find out if this is still required.
             is_authenticated=True,
             should_config=True # toggles the camera 'ON'
     )
-    payload = dict(camera_name=payload)
-    headers = {"Authorization", "token %s" % access_token}
-    response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
-    print response
-    return response # @TODO - parse out the camera ID from the response and return that
+    payload = {local_camera_id: payload}
+    pprint.pprint(payload)
+    headers = {"Authorization": "token %s" % access_token}
+    response = requests.post(CAMIO_REGISTER_URL_TEST, headers=headers, json=payload)
+    response = response.json()
+    pprint.pprint(response.keys())
+    camera_id = response[local_camera_id].get('camera_id')
+    return camera_id # @TODO - parse out the camera ID from the response and return that
 
 def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng=None):
     """
@@ -103,7 +110,7 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     filehash = None
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
-    urlbase = "%s:%s" % (host, port)
+    urlbase = "http://%s:%s" % (host, port)
     device_id = CAMIO_PARAMS.get('device_id')
     if not device_id: return False
     # important! confusing but the 'access_token' here is the device ID of Box, not the account integrations oauth token
