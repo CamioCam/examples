@@ -24,12 +24,14 @@ function register_batch_camera {
         url="https://test.camio.com/api/cameras/discovered"
         token=$CAMIOTOKENTEST
         userid=$CAMIOIDTEST
+        echo "using testing servers"
     else
         : "${CAMIOTOKENPROD? Need to set CAMIOTOKENPROD environment variable to use this script in 'prod' mode}"
         : "${CAMIOIDPROD? Need to set CAMIOIDPROD environment variable to use this script in 'prod' mode}"
         url="https://www.camio.com/api/cameras/discovered"
         token=$CAMIOTOKENPROD
         userid=$CAMIOIDPROD
+        echo "using production"
     fi
     deviceid=$2
     localcameraid=$3
@@ -38,30 +40,27 @@ function register_batch_camera {
     cat <<EOF > /tmp/tmp_batch_import.json
 {
     "$localcameraid": {
-    "device_id_discovering": "$deviceid",
-    "acquisition_method": "batch",
-    "discovery_history": {},
-    "device_user_agent": "CamioBox (Linux; virtualbox) Firmware:box-virtualbox-cam.201704120128-523def1681975a7edb19a082e82fa53e06
-    "user_id": "$userid",
-    "local_camera_id": "$localcameraid",
-    "name": "$cameraname",
-    "mac_address": "$localcameraid",
-    "is_authenticated": false,
-    "should_config": false,
+        "device_id": "$deviceid",
+        "acquisition_method": "batch",
+        "user_id": "$userid",
+        "local_camera_id": "$localcameraid",
+        "name": "$cameraname",
+        "should_config": true
+      }
   }
-}
-EOF       
+EOF
 
     cat /tmp/tmp_batch_import.json | curl -H "Authorization: token $token" --data-binary "@-" $url
     success=$?
-    rm /tmp/tmp_batch_import.json
+    # rm /tmp/tmp_batch_import.json
     if [ $? -ne 0 ]; then
-        echo "camera: (name: $cameraname, ID: $localcameraid) registration failed"
-        return 1
+        echo "camera: (name: $cameraname, ID: $localcameraid) registration failed";
+        return 1;
     else
-        echo "camera: (name: $cameraname, ID: $localcameraid) registration succeeded"
-        return 0
+        echo "camera: (name: $cameraname, ID: $localcameraid) registration succeeded";
+        return 0;
     fi 
     
 }       
 
+register_batch_camera "$@"
