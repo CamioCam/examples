@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import re
+import os
+import sys
 import json
 import logging
 import hashlib
@@ -102,7 +104,10 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "%s:%s" % (host, port)
-    urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (access_token, camera_name, camera_id, filehash, timestamp)
+    device_id = CAMIO_PARAMS.get('device_id')
+    if not device_id: return False
+    # important! confusing but the 'access_token' here is the device ID of Box, not the account integrations oauth token
+    urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (device_id, camera_name, camera_id, filehash, timestamp)
     url = urlbase + "?" + urlparams
     if not os.path.exists(filepath):
         sys.stderr.write("unable to locate video-file: %s. exiting" % filepath)
@@ -115,11 +120,12 @@ def assign_job_ids(self, db, unscheduled):
     # if we have files to upload follow process in https://github.com/CamioCam/Camiolog-Web/issues/4555
     if item_count:        
         device_id = CAMIO_PARAMS.get('device_id')
+        camio_account_token = get_access_token()
         item_average_size_bytes = sum(params['size'] for params in unscheduled)/item_count
         payload = {'device_id':device_id, 'item_count':item_count, 
                    'item_average_size_bytes':item_average_size_bytes}
-        headers = {'Authorization': 'token %s' % auth_token}
-        res = requests.put(CAMIO_URL_JOBS, json=payload, headers=headers)         
+        headers = {'Authorization': 'token %s' % camio_account_token}
+        res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
         try:
             shards = res.json()
         except:
