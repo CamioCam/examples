@@ -8,7 +8,6 @@ import json
 import logging
 import hashlib
 import requests
-import hashlib
 
 """
 Camio-specific hook examples for use with the video import script
@@ -114,7 +113,9 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     device_id = CAMIO_PARAMS.get('device_id')
     if not device_id: return False
     # important! confusing but the 'access_token' here is the device ID of Box, not the account integrations oauth token
-    urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (device_id, camera_name, camera_id, filehash, timestamp)
+    local_camera_id = hashlib.sha1(camera_name).hexdigest()
+    urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (
+        device_id, local_camera_id, camera_id, filehash, timestamp)
     url = urlbase + "?" + urlparams
     if not os.path.exists(filepath):
         sys.stderr.write("unable to locate video-file: %s. exiting" % filepath)

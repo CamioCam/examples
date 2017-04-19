@@ -25,9 +25,11 @@ class GenericImporter(object):
             if match:
                 try:
                     camera = match.group('camera')
+                    print 'camera_name:', camera
                 except: pass
                 try:
                     epoch = int(match.group('epoch'))
+                    print 'epoch:', epoch
                 except: pass
                 try:
                     lat = float(match.group('lat'))                    
@@ -36,9 +38,11 @@ class GenericImporter(object):
                     lng = float(match.group('lng'))
                 except: pass
         if not camera:
+            print 'did not detect camera name, assuming "default"'
             camera = "default"
         if not epoch:
             epoch = os.path.getctime(path)        
+            print 'did not detect epoch, assuming "%s"' % epoch
         timestamp = datetime.datetime.fromtimestamp(epoch).isoformat()
         # in case the epoch does nt have milliseconds
         if len(timestamp)==19: timestamp = timestamp+'.000'
