@@ -26,7 +26,7 @@ At a high-level, the following steps are needed to analyze existing video throug
 
 Query args:
 
-- `accesstoken`: `device_id` of the Box being used, serves as some sort of shared secret
+- `accesstoken`: `device_id` of the Box being used, serves as shared secret
 - `local_camera_id`: the ID of the camera as given by the user
 - `camera_id`: the camera ID of the batch input source (TODO: why do we need both of these?)
 - `hash`: SHA sum of the content being posted, used to map segments back to the original source
@@ -64,30 +64,26 @@ Registering a camera is done as follows
 
 POST `/api/cameras/discovered`
 
-Headers: `"Authorization: token $CAMIOTOKEN"`
+Headers: `"Authorization: token {{auth_token}}"`
 
 Body: JSON blob with the following structure
 
 ```json
 {
-    "$localcameraid": {
-    "device_id_discovering": "$device_id",
+    "{{localcameraid}}": {
+    "device_id": "{{device_id}}",
     "acquisition_method": "batch",
-    "device_user_agent": "",
-    "user_id": "$userid",
-    "local_camera_id": "$localcameraid",
-    "name": "$cameraname",
-    "mac_address": "$localcameraid",
-    "maker": "",
-    "rtsp_path": "",
-    "rtsp_server": "",
+    "user_id": "{{user_id}}",
+    "local_camera_id": "{{local_camera_id}}",
+    "name": "{{camera_name}}",
+    "mac_address": "{{local_camera_id}}",
     "should_config": false,
   }
 }  
 ```
 
 The `"acquisition_method": "batch"` line is important, it is how we tell the server that this is a batch-input
-source instead of a real-time video feed. `$device_id` is the ID of the Box that will be used to accept videos
+source instead of a real-time video feed. `{{device_id}}` is the ID of the Box that will be used to accept videos
 for this batch-input source. 
 
 

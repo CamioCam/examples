@@ -45,6 +45,7 @@ function register_batch_camera {
         "user_id": "$userid",
         "local_camera_id": "$localcameraid",
         "name": "$cameraname",
+        "mac_address": "DUMMYYVALUEE",
         "should_config": true
       }
   }

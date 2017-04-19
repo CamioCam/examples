@@ -27,3 +27,4 @@ function post_batch_import {
     echo $?
 }
 
+post_batch_import "$@"
