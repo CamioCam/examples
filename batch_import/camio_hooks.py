@@ -41,7 +41,7 @@ def get_device_data(host, port):
     to register a camera properly
     """
     urlbase = "http://%s:%s" % (host, port)
-    url = urlbase + "/box/content"
+    url = urlbase + "/box/settings"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
@@ -82,11 +82,9 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
             should_config=True # toggles the camera 'ON'
     )
     payload = {local_camera_id: payload}
-    pprint.pprint(payload)
     headers = {"Authorization": "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL_TEST, headers=headers, json=payload)
     response = response.json()
-    pprint.pprint(response.keys())
     camera_id = response[local_camera_id].get('camera_id')
     return camera_id # @TODO - parse out the camera ID from the response and return that
 
@@ -107,12 +105,12 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
                  segmenter.
     """
     filehash = None
+    device_id = CAMIO_PARAMS.get('device_id')
+    if not device_id: return False
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "http://%s:%s" % (host, port)
-    device_id = CAMIO_PARAMS.get('device_id')
-    if not device_id: return False
-    # important! confusing but the 'access_token' here is the device ID of Box, not the account integrations oauth token
+    urlbase = urlbase + "/box/content"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (
         device_id, local_camera_id, camera_id, filehash, timestamp)
@@ -120,7 +118,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     if not os.path.exists(filepath):
         sys.stderr.write("unable to locate video-file: %s. exiting" % filepath)
         return False
-    response = requests.post(url, files={'file': open(filepath, 'rb')})
+    with open(filepath, 'rb') as fh:
+        response = requests.post(url, data=fh)
     return response.status_code in (200, 204)
 
 def assign_job_ids(self, db, unscheduled):

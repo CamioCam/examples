@@ -1,4 +1,5 @@
 import argparse
+import time
 import shelve
 import psutil
 import os
@@ -118,6 +119,8 @@ class GenericImporter(object):
                     params['discovered_on'] = discovered_on
                     params['uploaded_on'] = None
                     params['confirmed_on'] = None
+                    params['job_id'] = None
+                    params['shard_id'] = None
                     params['size'] = os.path.getsize(params['filename'])
                     db[key] = params
                     db.sync()
@@ -127,8 +130,11 @@ class GenericImporter(object):
 
         for camera_name in self.cameras:
             camera_id = self.register_camera(camera_name)
+            print "Camera ID: %r" % camera_id
             self.cameras[camera_name] = camera_id
 
+        # let the camera registration info prop. to Box and let Box kick off the webserver
+        time.sleep(1)
         self.assign_job_ids(db, unscheduled)
 
         total_count = len(unprocessed)
