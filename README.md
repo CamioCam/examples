@@ -20,7 +20,7 @@ The attached code include an installation script for Debian/Ubuntu
 
 and an example of a hook:
 
-   hook-example.py
+   [hook-example.py](hooks/hook-example.py)
 
 You can run the install with 
 
@@ -35,9 +35,9 @@ The queue is implemented as a mongodb database collection.
 
 ## The example hook
 
-Our hook-example.py depends on bottle (0.13), gunicorn, requests, PIL, and pymongo.
+Our [hook-example.py](hooks/hook-example.py) depends on bottle (0.13), gunicorn, requests, PIL, and pymongo.
 
-The hook-example.py code is build on bottle.py 0.13 and intended to work any WSGI web 
+The [hook-example.py](hooks/hook-example.py) code is build on bottle.py 0.13 and intended to work any WSGI web 
 server. We recommend gunicorn (a prefork WSGI server) and our install script assumes it.
 Once you have all the dependencies installed you can start the web server with:
 
@@ -60,7 +60,7 @@ Long with the web server you must start the background process:
 
 The background process retrieves pending tasks collected by the hook and posts computed labels back to Camio. They will be added to the originating event.
 
-The hook-example.py depends on the following function:
+The [hook-example.py](hooks/hook-example.py) depends on the following function:
 
     def compute_labels(images):
         labels = []
