@@ -4,16 +4,18 @@
 
 Camio provides an image processing pipeline. Videos are uploaded to the Camio cloud from
 a phone or an RTSP camera or a Camio Box. The Camio image pipeline provides a labeling 
-service but also allows you to register your own labeling hooks. A hook is defined as a custom web service that can compute labels from images.
+service but also allows you to register your own labeling hooks. 
+A hook is defined as a custom web service that can act on events, 
+for example can compute labels from images extracted from events.
 
-As videos are uploaded to Camio, they are broken into events,
-which are classified as boring, motion, and interesting. Interesting events are pre-classified by the Camio service, labeled, and a significative images are extracted from the videos in the event. If you have registsred a hook, and the event labels match your hook filter, the images beloging to the event are POSTed to your hook URL in the form of a JSON payload. Your hook URL should record the JSON payload, decoded it, extract the images, label them, and then POST the labels back to Camio at the callback_url provided by the initial hook call. The new labels are added to the event.
+As videos are uploaded to Camio, they are segmented into events,
+which are classified as boring, motion, and interesting. Interesting events are pre-classified by the Camio service, labeled, and a significative images are extracted from the videos in the event. If you have registsred a hook, and the event labels match your hook filter, the images beloging to the event are POSTed to your hook URL in the form of a JSON payload. Your hook URL should record the JSON payload, decoded it, extract the images, label them, and then POST the labels back to the callback_url provided by the initial hook call. The new labels are added to the event.
 
-Remember your hook labels events, not images, or videos. One event may contain mutiple images and multiple videos. The same video can span multiple consecutive events. At this time we only send to your hook preprocessed images. Also, you only label events that Camio has alreday pre-filtered for you as interesting.
+Your hook labels an entire Event (not just a single image or video) based on the images and/or video in that Event. One event may contain mutiple images and multiple videos. The same video can span multiple consecutive events. At this time we only send to your hook preprocessed images. Also, you only label events that Camio has alreday pre-filtered for you as interesting.
 
 ## Installing the example hook code
 
-The attached code include an installation script for Debian/Ubuntu 
+The previded code includes an installation script for Debian/Ubuntu 
 
    hook-install.sh
 
@@ -74,8 +76,8 @@ to perform Object Detection and compute labels from the images.
 
 ## registering the hook
 
-Once a hook is created you must tell Camio about it. You must all tell Camio which events
-you want to be sent to your hook. This is done by registering an event.
+Once you create a labeling server, you can registers it as a Camio Hook 
+with the POST to camio.com.
 
 This is a two step process:
 
