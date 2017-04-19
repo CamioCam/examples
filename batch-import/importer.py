@@ -198,7 +198,7 @@ class GenericImporter(object):
         
     def register_camera(self, camera_name):
         host, port = self.args.host, self.args.port
-        return self.module.register_camera(camera_name, host, post)
+        return self.module.register_camera(camera_name, host, port)
 
     def assign_job_ids(self, db, unscheduled):
         if 'assign_job_ids' in dir(self.module):
