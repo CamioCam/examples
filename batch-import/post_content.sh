@@ -2,7 +2,7 @@
 
 # POST a single video to a Box for segmentation and analysis
 # This requires that
-# 1. You have a Camio Box running and you can access it over the network
+# 1. You have a Camio Box running and you can access it on your local network or over the internet
 # 2. You've registered a batch-import source with Camio
 # 3. That batch-import source is 'toggled-on' for the Box described in #1
 
