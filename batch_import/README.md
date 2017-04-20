@@ -96,6 +96,21 @@ When uploading videos to a Camio Box for batch-import mode, we need to know a fe
 The importer script will go over the directory of video files and parse out the attributes given above. For each new camera it finds (based on the camera name) 
 it will register the camera with your Camio account through the Camio API. 
 
+*Example*
+
+Let's say you had videos in a directory of the format
+
+`CAMERA_FRONT-rand-1475973147.mp4`
+`CAMERA_FRONT-rand-1475973267.mp4`
+`CAMERA_FRONT-rand-1475973350.mp4`
+
+Then you would supply something like the following regex to the importer script:
+
+`.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
+
+This regex would put `CAMERA_FRONT` into the `camera` variable (which the importer uses internally to hold the camera name) and would put the `14759753350` value into the
+`epoch` variable, which represents the Unix timestamp for the video. 
+
 ## Registering a Camera
 
 Registering a camera is done as follows
