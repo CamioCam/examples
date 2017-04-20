@@ -59,21 +59,24 @@ def get_tasks(secret):
 #      type: "image/jpeg",
 #      size: [640, 480],
 #      timestamp: "2017-01-01T12:00:00.000",
-#      image_b64: "... base 64 bynary data ..."
+#      image_b64: "... base 64 binary data ..."
 #   },
 #   ...
 # ]
 #
 ###########################################################################
 def compute_labels(images):
-    labels = []
+    labels = {}
     for image in images:
         image_type = image['type'] # example 'image/jpeg'
         image_size = image['size'] # (width, height)
         image_timestamp = image['timestamp'] # in iso format string
         image_bytes = base64.b64decode(image['image_b64']) # the bytes
         image = Image.open(StringIO.StringIO(image_bytes)) # a PIL image
-    labels = ['cat','dog','mouse']
+        labels[image_timestamp] = {
+            "cat":{"probability":0.93, "polygon":{}}, 
+            "dog":{"probability":0.88, "polygon":{}},
+            }
     return labels
 
 def runtasks():
