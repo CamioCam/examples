@@ -19,15 +19,11 @@ CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
-CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_TOKEN_TEST"
-CAMIO_USER_ID_ENVVAR = "CAMIO_USER_ID"
+CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
 def get_access_token():
-    return os.environ.get(CAMIO_TOKEN_TEST_ENVVAR) 
-
-def get_user_id():
-    return os.environ.get(CAMIO_USER_ID_ENVVAR) 
+    return os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR) 
 
 def get_device_id():
     return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
@@ -58,7 +54,6 @@ def get_device_data(host, port):
 
 def get_camera_id(local_camera_id):
     access_token = get_access_token()
-    user_id = get_user_id()
     headers = {"Authorization": "token %s" % access_token}
     response = requests.get(CAMIO_REGISTER_URL, headers=headers)
     response = response.json()
@@ -82,15 +77,13 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
                  input source.
     """
     access_token = get_access_token()
-    user_id = get_user_id()
     user_agent = "Linux"
-    CAMIO_PARAMS.update(device_id=device_id, user_id=user_id, user_agent=user_agent)
+    CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
-            user_id=user_id,
             local_camera_id=local_camera_id,
             name=camera_name,
             mac_address=camera_name, # TODO - find out if this is still required.

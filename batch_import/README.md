@@ -48,15 +48,46 @@ returns
 ```json
 
 {
-  "device_id": "SDFSDFSDFSD",
+  "device_id": "ZADfg23_98kuS-3FyLv2oxbPrsOPqmerT534aDf56wlUUde8X2B_7B2hBv3-t56bk-sRoBVgaonxCMpi4CAmLkvmT0fz",
   "user-agent": "Linux (x86/64) Camio Box VirtualBox 2017-04-22:ab234badsfb293nas9db9f7231arereds",
 }
 ```
 
 This endpoint serves as a simple way to get some necessary information about the Camio Box you are using for segmentation.
-To POST content to Box you'll need to supply the device_id as a form of a shared secret and you'll need to supply the same value
+To POST content to Box you'll need to supply the device\_id as a form of a shared secret and you'll need to supply the same value
 when registering a camera as a batch-input source.
 
+## Using the [Video Import Script](https://github.com/tnc-ca-geo/video-importer) For Batch Import
+
+The open-source [video import script](https://github.com/tnc-ca-geo/video-importer) can be used to batch-import videos from a directory
+to a Camio Box. This is accomplished by passing in the [camio_hooks.py](batch_import/camio_hooks.py) module into the importer script as
+the `--hooks_module` argument. This causes the importer to use the callback camera-registration and content-post functions that are necessary
+for interaction with the Camio servers.
+
+#### Environment Variables
+
+To use the `camio_hooks` module, you first must define some environment variables for yourself. These variables are
+
+ - `CAMIO_OAUTH_TOKEN` - set this to the oauth token that is generated from your [Camio settings](https://www.camio.com/settings/integrations) page.
+ - `CAMIO_BOX_DEVICE_ID` - set this to the device ID of the Camio Box that you are sending the video to for segmentation and analysis. This can be gotten from the URL 
+   on your [/boxes](https://www.camio.com/boxes) page, after the query-parameter `device_id`. We are adding a more convenient method for obtaining this value through
+   the UI on our website but that change is not currently live.
+
+Once these environment variables are set you need to collect a few more pieces of information prior to being able to use the import script.
+ 
+ - Get your Camio Box running and registered under your account.
+ - Find the IP address of your Camio Box. You can do this with a network scanning tool like Fing.
+ - The regex that defines the different attributes that can be parsed from the filenames that your are uploading.
+
+#### File-parsing Regex
+
+When uploading videos to a Camio Box for batch-import mode, we need to know a few attributes of the videos. These are
+
+1. The camera name that the video came from
+2. The timestamp of the video file (the actual timestamp from when the video was recorded)
+
+The importer script will go over the directory of video files and parse out the attributes given above. For each new camera it finds (based on the camera name) 
+it will register the camera with your Camio account through the Camio API. 
 
 ## Registering a Camera
 
