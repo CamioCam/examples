@@ -64,7 +64,7 @@ to a Camio Box. This is accomplished by passing in the [camio_hooks.py](batch_im
 the `--hooks_module` argument. This causes the importer to use the callback camera-registration and content-post functions that are necessary
 for interaction with the Camio servers.
 
-#### Environment Variables
+####  Setting up the Environment
 
 To use the `camio_hooks` module, you first must define some environment variables for yourself. These variables are
 
@@ -72,6 +72,13 @@ To use the `camio_hooks` module, you first must define some environment variable
  - `CAMIO_BOX_DEVICE_ID` - set this to the device ID of the Camio Box that you are sending the video to for segmentation and analysis. This can be gotten from the URL 
    on your [/boxes](https://www.camio.com/boxes) page, after the query-parameter `device_id`. We are adding a more convenient method for obtaining this value through
    the UI on our website but that change is not currently live.
+
+You can set environment variables by putting them in a file like `/home/$user/.bashrc` as `export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX"`, then sourcing the file
+by running `source ~/.bashrc`. If you don't want to set them permentantly like this, you can also prepend the definitions to the command to run the script, so something like
+
+```bash
+CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" CAMIO_BOX_DEVICE_ID="sdfsdfsdfsdfsdfsdfsdf" python importer.py $args
+```
 
 Once these environment variables are set you need to collect a few more pieces of information prior to being able to use the import script.
  
