@@ -1,4 +1,5 @@
 import argparse
+import time
 import shelve
 import psutil
 import os
@@ -103,7 +104,7 @@ class GenericImporter(object):
             given_name = params['camera']+'.'+params['timestamp']+'.'+key+'.mp4'
             if key in scheduled:
                 logging.info('%s (duplicate)' % filename)
-            elif key in db and db[key]['uploaded_on']:
+            elif key in db and db[key]['uploaded_on'] is not None:
                 logging.info('%s (uploaded)' % filename)
             else:
                 logging.info('%s (scheduled for upload)' % filename)
@@ -118,6 +119,8 @@ class GenericImporter(object):
                     params['discovered_on'] = discovered_on
                     params['uploaded_on'] = None
                     params['confirmed_on'] = None
+                    params['job_id'] = None
+                    params['shard_id'] = None
                     params['size'] = os.path.getsize(params['filename'])
                     db[key] = params
                     db.sync()
@@ -127,8 +130,11 @@ class GenericImporter(object):
 
         for camera_name in self.cameras:
             camera_id = self.register_camera(camera_name)
+            print "Camera ID: %r" % camera_id
             self.cameras[camera_name] = camera_id
 
+        # let the camera registration info prop. to Box and let Box kick off the webserver
+        time.sleep(1)
         self.assign_job_ids(db, unscheduled)
 
         total_count = len(unprocessed)
@@ -147,7 +153,7 @@ class GenericImporter(object):
                 sys.exit(1)
             params['uploaded_on'] = self.now()
             jobs.add((params['job_id'], params['shard_id']))
-            db[key] = params
+            db[params['key']] = params
             db.sync()
 
         self.register_jobs(db, jobs)
@@ -182,8 +188,6 @@ class GenericImporter(object):
                             help='location of the local storage db')
         self.parser.add_argument('-f', '--folder', default='data',
                             help='folder to process')
-        self.parser.add_argument('-d', '--device_id', default=None,
-                                 help='device_id')
         self.parser.add_argument('-i', '--host', default='127.0.0.1',
                                  help='the segmenter ip')
         self.parser.add_argument('-p', '--port', default='8080',
@@ -208,8 +212,7 @@ class GenericImporter(object):
         
     def register_camera(self, camera_name):
         host, port = self.args.host, self.args.port
-        device_id = self.args.device_id
-        return self.module.register_camera(camera_name, device_id, host, port)
+        return self.module.register_camera(camera_name, host, port)
 
     def assign_job_ids(self, db, unscheduled):
         return

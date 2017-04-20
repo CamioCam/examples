@@ -15,7 +15,7 @@ Your hook labels an entire Event (not just a single image or video) based on the
 
 ## Installing the example hook code
 
-The previded code includes an installation script for Debian/Ubuntu 
+The provided code includes an installation script for Debian/Ubuntu 
 
    hook-install.sh
 

@@ -13,16 +13,21 @@ import requests
 Camio-specific hook examples for use with the video import script
 """
 
+# TODO - change the URLs to www.camio.com instead of test.camio.com after deployed to prod
 CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
-CAMIO_REGISTER_URL_TEST="https://test.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
+CAMIO_JOBS_URL = "https://www.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
-def get_access_token():
-    return "fSdxve5FVdpJqucsyQzhzN9c6YAE7A_Z" # None # @TODO - grab access token from env vars
+# TODO - change to CAMIO_TEST_PROD when on production
+CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
+CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
-def get_user_id():
-    return "109010722686218614620" #`None # @TODO - grab userID from env vars
+def get_access_token():
+    return os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR) 
+
+def get_device_id():
+    return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
+
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -41,13 +46,20 @@ def get_device_data(host, port):
     to register a camera properly
     """
     urlbase = "http://%s:%s" % (host, port)
-    url = urlbase + "/box/content"
+    url = urlbase + "/box/settings"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json()
     return None
 
-def register_camera(camera_name, device_id=None, host=None, port=None):
+def get_camera_id(local_camera_id):
+    access_token = get_access_token()
+    headers = {"Authorization": "token %s" % access_token}
+    response = requests.get(CAMIO_REGISTER_URL, headers=headers)
+    response = response.json()
+    return response[local_camera_id].get('camera_id')
+
+def register_camera(camera_name, host=None, port=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
@@ -64,17 +76,15 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
+    device_id = get_device_id()
     access_token = get_access_token()
-    user_id = get_user_id()
-    #device_id, user_agent = get_device_data(host, port)
     user_agent = "Linux"
-    CAMIO_PARAMS.update(device_id=device_id, user_id=user_id, user_agent=user_agent)
+    CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
-            user_id=user_id,
             local_camera_id=local_camera_id,
             name=camera_name,
             mac_address=camera_name, # TODO - find out if this is still required.
@@ -82,13 +92,9 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
             should_config=True # toggles the camera 'ON'
     )
     payload = {local_camera_id: payload}
-    pprint.pprint(payload)
     headers = {"Authorization": "token %s" % access_token}
-    response = requests.post(CAMIO_REGISTER_URL_TEST, headers=headers, json=payload)
-    response = response.json()
-    pprint.pprint(response.keys())
-    camera_id = response[local_camera_id].get('camera_id')
-    return camera_id # @TODO - parse out the camera ID from the response and return that
+    response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
+    return get_camera_id(local_camera_id)
 
 def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng=None):
     """
@@ -107,12 +113,12 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
                  segmenter.
     """
     filehash = None
+    device_id = CAMIO_PARAMS.get('device_id')
+    if not device_id: return False
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "http://%s:%s" % (host, port)
-    device_id = CAMIO_PARAMS.get('device_id')
-    if not device_id: return False
-    # important! confusing but the 'access_token' here is the device ID of Box, not the account integrations oauth token
+    urlbase = urlbase + "/box/content"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     urlparams = "access_token=%s&local_camera_id=%s&camera_id=%s&hash=%s&timestamp=%s" % (
         device_id, local_camera_id, camera_id, filehash, timestamp)
@@ -120,7 +126,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     if not os.path.exists(filepath):
         sys.stderr.write("unable to locate video-file: %s. exiting" % filepath)
         return False
-    response = requests.post(url, files={'file': open(filepath, 'rb')})
+    with open(filepath, 'rb') as fh:
+        response = requests.post(url, data=fh)
     return response.status_code in (200, 204)
 
 def assign_job_ids(self, db, unscheduled):
