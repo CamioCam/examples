@@ -144,7 +144,7 @@ class GenericImporter(object):
                 logging.info('completed')
             else:
                 logging.error('unable to post')
-                break
+                sys.exit(1)
             params['uploaded_on'] = self.now()
             jobs.add((params['job_id'], params['shard_id']))
             db[key] = params
@@ -196,11 +196,11 @@ class GenericImporter(object):
         self.args = self.parser.parse_args()
         print "hooks module: %r" % self.args.hook_module
         print "cwd: %r" % os.getcwd()
-        self.module = __import__(self.args.hook_module)
-        print dir(self.module)
         if self.args.csv:
             print self.listfiles(self.args.folder)
         else:
+            self.module = __import__(self.args.hook_module)
+            print dir(self.module)
             self.upload_folder(self.args.folder)
 
     def define_custom_args(self):
