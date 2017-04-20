@@ -14,8 +14,8 @@ Camio-specific hook examples for use with the video import script
 """
 
 # TODO - change the URLs to www.camio.com instead of test.camio.com after deployed to prod
-CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
+CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
+CAMIO_JOBS_URL = "https://www.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
@@ -59,7 +59,7 @@ def get_camera_id(local_camera_id):
     response = response.json()
     return response[local_camera_id].get('camera_id')
 
-def register_camera(camera_name, device_id=None, host=None, port=None):
+def register_camera(camera_name, host=None, port=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
@@ -76,6 +76,7 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
+    device_id = get_device_id()
     access_token = get_access_token()
     user_agent = "Linux"
     CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
