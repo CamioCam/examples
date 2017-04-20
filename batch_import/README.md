@@ -15,7 +15,7 @@ To use the `camio_hooks` module, you first must define some environment variable
  - `CAMIO_OAUTH_TOKEN` - set this to the oauth token that is generated from your [Camio settings](https://www.camio.com/settings/integrations) page.
  - `CAMIO_BOX_DEVICE_ID` - set this to the device ID of the Camio Box that you are sending the video to for segmentation and analysis. This can be gotten from the URL 
    on your [/boxes](https://www.camio.com/boxes) page, after the query-parameter `device_id`. We are adding a more convenient method for obtaining this value through
-   the UI on our website but that change is not currently live.
+   the UI on the Camio website but that change is not currently live.
 
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as `export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX"`, then sourcing the file
 by running `source ~/.bashrc`. If you don't want to set them permentantly like this, you can also prepend the definitions to the command to run the script, so something like
@@ -32,7 +32,7 @@ Once these environment variables are set you need to collect a few more pieces o
 
 #### File-parsing Regex
 
-When uploading videos to a Camio Box for batch-import mode, we need to know a few attributes of the videos. These are
+When uploading videos to a Camio Box for batch-import mode, Camio needs to know a few attributes of the videos. These are
 
 1. The camera name that the video came from
 2. The timestamp of the video file (the actual timestamp from when the video was recorded)

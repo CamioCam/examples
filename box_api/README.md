@@ -12,9 +12,9 @@ input sources like cameras that stream over RTSP.
 At a high-level, the following steps are needed to analyze existing video through Camio.
 
 1. Register an account with Camio
-2. Purchase a Camio Box or download a VM image of one, setup the Box on your local network.
+2. Purchase a Camio Box or download a VM image of one, set up the Box on your local network.
 3. Register a camera source in 'batch' acquisition mode with our service through the Camio API
-4. Send the video content to the web server running on your Camio Box either manually or using our importer script.
+4. Send the video content to the web server running on your Camio Box 
 5. Let the Box segment, process, and analyze the video. Once it is done the clips will be available through the Camio webapp or search API.
 
 
@@ -28,7 +28,7 @@ Query args:
 
 - `accesstoken`: `device_id` of the Box being used, serves as shared secret
 - `local_camera_id`: the ID of the camera as given by the user
-- `camera_id`: the camera ID of the batch input source (TODO: why do we need both of these?)
+- `camera_id`: the camera ID of the batch input source 
 - `hash`: SHA sum of the content being posted, used to map segments back to the original source
 - `timestamp`: starting timestamp (ISO8601 YYYY-mm-ddTHH:MM:SS.FFFF format) of the video
 
@@ -82,7 +82,7 @@ Body: JSON blob with the following structure
 }  
 ```
 
-The `"acquisition_method": "batch"` line is important, it is how we tell the server that this is a batch-input
+The `"acquisition_method": "batch"` line is important, it is how a user tells the Camio servers that this is a batch-input
 source instead of a real-time video feed. `{{device_id}}` is the ID of the Box that will be used to accept videos
 for this batch-input source. 
 
@@ -114,6 +114,6 @@ port="8080"
 timestamp="2017-04-02T18:48:32.0000"
 
 # post the content
-# assuming the video we want to segment is at /home/$user/movie.mp4
+# assuming the video the user wants to segment is at /home/$user/movie.mp4
 post_batch_import $host $port ~/movie.mp4 $cameraid $camiocameraid $device_id $timestamp
 ```
