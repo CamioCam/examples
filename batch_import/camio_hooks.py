@@ -13,16 +13,25 @@ import requests
 Camio-specific hook examples for use with the video import script
 """
 
-CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
-CAMIO_REGISTER_URL_TEST="https://test.camio.com/api/cameras/discovered"
+# TODO - change the URLs to www.camio.com instead of test.camio.com after deployed to prod
+CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
 CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
+# TODO - change to CAMIO_TEST_PROD when on production
+CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_TOKEN_TEST"
+CAMIO_USER_ID_ENVVAR = "CAMIO_USER_ID"
+CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
+
 def get_access_token():
-    return None # @TODO - grab access token from env vars
+    return os.environ.get(CAMIO_TOKEN_TEST_ENVVAR) 
 
 def get_user_id():
-    return None # @TODO - grab userID from env vars
+    return os.environ.get(CAMIO_USER_ID_ENVVAR) 
+
+def get_device_id():
+    return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
+
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -47,6 +56,14 @@ def get_device_data(host, port):
         return response.json()
     return None
 
+def get_camera_id(local_camera_id):
+    access_token = get_access_token()
+    user_id = get_user_id()
+    headers = {"Authorization": "token %s" % access_token}
+    response = requests.get(CAMIO_REGISTER_URL, headers=headers)
+    response = response.json()
+    return response[local_camera_id].get('camera_id')
+
 def register_camera(camera_name, device_id=None, host=None, port=None):
     """
     arguments:
@@ -66,7 +83,6 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
     """
     access_token = get_access_token()
     user_id = get_user_id()
-    #device_id, user_agent = get_device_data(host, port)
     user_agent = "Linux"
     CAMIO_PARAMS.update(device_id=device_id, user_id=user_id, user_agent=user_agent)
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
@@ -83,10 +99,8 @@ def register_camera(camera_name, device_id=None, host=None, port=None):
     )
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
-    response = requests.post(CAMIO_REGISTER_URL_TEST, headers=headers, json=payload)
-    response = response.json()
-    camera_id = response[local_camera_id].get('camera_id')
-    return camera_id # @TODO - parse out the camera ID from the response and return that
+    response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
+    return get_camera_id(local_camera_id)
 
 def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng=None):
     """
