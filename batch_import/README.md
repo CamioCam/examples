@@ -54,11 +54,11 @@ importer.py \
   --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
   --folder "/my-folder" \
   --host 192.168.1.57 \
-  --port 80 \
-  --hook_module camio_hooks.py
+  --port 8080 \
+  --hook_module camio_hooks
 ```
 
-In the example above, the Camio Box that's running on port `80` of `192.168.1.57` on the local network:
+In the example above, the Camio Box that's running on port `80` of the ip address `192.168.1.57`:
 
 1. analyzes the motion in each video to segment the video files into smaller events
 2. creates metadata for each event that isolated real motion, color-blocking, direction of movement, etc...
@@ -67,7 +67,6 @@ In the example above, the Camio Box that's running on port `80` of `192.168.1.57
 Upon completion of the import, all the resulting labeled events can be downloaded using the Camio Search API.
 The downloaded JSON includes the `camera_id`, `camera_name`, `earliest_date`, `latest_date` and `labels` for each event.
 
-TODO(carter) explain the bulk download of labeled events.
-
+TODO(carter) explain the job completion API and bulk download of labeled events.
 
 
