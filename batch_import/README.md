@@ -8,7 +8,7 @@ These examples show how to import video files in bulk using Camio.
 The open source [video importer](https://github.com/tnc-ca-geo/video-importer) includes a hook to specify 
 Camio Box as the services that segments and labels the video files imported from a directory.
 
-Specify the [`camio_hooks.py`](camio_hooks.py) module as the value for 
+Specify the [`camio_hooks`](camio_hooks.py) module as the value for 
 the [`--hooks_module` argument](https://github.com/tnc-ca-geo/video-importer#hook-module) of the video importer.
 The video importer calls the [`register_camera`](https://github.com/tnc-ca-geo/video-importer#camera-registration-function) 
 and [`post_video_content`](https://github.com/tnc-ca-geo/video-importer#post-video-content-function) functions that take care 
@@ -28,7 +28,13 @@ To use the [`camio_hooks.py`](camio_hooks.py) module, you first must define some
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as:
 
 ```bash
-export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX"`, then sourcing the file by running `source ~/.bashrc
+export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX" 
+```
+
+Then source the file by running:
+
+```bash
+source ~/.bashrc
 ```
 
 If you don't want to set them permanently like this, you can also prepend the variable definitions to the command that runs the video importer script; for example, where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
