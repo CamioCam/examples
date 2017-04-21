@@ -1,5 +1,7 @@
-Importing Video Files in Bulk
+Batch Import
 ===============
+
+These examples show how to import video files in bulk using Camio.
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 
@@ -20,9 +22,7 @@ To use the [`camio_hooks.py`](camio_hooks.py) module, you first must define some
 | Variable | Description |
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
-| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get
-your `device_id` from your [/boxes](https://camio.com/boxes) page. Until there's a more convenient way to copy and paste your `device_id`, please copy it
-from the URL hash parameter `device_id` that's shown in your browser's address bar on that page. |
+| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get your `device_id` from your [/boxes](https://camio.com/boxes) page. Until there's a more convenient way to copy and paste your `device_id`, please copy it from the URL hash parameter `device_id` that's shown in your browser's address bar on that page. |
 
 
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as `export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX"`, then sourcing the file by running `source ~/.bashrc`. 
