@@ -104,8 +104,9 @@ This is a two step process:
 
 Here "https://{{your_domain}}:8000/tasks/{{api_key}}" is the location of your hook including the `api_key` you have selected (not the same as your develper `oauth_token`). `parsed_query` is a string that will be used to filter which events to send to the hook. In the case of the example all those from the camera named 'mycamera'. The `parsed_query` allows a subset of the Python syntax. Namely and, or, not, in, <, <=, >, >=, ==, != operators and the following variables:
 
+
 | Variable | Description |
-| ======== | =========== |
+| -------- | ----------- |
 | camera | the name of the camera uploading the event |
 | labels | a list of labels alreday associated to the event |
 | date | the event start date as a python datetime object (date.year, date.day, etc are allowed). |
