@@ -13,28 +13,28 @@ At a high-level, these are the steps required to analyze existing video with Cam
 
 1. Sign up for a [Camio account](https://camio.com/account).
 2. Purchase a [Camio Box](https://camio.com/box) or download a free [Camio Box VM](https://camio.com/box/vm) and run it on your local network.
-3. Register a camera with `batch` specified as `acquisition_method` using the Camio API to [Create a Camera](http://api.camio.com/#create-a-camera).
+3. Register a camera with `batch` specified as `acquisition_method` using the Camio API to [Create a Camera](https://api.camio.com/#create-a-camera).
 4. Submit video content via your Camio Box's `POST /box/content` API.
-5. [Search](http://api.camio.com/#search), or [browse](https://camio.com/app/#search) the labeled video after Camio has segmented, analyzed and labeled the video. 
+5. [Search](https://api.camio.com/#search), or [browse](https://camio.com/app/#search) the labeled video after Camio has segmented, analyzed and labeled the video. 
 
 
 ## Box API Documenation
 
 ### Uploading Content
 
-Please see the Camio Box [`/box/content` API](https://api.camio.com/#upload-content) for documentation
+Please see the Camio Box [`/box/content`](https://api.camio.com/#upload-content) API for documentation
 on submitting video files for batch processing.
 
 
 ### Settings
 
-Please see the Camio Box [`/box/settings`](https://api.camio.com/#get-settings-camio-box) for documentation
+Please see the Camio Box [`/box/settings`](https://api.camio.com/#get-settings-camio-box) API for documentation
 on fetching the `device_id` and `User-Agent` of your locally running Camio Box.
 
 
 ## Registering a Camera
 
-Please see the [`/api/cameras/discovered`](http://api.camio.com/#create-a-camera) API for documentation
+Please see the [`/api/cameras/discovered`](https://api.camio.com/#create-a-camera) API for documentation
 on creating a camera that is registered to your account.
 
 An example request for registering a camera for batch import via Camio Box is:
@@ -49,7 +49,7 @@ with HTTP Header:
 Authorization: token {{oauth_token}}
 ```
 
-and JSON body: TODO(carter) change localcameraid -> local_camera_id; remove `user_id`, `mac_address` from input. Rename `should_config`.
+and JSON body: 
 
 ```json
 {
@@ -64,6 +64,8 @@ and JSON body: TODO(carter) change localcameraid -> local_camera_id; remove `use
   }
 }  
 ```
+
+// TODO(carter) change localcameraid -> local_camera_id; remove `user_id`, `mac_address` from input. Rename `should_config`.
 
 The `"acquisition_method": "batch"` line is important. That's how you tell the Camio servers that this is a batch input
 source rather than a real-time RTSP video stream. The `device_id` is the ID of the Camio Box that's receiving video from this
