@@ -120,6 +120,6 @@ This is a two step process:
 | Variable | Description |
 | -------- | ----------- |
 | camera | the name of the camera uploading the event |
-| labels | a list of labels alreday associated to the event |
+| labels | a list of labels already associated with the event |
 | date | the event start date as a python datetime object (date.year, date.day, etc are allowed). |
 
