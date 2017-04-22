@@ -17,15 +17,17 @@ Your hook labels an entire Event (not just a single image or video) based on the
 
 The provided code includes an installation script for Debian/Ubuntu 
 
-   hook-install.sh
+   [hook-install.sh](hook-install.sh)
 
 and an example of a hook:
 
-   hook-example.py
+   [hook-example.py](hook-example.py)
 
 You can run the install with 
 
+```shell
    ./hook-install.sh
+```
 
 and it will install the required dependencies and start two processes:
 
@@ -36,65 +38,75 @@ The queue is implemented as a mongodb database collection.
 
 ## The example hook
 
-Our hook-example.py depends on bottle (0.13), gunicorn, requests, PIL, and pymongo.
+This hook-example.py depends on bottle (0.13), gunicorn, requests, PIL, and pymongo.
 
 The hook-example.py code is build on bottle.py 0.13 and intended to work any WSGI web 
-server. We recommend gunicorn (a prefork WSGI server) and our install script assumes it.
+server. We recommend gunicorn (a prefork WSGI server) and the install script assumes it.
 Once you have all the dependencies installed you can start the web server with:
 
+```shell
     nohup gunicorn -w 2 app:hook-example -b 0.0.0.0:8000 > /tmp/gunicorn.log &
+```
 
-Here 8000 is the post to be used and 0.0.0.0 refers to (any IP address). 
--w 2 requests two web server workers and /tmp/gunicorn.log is the location of the logfile.
+Here `8000` is the port to be used and 0.0.0.0 refers to any IP address.
+`-w 2` requests two web server workers and `/tmp/gunicorn.log` is the location of the logfile.
 
 The server will expose three endpoints:
 
-- http://{{your_domain}}:8000/tasks/ (GET) which you can call to check the service is running
-- http://{{your_domain}}:8000/tasks/{{api_key}} (POST) which will you have to register with Camio and be called by Camio to post event images
-- http://{{your_domain}}:8000/tasks/{{api_key}} (GET) which you can call to obtain a list of pending tasks
+1. GET http://{{your_domain}}:8000/tasks/ which you can call to check the service is running
+2. POST http://{{your_domain}}:8000/tasks/{{api_key}} which will you have to register with Camio and be called by Camio to post event images
+3. GET http://{{your_domain}}:8000/tasks/{{api_key}} which you can call to obtain a list of pending tasks
 
-The {{api_key}} is your own API key and you can make it up to be whatever you want. It has to match the API_KEY global variable in the example code. The purpose of the API_KEY is to allow Camio to gain access to your hook and prevent un-authroized access.
+The `api_key` is your own API key and you can make it up to be whatever you want. It has to match the [`API_KEY`](hook-example.py#L21) 
+global variable in the example code. The purpose of the `API_KEY` is to allow Camio to access to your hook while preventing unauthorized access.
 
-Long with the web server you must start the background process:
+Along with the web server you must start the background process:
 
+```shell
     nohup python hook-example.py > /tmp/taskqueue.log &
+```
 
-The background process retrieves pending tasks collected by the hook and posts computed labels back to Camio. They will be added to the originating event.
+The background process retrieves pending tasks collected by the hook and posts computed labels back to Camio. The labels will be added to the originating video event.
 
-The hook-example.py depends on the following function:
+The [hook-example.py](hook-example.py) depends on the following function:
 
+```python
     def compute_labels(images):
         labels = []
         for image in images:
             ...
         labels = ['cat','dog','mouse']
         return labels
+```
 
-This does nothing more than returning the same three labels (cat, dog, mouse) for each 
-event but you can edit it to user your favorite ML or NN tool such as OpenCV or Tensorflow,
+This does nothing more than return the same three labels (cat, dog, mouse) for each 
+event, but you can edit it to user your favorite ML or NN tool such as Caffe or Tensorflow,
 to perform Object Detection and compute labels from the images.
 
-## registering the hook
+## Registering the hook
 
-Once you create a labeling server, you can registers it as a Camio Hook 
+Once you create a labeling server, you register it as a [Camio Hook](http://api.camio.com/#create-a-hook)
 with the POST to camio.com.
 
 This is a two step process:
 
-- Login into Camio.com and goto: https://camio.com/settings/integrations
+1. Login into Camio.com and goto: https://camio.com/settings/integrations
   There click on "Generate Token" to obtain a "Developer OAuth Token".
-  
-- Using curl or other tool register the hook:
+2. Using curl or other tool, register the hook as described in [Create a Hook](http://api.camio.com/#create-a-hook):
 
+```shell
     curl \
     -H "Content-Type: application/json" \
-    -H "Authorization: token {{auth+token}}" \
-    -d '{"callback_url": "http://{{your_domain}}:8000/tasks/{{api_key}}", "type": "label_hit", "parsedQuery": "camera == '{{camera_name}}'"}
+    -H "Authorization: token {{oauth_token}}" \
+    -d '{"callback_url": "https://{{your_domain}}:8000/tasks/{{api_key}}", "type": "query_match", "parsed_query": "camera == '{{camera_name}}'"}
     -X POST https://www.camio.com/api/users/me/hooks
+```
 
-Here "http://{{your_domain}}:8000/tasks/{{api_key}}" is the location of your hook including the api_key you have selected (not the same as your develper oauth token). parsedQuery is a string that will be used to filter which events to send to the hook. In the case of the example all those from the camera called 'mycamera'. The parsedQuery allows a subset of the Python syntax. Namely and, or, not, in, <, <=, >, >=, ==, != operators and the following variables:
+Here "https://{{your_domain}}:8000/tasks/{{api_key}}" is the location of your hook including the `api_key` you have selected (not the same as your develper `oauth_token`). `parsed_query` is a string that will be used to filter which events to send to the hook. In the case of the example all those from the camera named 'mycamera'. The `parsed_query` allows a subset of the Python syntax. Namely and, or, not, in, <, <=, >, >=, ==, != operators and the following variables:
 
-- camera: the name of the camera uploading the event
-- labels: a list of labels alreday associated to the event
-- date: the event start date as a python datetime object (date.year, date.day, etc are allowed).
+| Variable | Description |
+| ======== | =========== |
+| camera | the name of the camera uploading the event |
+| labels | a list of labels alreday associated to the event |
+| date | the event start date as a python datetime object (date.year, date.day, etc are allowed). |
 
