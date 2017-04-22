@@ -1,72 +1,55 @@
-Batch Import Camera Setup / API Docs
-===============================
+Batch Import with the Camio Box API
+===================================
 
-This file contains documentation on the design and usage of the batch-import functionality of Camio Box.
+This file contains documentation on the design and usage of the Camio Box API for importing video files in batch (vs. real-time).
 
-Batch-import is a feature that allows you to send videos to Camio for analysis through a Camio Box. This makes it possible
-to index and label existing videos in the same way that a Camio Box allows one to segment, label, and videos from real-time 
-input sources like cameras that stream over RTSP.
+The `/box/content` API enables you to submit video files to Camio for analysis and labeling.
+This makes it possible to index and label existing video files in the same way that a Camio Box 
+segments and labels video from real-time RTSP video sources.
 
 ## Overview
 
-At a high-level, the following steps are needed to analyze existing video through Camio.
+At a high-level, these are the steps required to analyze existing video with Camio.
 
-1. Register an account with Camio
-2. Purchase a Camio Box or download a VM image of one, set up the Box on your local network.
-3. Register a camera source in 'batch' acquisition mode with our service through the Camio API
-4. Send the video content to the web server running on your Camio Box 
-5. Let the Box segment, process, and analyze the video. Once it is done the clips will be available through the Camio webapp or search API.
+1. Sign up for a [Camio account](https://camio.com/account).
+2. Purchase a [Camio Box](https://camio.com/box) or download a free [Camio Box VM](https://camio.com/box/vm) and run it on your local network.
+3. Register a camera with `batch` specified as `acquisition_method` using the Camio API to [Create a Camera](https://api.camio.com/#create-a-camera).
+4. Submit video content via your Camio Box's `POST /box/content` API.
+5. [Search](https://api.camio.com/#search), or [browse](https://camio.com/app/#search) the labeled video after Camio has segmented, analyzed and labeled the video. 
 
 
 ## Box API Documenation
 
+### Uploading Content
 
-###### POST `/box/content`
-
-
-Query args:
-
-- `accesstoken`: `device_id` of the Box being used, serves as shared secret
-- `local_camera_id`: the ID of the camera as given by the user
-- `camera_id`: the camera ID of the batch input source 
-- `hash`: SHA sum of the content being posted, used to map segments back to the original source
-- `timestamp`: starting timestamp (ISO8601 YYYY-mm-ddTHH:MM:SS.FFFF format) of the video
-
-Body:
-
-- H.264 encoded video content in an mp4 container.
-
-This endpoint is how you get video data onto Box for segmentation and analysis. You upload video files to the webserver running on Box through the
-`/box/content` endpoint, associating the video file with a regitered camera in the process. The video is segmented, analyzed, and eventually sent to the Camio
-servers where it is indexed and available for search through the Camio website.
+Please see the Camio Box [`/box/content`](https://api.camio.com/#upload-content) API for documentation
+on submitting video files for batch processing.
 
 
-###### GET `/box/settings`
+### Settings
 
-returns 
-
-```json
-
-{
-  "device_id": "ZADfg23_98kuS-3FyLv2oxbPrsOPqmerT534aDf56wlUUde8X2B_7B2hBv3-t56bk-sRoBVgaonxCMpi4CAmLkvmT0fz",
-  "user-agent": "Linux (x86/64) Camio Box VirtualBox 2017-04-22:ab234badsfb293nas9db9f7231arereds",
-}
-```
-
-This endpoint serves as a simple way to get some necessary information about the Camio Box you are using for segmentation.
-To POST content to Box you'll need to supply the device\_id as a form of a shared secret and you'll need to supply the same value
-when registering a camera as a batch-input source.
+Please see the Camio Box [`/box/settings`](https://api.camio.com/#get-settings-local-camio-box) API for documentation
+on fetching the `device_id` and `User-Agent` of your locally running Camio Box.
 
 
 ## Registering a Camera
 
-Registering a camera is done as follows
+Please see the [`/api/cameras/discovered`](https://api.camio.com/#create-a-camera) API for documentation
+on creating a camera that is registered to your account.
 
-POST `/api/cameras/discovered`
+An example request for registering a camera for batch import via Camio Box is:
 
-Headers: `"Authorization: token {{auth_token}}"`
+```
+POST /api/cameras/discovered
+```
 
-Body: JSON blob with the following structure
+with HTTP Header:
+
+```
+Authorization: token {{oauth_token}}
+```
+
+and JSON body: 
 
 ```json
 {
@@ -76,31 +59,31 @@ Body: JSON blob with the following structure
     "user_id": "{{user_id}}",
     "local_camera_id": "{{local_camera_id}}",
     "name": "{{camera_name}}",
-    "mac_address": "{{local_camera_id}}",
-    "should_config": false,
+    "mac_address": "{{mac_address}}",
+    "should_config": true
   }
 }  
 ```
 
-The `"acquisition_method": "batch"` line is important, it is how a user tells the Camio servers that this is a batch-input
-source instead of a real-time video feed. `{{device_id}}` is the ID of the Box that will be used to accept videos
-for this batch-input source. 
+// TODO(carter) change localcameraid -> local_camera_id; remove `user_id`, `mac_address` from input. Rename `should_config`.
+
+The `"acquisition_method": "batch"` line is important. That's how you tell the Camio servers that this is a batch input
+source rather than a real-time RTSP video stream. The `device_id` is the ID of the Camio Box that's receiving video from this
+camera source.
+
+The function `register_batch_source` in [`register_batch_source.sh`](register_batch_source.sh) shows how to 
+register a camera for batch import. 
 
 
-Inside of [`register_batch_source.sh`](batch-import/register_batch_source.sh) is a function `register_batch_source` that can be used to register 
-a batch-input-source with the Camio servers. Once this is done you need to go to your 
-`https://www.camio.com/boxes` page and attach the camera to the Box that you want to process 
-the video in batch mode.
+## Submitting Video Files
 
-
-## POST to `/box/content` example
-
-In the [`post_content.sh`](batch-import/post-content.sh) script there is a function `post_batch_import` that handles the sending
-of a video file to the Box for segmentation and analysis.
+The function `post_batch_import` in the [`post_content.sh`](post-content.sh) script shows how to POST a video file
+to the Camio Box for segmentation and analysis.
 
 This will only work if you already have a camera registered under your account with the `"acquisition_mode": "batch"` option 
-set in the config for that camera (see [*Registering a Camera*](#registering-a-camera) section). That camera must then be attached to the
-Box that you are sending this video data to.
+set in the config for that camera (see [Registering a Camera](#registering-a-camera)). 
+
+TODO(carter) make all variables snake case (e.g. cameraid -> camera_id)
 
 ```bash
 # source the script
