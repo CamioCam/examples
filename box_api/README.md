@@ -28,7 +28,7 @@ on submitting video files for batch processing.
 
 ### Settings
 
-Please see the Camio Box [`/box/settings`](https://api.camio.com/#get-settings-camio-box) API for documentation
+Please see the Camio Box [`/box/settings`](https://api.camio.com/#get-settings-local-camio-box) API for documentation
 on fetching the `device_id` and `User-Agent` of your locally running Camio Box.
 
 
