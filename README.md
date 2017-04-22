@@ -1,7 +1,7 @@
 Camio Examples
 ==============
 
-This respository contains example code and documentation explaining how to use the Camio APIs and services.
+This repo contains example code and documentation explaining how to use the Camio APIs and services.
 
 The [batch_import](batch_import) folder explains the bulk import of pre-existing video files that need to be
 segmented into smaller video events and labeled for search.
