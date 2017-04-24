@@ -65,7 +65,7 @@ Here `8000` is the port to be used and `0.0.0.0` refers to the IP address of you
 The server will expose three endpoints:
 
 1. `GET http://{{your_domain}}:8000/tasks/` which you can call to check that the service is running
-2. `POST http://{{your_domain}}:8000/tasks/{{api_key}}` which is the `callback_url` you [register](http://api.camio.com/#create-a-hook) with Camio to receive the POST of images to label
+2. `POST http://{{your_domain}}:8000/tasks/{{api_key}}` which is the `callback_url` you [register](http://api.camio.com/#create-hook) with Camio to receive the POST of images to label
 3. `GET http://{{your_domain}}:8000/tasks/{{api_key}}` which you can call to obtain a list of pending tasks
 
 The `api_key` is your own API key and you can make it up to be whatever you want. It has to match the [`API_KEY`](hook-example.py#L21) 
@@ -96,14 +96,14 @@ to perform Object Detection and compute labels from the images.
 
 ## Registering the hook
 
-Once you create a labeling server, you register it as a [Camio Hook](http://api.camio.com/#create-a-hook)
+Once you create a labeling server, you register it as a [Camio Hook](http://api.camio.com/#create-hook)
 with the `POST` to camio.com.
 
 This is a two step process:
 
 1. Open [https://camio.com/settings/integrations#api](https://camio.com/settings/integrations#api) and 
   press the "Generate Token" button to obtain a "Developer OAuth Token".
-2. Using curl or other tool, register your hook as described in [Create a Hook](http://api.camio.com/#create-a-hook) with a command like:
+2. Using curl or other tool, register your hook as described in [Create Hook](http://api.camio.com/#create-hook) with a command like:
 
 ```shell
     curl \
@@ -113,13 +113,8 @@ This is a two step process:
     -X POST https://www.camio.com/api/users/me/hooks
 ```
 
-`https://{{your_domain}}:8000/tasks/{{api_key}}` is the location of your hook including the `api_key` you have selected (not the same as your develper `oauth_token`) and `parsed_query` is a string that will be used to filter which events to send to the hook. In the case of this example, all those from the camera named 'camera_name'. The `parsed_query` specifies the conditions of the filter and allows this subset of the Python conditional operators: 
-`and`, `or`, `not`, `in`, `<`, `<=`, `>`, `>=`, `==`, `!=`. The variables that can be referenced in the conditions include:
+`https://{{your_domain}}:8000/tasks/{{api_key}}` is the location of your hook including the `api_key` you have selected (NOT the same as your develper `oauth_token`) and `parsed_query` is a string that will be used to filter which events to send to the service. In this example, only those events from the camera named 'camera_name' will trigger
+the hook.
 
-
-| Variable | Description |
-| -------- | ----------- |
-| camera | the name of the camera uploading the event |
-| labels | a list of labels already associated with the event |
-| date | the event start date as a python datetime object (date.year, date.day, etc are allowed). |
+Please see [parsed_query conditions](https://api.camio.com/#parsed_query-conditions) for a full description of the Python conditional operators and variable names supported.
 
