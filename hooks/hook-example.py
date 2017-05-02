@@ -96,7 +96,7 @@ def compute_labels(images):
             "cat":{"probability":0.93, "polygon":[]}, 
             "dog":{"probability":0.88, "polygon":[]},
             }
-    return {'labels': labels}
+    return labels
 
 def runtasks():
     t = 0
