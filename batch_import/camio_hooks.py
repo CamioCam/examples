@@ -96,14 +96,14 @@ def register_camera(camera_name, host=None, port=None):
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
     return get_camera_id(local_camera_id)
 
-def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng=None):
+def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, location=None):
     """
     arguments:
         host        - the url of the segmenter
         port        - the port to access the webserver on the segmenter
         camera_name - the parsed name of the camera
         camera_id   - the ID of the camera as returned from the service
-        latlng (opt) - the lat/long of the camera (as parsed from the filename)
+        location(opt) - a string describing the location of the camera (Example lat-long)
         filepath    - full path to the video file that needs segmentation
         timestamp   - the starting timestamp of the video file
     returns: true/false based on success
