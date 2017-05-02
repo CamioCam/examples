@@ -5,14 +5,15 @@ These examples show how to import video files in bulk using Camio.
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 
-The open source [video importer](https://github.com/tnc-ca-geo/video-importer) includes a hook to specify 
-Camio Box as the services that segments and labels the video files imported from a directory.
+The open source [video importer](https://github.com/tnc-ca-geo/video-importer) allows one to specify a set of hooks that describe how the importer
+should interact with the segmentation and labeling service of your choosing. To use the video-importer with the Camio service, one must supply the
+[`camio_hooks.py`](camio_hooks.py) module as the value for the the [`--hooks_module` argument](https://github.com/tnc-ca-geo/video-importer#hook-module)
+ of the video importer.
 
-Specify the [`camio_hooks`](camio_hooks.py) module as the value for 
-the [`--hooks_module` argument](https://github.com/tnc-ca-geo/video-importer#hook-module) of the video importer.
 The video importer calls the [`register_camera`](https://github.com/tnc-ca-geo/video-importer#camera-registration-function) 
 and [`post_video_content`](https://github.com/tnc-ca-geo/video-importer#post-video-content-function) functions that take care 
-of processing the video with the Camio services.
+of processing the video with the Camio services. These functions are designed to seemelessly integrate with a Camio Box on your local network, which will handle the 
+segmentation and first-level analysis of the vidoe content before sending off the results to Camio servers for further processing and labeling.
 
 
 #### Setting up the Environment
@@ -22,8 +23,7 @@ To use the [`camio_hooks.py`](camio_hooks.py) module, you first must define some
 | Variable | Description |
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
-| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get your `device_id` from your [/boxes](https://camio.com/boxes) page. Until there's a more convenient way to copy and paste your `device_id`, please copy it from the URL hash parameter `device_id` that's shown in your browser's address bar on that page. |
-
+| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get your  `device_id` from your [/boxes](https://camio.com/boxes) page. Until there's a more convenient way to copy and paste your `device_id`, please copy it from the URL hash parameter `device_id` that's shown in your browser's address bar on that page. | 
 
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as:
 
@@ -37,7 +37,8 @@ Then source the file by running:
 source ~/.bashrc
 ```
 
-If you don't want to set them permanently like this, you can also prepend the variable definitions to the command that runs the video importer script; for example, where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
+If you don't want to set them permanently like this, you can also prepend the variable definitions to the command that runs the video importer script; for example, 
+where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
 
 ```bash
 CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" CAMIO_BOX_DEVICE_ID="sdfsdfsdfsdfsdfsdfsdf" python importer.py $args
@@ -64,7 +65,7 @@ importer.py \
   --hook_module camio_hooks
 ```
 
-In the example above, the Camio Box that's running on port `80` of the ip address `192.168.1.57`:
+In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:
 
 1. analyzes the motion in each video to segment the video files into smaller events
 2. creates metadata for each event that isolated real motion, color-blocking, direction of movement, etc...
@@ -73,6 +74,13 @@ In the example above, the Camio Box that's running on port `80` of the ip addres
 Upon completion of the import, all the resulting labeled events can be downloaded using the Camio Search API.
 The downloaded JSON includes the `camera_id`, `camera_name`, `earliest_date`, `latest_date` and `labels` for each event.
 
-TODO(carter) explain the job completion API and bulk download of labeled events.
+### Checking Job Status
 
+@TODO - discuss the Camio API that allows one to query for the status of a job (in progress vs completed). 
+
+### Getting Job Results
+
+Once a job has been finished you are able to export a payload (in either json, csv, or xml format) that described the labels assocaited with the submitted videos.
+
+@TODO - describe how one goes about asking for the labels to be exported
 
