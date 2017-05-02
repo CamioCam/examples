@@ -68,10 +68,12 @@ def get_tasks(secret):
 # return a dictionary of the form
 #  
 # {
+# "labels: {
 #   "2017-01-01T12:00:00.000": {
 #      "cat": {"probability: 0.93, "polygon": []},
 #      "dog": {"probability: 0.88, "polygon": []},
 #   }
+#  }
 # }
 #
 # i.e. a dictionary of labels for each image timestamp
@@ -94,7 +96,7 @@ def compute_labels(images):
             "cat":{"probability":0.93, "polygon":[]}, 
             "dog":{"probability":0.88, "polygon":[]},
             }
-    return labels
+    return {'labels': labels}
 
 def runtasks():
     t = 0
