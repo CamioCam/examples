@@ -76,7 +76,40 @@ The downloaded JSON includes the `camera_id`, `camera_name`, `earliest_date`, `l
 
 ### Checking Job Status
 
-@TODO - discuss the Camio API that allows one to query for the status of a job (in progress vs completed). 
+The full documentation of the Jobs API can be found [here](api.camio.com/#jobs). To get information about a specific job given a job ID, you would do the following.
+
+`GET https://www.camio.com/api/jobs/{{job_id}}`
+
+Where `{{job_id}}` is the value returned returned from a `PUT` request to the `https://www.camio.com/api/jobs` endpoint. This `GET` request returns the following payload
+
+```json
+{
+    "job_id": "agpIDYggsM",
+    "shard_map": {
+        "0": {
+            "item_count": 2048,
+            "job_id": "agpIDYggsM",
+            "shard_id": "0",
+            "status": "missing"
+        },
+        "1": {
+            "item_count": 2048,
+            "job_id": "agpIDYggsM",
+            "shard_id": "1",
+            "status": "missing"
+        },
+        "2": {
+            "item_count": 3,
+            "job_id": "agpIDYggsM",
+            "shard_id": "2",
+            "status": "missing"
+        }
+    },
+    "status": "shards_missing"
+}
+```
+
+
 
 ### Getting Job Results
 
