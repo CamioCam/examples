@@ -64,6 +64,25 @@ def get_tasks(secret):
 #   ...
 # ]
 #
+# The custom code in compute_labels should loop and label each one of them and 
+# return a dictionary of the form
+#  
+# {
+# "labels: {
+#   "2017-01-01T12:00:00.000": {
+#      "cat": {"probability: 0.93, "polygon": []},
+#      "dog": {"probability: 0.88, "polygon": []},
+#   }
+#  }
+# }
+#
+# i.e. a dictionary of labels for each image timestamp
+# each label is a dictionary key associated to a 
+# probability and an optional polygon (as list of x,y 
+# coordinates expressed in % of the original image
+# with (0,0) being the bottom-left corner and (1,1)
+# the top-right corner,
+#
 ###########################################################################
 def compute_labels(images):
     labels = {}
@@ -74,8 +93,8 @@ def compute_labels(images):
         image_bytes = base64.b64decode(image['image_b64']) # the bytes
         image = Image.open(StringIO.StringIO(image_bytes)) # a PIL image
         labels[image_timestamp] = {
-            "cat":{"probability":0.93, "polygon":{}}, 
-            "dog":{"probability":0.88, "polygon":{}},
+            "cat":{"probability":0.93, "polygon":[]}, 
+            "dog":{"probability":0.88, "polygon":[]},
             }
     return labels
 
