@@ -26,6 +26,24 @@ You can place these as {{placeholder}} anywhere inside of the RTSP URL, and we w
 connect to the given device.
 """
 
+EXAMPLES = \
+"""
+Examples:
+
+To register a camera with:
+name:        my_new_camera
+username:    admin
+password:    admin
+port:        8080
+RTSP URL:    rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}/live/{{stream}}.h264
+camera-ID:   AABBCCDDEEDD.0
+MAC address: AABBCCDDEEDD
+
+you would  do the following:
+
+python register_camera.py -v -u admin -p admin -s 1 -p 8080 rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
+"""
+
 import argparse
 import sys
 import os
@@ -40,15 +58,16 @@ REGISTER_CAMERA_ENDPOINT = "/api/devices/registered"
 DEBUG_OUTPUT = False
 
 def print_debug(string):
-    print "printing debug"
-    print "Debug output: %s" % DEBUG_OUTPUT
     if DEBUG_OUTPUT:
-        sys.stderr.write(string)
+        sys.stderr.write(string + '\n')
 
 def parse_cmd_line_or_exit():
+    global DEBUG_OUTPUT
+    global CAMIO_SERVER_URL
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description = textwrap.dedent(DESCRIPTION)
+        description = textwrap.dedent(DESCRIPTION),
+        epilog=EXAMPLES
     )
     parser.add_argument('-u', '--username', type=str, help='the username used to access the RTSP stream')
     parser.add_argument('-p', '--password', type=str, help='the password used to access the RTSP stream')
@@ -68,21 +87,20 @@ def parse_cmd_line_or_exit():
     parser.add_argument('camera_name', type=str, help='some user-friendly name for your camera')
     parser.add_argument('auth_token', type=str, help='your Camio auth token (see https://www.camio.com/settings/integrations)')
     args = parser.parse_args()
-    if args.verbose: 
-        print "setting debug output to true"
-        DEBUG_OUTPUT = True
-        print DEBUG_OUTPUT
+    if args.verbose: DEBUG_OUTPUT = True
     if args.test: CAMIO_SERVER_URL = CAMIO_TEST_SERVER_URL
     return args
     
-
 def generate_payload(args):
     actual_values=dict()
     arg_dict = args.__dict__
-    for item in ['username', 'password', 'stream', 'channel']:
+    for item in ['username', 'password']:
         if arg_dict.get(item):
-            actual_values[item] = dict(
-                options = [ {item: arg_dict.get(item)} ]
+            actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
+    for item in ['stream', 'channel']:
+        if arg_dict.get(item):
+            actual_values[item] = dict( 
+                options = [ {'name': "%s %s" % (item, arg_dict.get(item)), 'value': arg_dict.get(item)}]
             )
     payload = dict(
         local_camera_id=args.local_camera_id,
@@ -93,7 +111,7 @@ def generate_payload(args):
         actual_values=actual_values,
         default_values=actual_values
     )
-    print_debug(json.dumps(payload))
+    print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
 def generate_headers(args):
@@ -103,7 +121,7 @@ def generate_headers(args):
 def post_payload(payload, headers):
     url = CAMIO_SERVER_URL + REGISTER_CAMERA_ENDPOINT
     ret = requests.post(url, headers=headers, json=payload)
-    return True
+    return ret.status_code in (200, 204)
 
 def main():
     args = parse_cmd_line_or_exit()
