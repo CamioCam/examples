@@ -12,6 +12,11 @@ they can use this script to register their device with the correct RTSP connecti
 the camera/dvr/nvr will show up as an entry on your https://www.camio.com/boxes page, where you can choose to connect
 it to a Camio Box and have the video stream processed.
 
+To connect a camera to your Camio account, you must specify the Camio Box device that you will be connecting the camera 
+to our servers through. You do this by providing the device ID of the Camio Box to this script. Currently, the easiest way
+to get the device ID is by going to your https://www.camio.com/boxes page and getting the device ID out of the URL.
+(the URL will look like: https://www.camio.com/boxes?device_id=AABBCCDDEFFAABBDDEEFFCC, grab the AABBCCDDEFFAABBDDEEFFCC part)
+
 *NOTE* - Camio only supports H264 encoded video streams, mjpeg, etc. will not work.
 
 Camio uses mustache-style placeholders in the RTSP URLs for the following values:
@@ -47,7 +52,8 @@ you would do the following:
 python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \\
         --make Hikvision --model DCS-2302-I \\
         rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \\
-        /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
+        /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera \\
+        $CAMIO_ACCOUNT_AUTH_TOKEN $CAMIOBOX_DEVICE_ID
 """
 
 import argparse
@@ -94,6 +100,7 @@ def parse_cmd_line_or_exit():
     parser.add_argument('local_camera_id', type=str, help='some string representing an ID for your camera. Must be unique per account')
     parser.add_argument('camera_name', type=str, help='some user-friendly name for your camera')
     parser.add_argument('auth_token', type=str, help='your Camio auth token (see https://www.camio.com/settings/integrations)')
+    parser.add_argument('device_id', type=str, help='the device ID of the Camio Box you wish to connect this camera to')
     args = parser.parse_args()
     if args.verbose: DEBUG_OUTPUT = True
     if args.test: CAMIO_SERVER_URL = CAMIO_TEST_SERVER_URL
@@ -118,11 +125,10 @@ def generate_payload(args):
         rtsp_server=args.rtsp_server,
         rtsp_path=args.rtsp_path,
         actual_values=actual_values,
-        default_values=actual_values
+        default_values=actual_values,
+        device_id_discovering=args.device_id
     )
-    payload = dict(
-        local_camera_id=payload
-    )
+    payload = { args.local_camera_id: payload }
     print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
