@@ -103,7 +103,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
         port        - the port to access the webserver on the segmenter
         camera_name - the parsed name of the camera
         camera_id   - the ID of the camera as returned from the service
-        location(opt) - a string describing the location of the camera (Example lat-long)
+        location(opt) - a json-string describing the location of the camera 
+                        Example {"location:" {"lat": 7.367598, "lng":134.706975}, "accuracy":5.0}
         filepath    - full path to the video file that needs segmentation
         timestamp   - the starting timestamp of the video file
     returns: true/false based on success
