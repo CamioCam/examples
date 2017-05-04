@@ -110,12 +110,12 @@ def generate_payload(args):
         local_camera_id=args.local_camera_id,
         name=args.camera_name,
         mac_address=args.mac_address,
+        ip_address=arg_dict.get('ip_address', '') # ip address might not always be specified separately 
         rtsp_server=args.rtsp_server,
         rtsp_path=args.rtsp_path,
         actual_values=actual_values,
         default_values=actual_values
     )
-    if arg_dict.get('ip_address'): payload['ip_address'] = arg_dict['ip_address']
     print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
