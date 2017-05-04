@@ -45,7 +45,7 @@ MAC address: AABBCCDDEEDD
 you would do the following:
 
 python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \\
-        --make Hikvision --model DCS-2302-I
+        --make Hikvision --model DCS-2302-I \\
         rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \\
         /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
 """
@@ -60,7 +60,7 @@ import requests
 CAMIO_SERVER_URL = "https://www.camio.com"
 CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 
-REGISTER_CAMERA_ENDPOINT = "/api/devices/registered"
+REGISTER_CAMERA_ENDPOINT = "/api/cameras/discovered"
 DEBUG_OUTPUT = False
 
 def print_debug(string):
@@ -72,8 +72,7 @@ def parse_cmd_line_or_exit():
     global CAMIO_SERVER_URL
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description = textwrap.dedent(DESCRIPTION),
-        epilog=EXAMPLES
+        description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
     )
     parser.add_argument('-u', '--username', type=str, help='the username used to access the RTSP stream')
     parser.add_argument('-p', '--password', type=str, help='the password used to access the RTSP stream')
@@ -103,7 +102,7 @@ def parse_cmd_line_or_exit():
 def generate_payload(args):
     actual_values=dict()
     arg_dict = args.__dict__
-    for item in [x for x in ['username', 'password', 'port', 'make', 'model'] if arg_dict.get(x)]:
+    for item in [x for x in ['username', 'password', 'port'] if arg_dict.get(x)]:
         actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
     for item in [x for x in ['stream', 'channel'] if arg_dict.get(x)]:
         actual_values[item] = dict( 
@@ -113,22 +112,29 @@ def generate_payload(args):
         local_camera_id=args.local_camera_id,
         name=args.camera_name,
         mac_address=args.mac_address,
+        maker=arg_dict.get('maker', ''), 
+        model=arg_dict.get('model', ''), 
         ip_address=arg_dict.get('ip_address', ''), # ip address might not always be specified separately 
         rtsp_server=args.rtsp_server,
         rtsp_path=args.rtsp_path,
         actual_values=actual_values,
         default_values=actual_values
     )
+    payload = dict(
+        local_camera_id=payload
+    )
     print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
 def generate_headers(args):
     headers = {"Authorization": "token %s" % args.auth_token}
+    print_debug("Generated Headers:\n %s" % headers)
     return headers
 
 def post_payload(payload, headers):
     url = CAMIO_SERVER_URL + REGISTER_CAMERA_ENDPOINT
     ret = requests.post(url, headers=headers, json=payload)
+    print_debug("return from POST to /api/cameras/discovered:\n %s" % vars(ret))
     return ret.status_code in (200, 204)
 
 def main():
