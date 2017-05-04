@@ -32,6 +32,8 @@ Examples:
 
 To register a camera with:
 name:        my_new_camera
+make:        Hikvision
+model:       DCS-2302-I
 username:    admin
 password:    admin
 port:        8080
@@ -43,6 +45,7 @@ MAC address: AABBCCDDEEDD
 you would do the following:
 
 python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \\
+        --make Hikvision --model DCS-2302-I
         rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \\
         /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
 """
@@ -110,7 +113,7 @@ def generate_payload(args):
         local_camera_id=args.local_camera_id,
         name=args.camera_name,
         mac_address=args.mac_address,
-        ip_address=arg_dict.get('ip_address', '') # ip address might not always be specified separately 
+        ip_address=arg_dict.get('ip_address', ''), # ip address might not always be specified separately 
         rtsp_server=args.rtsp_server,
         rtsp_path=args.rtsp_path,
         actual_values=actual_values,
