@@ -35,13 +35,16 @@ name:        my_new_camera
 username:    admin
 password:    admin
 port:        8080
+ip address:  192.168.1.18
 RTSP URL:    rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}/live/{{stream}}.h264
 camera-ID:   AABBCCDDEEDD.0
 MAC address: AABBCCDDEEDD
 
-you would  do the following:
+you would do the following:
 
-python register_camera.py -v -u admin -p admin -s 1 -p 8080 rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
+python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \\
+        rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \\
+        /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera ASDASDASDASDASDA
 """
 
 import argparse
@@ -74,6 +77,9 @@ def parse_cmd_line_or_exit():
     parser.add_argument('-s', '--stream', type=str, help='the selected stream to use in the RTSP URL')
     parser.add_argument('-c', '--channel', type=str, help='the selected stream to use in the RTSP URL')
     parser.add_argument('-P', '--port', type=int, help='the port that the RTSP stream is accessed through', default=554)
+    parser.add_argument('-i', '--ip_address', type=str, help='The IP address of the camera (local or external)')
+    parser.add_argument('--maker', type=str, help='the make (manufacturer name) of the camera')
+    parser.add_argument('--model', type=str, help='the model of the camera')
     parser.add_argument('--test', action='store_true', help='use the Camio testing servers instead of production')
     parser.add_argument('-v', '--verbose', action='store_true', help='print extra information to stdout for debugging purposes')
     parser.add_argument('rtsp_server', type=str, 
@@ -94,14 +100,12 @@ def parse_cmd_line_or_exit():
 def generate_payload(args):
     actual_values=dict()
     arg_dict = args.__dict__
-    for item in ['username', 'password']:
-        if arg_dict.get(item):
-            actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
-    for item in ['stream', 'channel']:
-        if arg_dict.get(item):
-            actual_values[item] = dict( 
-                options = [ {'name': "%s %s" % (item, arg_dict.get(item)), 'value': arg_dict.get(item)}]
-            )
+    for item in [x for x in ['username', 'password', 'port', 'make', 'model'] if arg_dict.get(x)]:
+        actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
+    for item in [x for x in ['stream', 'channel'] if arg_dict.get(x)]:
+        actual_values[item] = dict( 
+            options = [ {'name': "%s %s" % (item, arg_dict.get(item)), 'value': arg_dict.get(item)}]
+        )
     payload = dict(
         local_camera_id=args.local_camera_id,
         name=args.camera_name,
@@ -111,6 +115,7 @@ def generate_payload(args):
         actual_values=actual_values,
         default_values=actual_values
     )
+    if arg_dict.get('ip_address'): payload['ip_address'] = arg_dict['ip_address']
     print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
