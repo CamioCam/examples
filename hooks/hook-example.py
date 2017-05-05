@@ -58,7 +58,7 @@ def get_tasks(secret):
 #   {
 #      type: "image/jpeg",
 #      size: [640, 480],
-#      timestamp: "2017-01-01T12:00:00.000",
+#      timestamp: {u'meta_class': u'datetime.datetime', u'date': u'2017-05-05T01:31:13.738647'},
 #      image_b64: "... base 64 binary data ..."
 #   },
 #   ...
@@ -89,7 +89,7 @@ def compute_labels(images):
     for image in images:
         image_type = image['type'] # example 'image/jpeg'
         image_size = image['size'] # (width, height)
-        image_timestamp = image['timestamp'] # in iso format string
+        image_timestamp = image['timestamp']['date'] # in iso format string
         image_bytes = base64.b64decode(image['image_b64']) # the bytes
         image = Image.open(StringIO.StringIO(image_bytes)) # a PIL image
         labels[image_timestamp] = {
