@@ -3,7 +3,7 @@ Registering a Camera Source With Camio
 
 ## Overview
 
-To connect a camera to Camio, one needs to register the camera source through our API. Normally this is done automatically by a Camio Box
+To connect a camera to Camio, one needs to register the camera source through the Camio API. Normally this is done automatically by a Camio Box
 that scans your local network, identifies all of the cameras, and automatically registers them. If you have a camera that is not recognized by
 Camio Box, you can manually register it using the [register_camera](register_camera.py) script.
 ## Usage
@@ -21,7 +21,7 @@ usage: register_camera.py [-h] [-u USERNAME] [-p PASSWORD] [-s STREAM]
 this script allows you to register a camera source with the Camio service through
 the /api/cameras/discovered endpoint. Camera registration is normally done automatically
 by a Camio Box that scans the local network and automatically detects and registers the cameras
-that it finds, this script allows you to register a camera that a Camio Box doesn't know how to recognize.
+that it finds. This script allows you to register a camera that a Camio Box doesn't know how to recognize.
 
 This script allows you to connect your cameras/nvrs/dvrs with the Camio service,
 you can use this script to register your device with the correct RTSP connection information. Once registered,
