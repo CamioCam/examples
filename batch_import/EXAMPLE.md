@@ -27,9 +27,16 @@ Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) 
 
 ```sh
 $ git clone https://www.github.com/CamioCam/examples
+Cloning into 'examples'...
+remote: Counting objects: 394, done.
+remote: Compressing objects: 100% (127/127), done.
+remote: Total 394 (delta 68), reused 0 (delta 0), pack-reused 267
+Receiving objects: 100% (394/394), 87.31 KiB | 138.00 KiB/s, done.
+Resolving deltas: 100% (218/218), done.
+Checking connectivity... done.
 $ cd examples/batch_import/video-importer
 $ pwd
-  /home/user/examples/batch_import/video-importer
+/home/user/examples/batch_import/video-importer
 $ ls -l
 total 48
 -rw-r--r--  1 user  staff  1062 May  1 15:32 LICENSE
