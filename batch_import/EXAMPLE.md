@@ -48,6 +48,74 @@ variables must be defined. These are
 You can set these by just entering
 
 ```sh
-export CAMIO_OAUTH_TOKEN="{{your_camio_oauth_token}} # insert your oauth token here
-export CAMIO_BOX_DEVICE_ID="{{device_id of your Camio Box}}
+export CAMIO_OAUTH_TOKEN="{{your_camio_oauth_token}}" # insert your oauth token here
+export CAMIO_BOX_DEVICE_ID="{{device_id of your Camio Box}}"
 ```
+
+#### Get the Camio Box IP Address
+
+You need to know the local-IP address of your Camio Box. You can do this in many ways but the two easiest are listed below.
+
+##### Using `arp-scan`
+
+Get the `arp-scan` tool:
+
+```sh
+# on OSX
+brew install arp-scan
+
+# on Linux (Ubuntu)
+sudo apt-get install arp-scan
+```
+
+Scan the network
+
+You need to figure out what your network interface is, on OSX it is often `en0`, on Linux it's often `eth0` or `enp0s3`. You can check this
+with the `route` tool:
+
+**On OSX**
+```sh
+$ route get example.com   
+route to: 93.184.216.34
+destination: default
+       mask: default
+    gateway: 192.168.1.1
+  interface: en0 ## <--- this is the interface name ##
+      flags: <UP,GATEWAY,DONE,STATIC,PRCLONING>
+ recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire
+       0         0         0         0         0         0      1500         0
+```
+
+**On Linux**
+```sh
+$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface 
+default         192.168.1.1     0.0.0.0         UG    0      0        0 enp0s3 ## <-- this is the interface name
+192.168.1.0     *               255.255.255.0   U     0      0        0 enp0s3
+``` 
+
+Then run the `arp-scan` tool (replace `eth0` with your interface name)
+```sh
+$ sudo arp-scan --interface=eth0 --localnet 
+Interface: en0, datalink type: EN10MB (Ethernet)
+Starting arp-scan 1.9 with 256 hosts (http://www.nta-monitor.com/tools/arp-scan/)
+192.168.1.1    20:e5:2a:02:f6:fc    NETGEAR INC.,
+192.168.1.10    28:10:7b:07:0c:51    D-Link International
+192.168.1.18    00:1e:06:33:d8:01    WIBRAIN
+192.168.1.19    00:1e:06:33:a8:1a    WIBRAIN
+192.168.1.20    b8:27:eb:a0:25:bc    Raspberry Pi Foundation
+192.168.1.24    b8:27:eb:e0:97:6d    Raspberry Pi Foundation
+192.168.1.26    98:ee:cb:48:c5:e1    (Unknown)
+192.168.1.30    00:1e:06:33:d7:1a    WIBRAIN
+# ....
+```
+
+Look for the entry with the MAC address of your Camio Box (for VMs this will start with `BE:FE:11`), and note down the IP address.
+
+##### Using The Fing Application
+
+Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. Ths will kick off a scan
+of the network, displaying all of the devices that it located. Look through the list for the MAC address of your Camio Box and note down the IP-address listed.
+
+####  Running the video-importer Script
