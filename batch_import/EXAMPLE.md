@@ -160,7 +160,7 @@ $ cd ~
 $ cd examples/batch_import/video-importer
 ```
 
-Run the importer with all of the values we've assembled in the previous steps
+Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
 $ python importer.py \
