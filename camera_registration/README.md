@@ -88,21 +88,24 @@ optional arguments:
 Below is an example of how to run the script to register a camera with our service. The camera connection parameters are listed, 
 and then below that is how you would arrange those parameters when running the script.
 
-```
 To register a camera with:
-name:        my_new_camera
-make:        Hikvision
-model:       DCS-2302-I
-username:    admin
-password:    admin
-port:        8080
-ip address:  192.168.1.18
-RTSP URL:    rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}/live/{{stream}}.h264
-camera-ID:   AABBCCDDEEDD.0
-MAC address: AABBCCDDEEDD
+
+| key   | value  |
+| ----- | ---------------- |
+| name    |  my_new_camera |
+| make |        Hikvision  |
+| model |       DCS-2302-I |
+| username |    admin |
+| password |    admin |
+| port |        8080 |
+| ip address |  192.168.1.18 |
+| RTSP URL |    rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}/live/{{stream}}.h264 |
+| camera-ID |   AABBCCDDEEDD.0 | 
+| MAC address | AABBCCDDEEDD |
 
 you would do the following:
 
+```
 python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \
         --make Hikvision --model DCS-2302-I \
         rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \
