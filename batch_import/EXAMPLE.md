@@ -185,7 +185,7 @@ INFO:root:1/4 uploading /Users/user/natconv_test/CAMERA_FRONT-rand-1475971347.mp
 Params: {'job_id': None, 'timestamp': '2016-10-08T17:02:27.000', 'uploaded_on': None, 'filename': '/Users/user/natconv_test/CAMERA_FRONT-rand-1475971347.mp4', 'shard_id': None, 'camera': 'CAMERA_FRONT', 'given_name': 'CAMERA_FRONT.2016-10-08T17:02:27.000.4b0bef93c8b4f6a26f5081630b8ad9fb87bb80e0.mp4', 'key': '4b0bef93c8b4f6a26f5081630b8ad9fb87bb80e0', 'discovered_on': '2017-05-05T12:59:12.476759', 'lat': None, 'lng': None, 'confirmed_on': None, 'size': 372157776}
 DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 192.168.1.13
 INFO:root:completed
-INFO:root:2/4 uploading /Users/john/natconv_test/C2_Hi20161009-001227-1475971947.mp4
+INFO:root:2/4 uploading /Users/john/natconv_test/CAMERA_FRONT-rand-1475971947.mp4
 #  ....
 INFO:root:completed
 ```
