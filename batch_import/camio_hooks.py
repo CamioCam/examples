@@ -14,8 +14,8 @@ Camio-specific hook examples for use with the video import script
 """
 
 # TODO - change the URLs to www.camio.com instead of test.camio.com after deployed to prod
-CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://www.camio.com/api/jobs"
+CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
+CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
@@ -96,14 +96,15 @@ def register_camera(camera_name, host=None, port=None):
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
     return get_camera_id(local_camera_id)
 
-def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, latlng=None):
+def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, location=None):
     """
     arguments:
         host        - the url of the segmenter
         port        - the port to access the webserver on the segmenter
         camera_name - the parsed name of the camera
         camera_id   - the ID of the camera as returned from the service
-        latlng (opt) - the lat/long of the camera (as parsed from the filename)
+        location(opt) - a json-string describing the location of the camera 
+                        Example {"location:" {"lat": 7.367598, "lng":134.706975}, "accuracy":5.0}
         filepath    - full path to the video file that needs segmentation
         timestamp   - the starting timestamp of the video file
     returns: true/false based on success
@@ -144,7 +145,6 @@ def assign_job_ids(self, db, unscheduled):
         try:
             shards = res.json()
         except:
-            print res.content
             print 'server response error: %r' % res
             sys.exit(1)
         job_id = shards['job_id']

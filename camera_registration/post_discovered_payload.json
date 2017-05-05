@@ -1,0 +1,39 @@
+{
+    "AABBCCDDEEFF.0": {
+        "ip_address": "192.168.1.18",
+        "local_camera_id": "AABBCCDDEEFF.0",
+        "mac_address": "AABBCCDDEEFF",
+        "maker": "Some Brand Name",
+        "model": "Some Camera Model Name",
+        "rtsp_server": "rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}",
+        "rtsp_path": "/live/stream/{{stream}}",
+        "user_id": "camio_user_id",
+        "default_values": {
+            "password": {
+                "is_multiselect": "false",
+                "options": [{"value": "default_password_for_camera"}]
+            },
+            "username": {
+                "is_multiselect": "false",
+                "options": [{"value": "default_username_for_camera"}]
+            },
+            "port": {
+                "is_multiselect": "false",
+                "options": [{"value": 80}]
+            },
+            "stream": {
+                "is_multiselect": "false",
+                "options": [
+                    {"name": "Stream 1", "value": 1},
+                    {"name": "Stream 2", "value": 2},
+                    {"name": "Stream 2", "value": 2}
+                ]
+            },
+            "channel" : {
+            }
+        },
+        "actual_values": {
+        },
+        "is_authenticated": false
+    }
+}

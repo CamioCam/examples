@@ -58,7 +58,7 @@ def get_tasks(secret):
 #   {
 #      type: "image/jpeg",
 #      size: [640, 480],
-#      timestamp: "2017-01-01T12:00:00.000",
+#      timestamp: "2017-05-05T01:31:13.738647",
 #      image_b64: "... base 64 binary data ..."
 #   },
 #   ...
