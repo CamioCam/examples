@@ -6,7 +6,9 @@ Batch Import Concrete Example
 1. A registered Camio account
 2. A Camio Box (either [physical](https://www.camio.com/box) or a [VM](https://www.camio.com/box/vm))
 3. An OAuth token for your Camio account (gotten from [here](https://www.camio.com/settings/integrations))
-4. A directory of videos that you wish to process through Camio
+4. The Camio Box IP-address (explained in the [section](#get-the-camio-box-ip-address))
+5. A directory of videos that you wish to process through Camio
+6. A regular-expression describing how to parse your input videos ([described here](#constructing-the-file-parsing-regex))
 
 Once you have all of the items listed above, you can start to batch-import videos to Camio
 
@@ -118,14 +120,8 @@ Look for the entry with the MAC address of your Camio Box (for VMs this will sta
 Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. Ths will kick off a scan
 of the network, displaying all of the devices that it located. Look through the list for the MAC address of your Camio Box and note down the IP-address listed.
 
-####  Running the video-importer Script
 
-You are now ready to batch-import videos to Camio through your Camio Box. Go to the `video-importer` directory.
-
-```sh
-$ cd ~
-$ cd examples/batch_import/video-importer
-```
+##### Constructing the File-Parsing Regex
 
 For the sake of the example, let's say that your directory of video files for batch-import is located at `~/batch_videos/`, and the files have the
 format of 
@@ -136,6 +132,30 @@ CAMERA_FRONT-rand-1475973267.mp4
 CAMERA_FRONT-rand-1475973350.mp4
 ```
 
-Then you would supply this `--regex` parameter value for the importer script:
+Then you would use the following string as the regular-expression passed to the video-import script.
 
 `.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
+
+This captures the `CAMERA_FRONT` part as the camera name (used for registering the camera with Camio), and parses the `1475973147` part as the Unix-timestamp
+of the video.
+
+####  Running the video-importer Script
+
+You are now ready to batch-import videos to Camio through your Camio Box. 
+
+To start, go to the `video-importer` directory.
+
+```sh
+$ cd ~
+$ cd examples/batch_import/video-importer
+```
+
+Run the importer
+
+```bash
+python importer.py \
+  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+  --folder "~/batch_videos" \
+  --host 192.168.1.57 \
+  --hook_module camio_hooks
+```
