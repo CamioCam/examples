@@ -145,7 +145,6 @@ def assign_job_ids(self, db, unscheduled):
         try:
             shards = res.json()
         except:
-            print res.content
             print 'server response error: %r' % res
             sys.exit(1)
         job_id = shards['job_id']
