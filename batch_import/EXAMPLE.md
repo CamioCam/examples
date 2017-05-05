@@ -119,3 +119,23 @@ Download the [Fing application](https://www.fing.io/) to your phone. Open the ap
 of the network, displaying all of the devices that it located. Look through the list for the MAC address of your Camio Box and note down the IP-address listed.
 
 ####  Running the video-importer Script
+
+You are now ready to batch-import videos to Camio through your Camio Box. Go to the `video-importer` directory.
+
+```sh
+$ cd ~
+$ cd examples/batch_import/video-importer
+```
+
+For the sake of the example, let's say that your directory of video files for batch-import is located at `~/batch_videos/`, and the files have the
+format of 
+
+```
+CAMERA_FRONT-rand-1475973147.mp4
+CAMERA_FRONT-rand-1475973267.mp4
+CAMERA_FRONT-rand-1475973350.mp4
+```
+
+Then you would supply this `--regex` parameter value for the importer script:
+
+`.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
