@@ -14,8 +14,8 @@ Camio-specific hook examples for use with the video import script
 """
 
 # TODO - change the URLs to www.camio.com instead of test.camio.com after deployed to prod
-CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://www.camio.com/api/jobs"
+CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
+CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
