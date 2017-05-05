@@ -2,12 +2,12 @@
 
 DESCRIPTION = \
 """
-this script allows one to register a camera source with the Camio service through 
+this script allows you to register a camera source with the Camio service through 
 the /api/devices/registered endpoint. Camera registration is normally done automatically 
 by a Camio Box that scans the local network and automatically detects and registers the cameras
-that it finds, this script allows one to register a camera that a Camio Box doesn't know how to recognize.
+that it finds. This script allows you to register a camera that a Camio Box doesn't know how to recognize.
 
-This script is meant to be used by 3rd parties who wish to use their cameras/nvrs/dvrs with the Camio service,
+This script allows you to connect your cameras/nvrs/dvrs with the Camio service,
 they can use this script to register their device with the correct RTSP connection information. Once registered, 
 the camera/dvr/nvr will show up as an entry on your https://www.camio.com/boxes page, where you can choose to connect
 it to a Camio Box and have the video stream processed.
@@ -99,7 +99,7 @@ def parse_cmd_line_or_exit():
     parser.add_argument('mac_address', type=str, help='the MAC address of the device being connected to')
     parser.add_argument('local_camera_id', type=str, help='some string representing an ID for your camera. Must be unique per account')
     parser.add_argument('camera_name', type=str, help='some user-friendly name for your camera')
-    parser.add_argument('auth_token', type=str, help='your Camio auth token (see https://www.camio.com/settings/integrations)')
+    parser.add_argument('auth_token', type=str, help='your Camio OAuth token (see https://www.camio.com/settings/integrations/#api)')
     parser.add_argument('device_id', type=str, help='the device ID of the Camio Box you wish to connect this camera to')
     args = parser.parse_args()
     if args.verbose: DEBUG_OUTPUT = True

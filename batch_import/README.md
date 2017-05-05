@@ -5,8 +5,8 @@ These examples show how to import video files in bulk using Camio.
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 
-The open source [video importer](https://github.com/tnc-ca-geo/video-importer) allows one to specify a set of hooks that describe how the importer
-should interact with the segmentation and labeling service of your choosing. To use the video-importer with the Camio service, one must supply the
+The open source [video importer](https://github.com/tnc-ca-geo/video-importer) allows you to specify a set of hooks that describe how the importer
+should interact with the segmentation and labeling service of your choosing. To use the video-importer with the Camio service, you must supply the
 [`camio_hooks.py`](camio_hooks.py) module as the value for the the [`--hooks_module` argument](https://github.com/tnc-ca-geo/video-importer#hook-module)
  of the video importer.
 
@@ -76,7 +76,7 @@ The downloaded JSON includes the `camera_id`, `camera_name`, `earliest_date`, `l
 
 ### Checking Job Status
 
-The full documentation of the Jobs API can be found [here](api.camio.com/#jobs). To get information about a specific job given a job ID, you would do the following.
+Here is the full documentation for the [Jobs API](api.camio.com/#jobs). To get information about a specific job given a job ID, you would do the following.
 
 `GET https://www.camio.com/api/jobs/{{job_id}}`
 
@@ -115,5 +115,5 @@ Where `{{job_id}}` is the value returned returned from a `PUT` request to the `h
 
 Once a job has been finished you are able to export a payload (in either json, csv, or xml format) that described the labels assocaited with the submitted videos.
 
-@TODO - describe how one goes about asking for the labels to be exported
+@TODO - describe how you goes about asking for the labels to be exported
 

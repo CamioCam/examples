@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-usage="bash $0 auth_token callback_url query"
+usage="bash $0 auth_token callback_url parsed_query"
 
 if [ "$#" -lt 3 ]; then
   echo "Usage: $usage"

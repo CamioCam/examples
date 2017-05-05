@@ -3,10 +3,9 @@ Registering a Camera Source With Camio
 
 ## Overview
 
-To connect a camera stream to Camio, one needs to register the camera source through our API. Normally this is done automatically by a Camio Box
-that scans your local network, identified all of the cameras, and automatically registers them. If you have a camera that is not recognized by
-Camio Box, you can manually register it using the [register_camera](register_camera.py) script that we provide.
-
+To connect a camera to Camio, one needs to register the camera source through our API. Normally this is done automatically by a Camio Box
+that scans your local network, identifies all of the cameras, and automatically registers them. If you have a camera that is not recognized by
+Camio Box, you can manually register it using the [register_camera](register_camera.py) script.
 ## Usage
 
 Details on the script can be found by supplying the `--help` argument to the python script, output given below:
@@ -19,22 +18,22 @@ usage: register_camera.py [-h] [-u USERNAME] [-p PASSWORD] [-s STREAM]
                           rtsp_server rtsp_path mac_address local_camera_id
                           camera_name auth_token device_id
 
-this script allows one to register a camera source with the Camio service through
-the /api/devices/registered endpoint. Camera registration is normally done automatically
+this script allows you to register a camera source with the Camio service through
+the /api/cameras/discovered endpoint. Camera registration is normally done automatically
 by a Camio Box that scans the local network and automatically detects and registers the cameras
-that it finds, this script allows one to register a camera that a Camio Box doesn't know how to recognize.
+that it finds, this script allows you to register a camera that a Camio Box doesn't know how to recognize.
 
-This script is meant to be used by 3rd parties who wish to use their cameras/nvrs/dvrs with the Camio service,
-they can use this script to register their device with the correct RTSP connection information. Once registered,
+This script allows you to connect your cameras/nvrs/dvrs with the Camio service,
+you can use this script to register your device with the correct RTSP connection information. Once registered,
 the camera/dvr/nvr will show up as an entry on your https://www.camio.com/boxes page, where you can choose to connect
 it to a Camio Box and have the video stream processed.
 
-To connect a camera to your Camio account, you must specify the Camio Box device that you will be connecting the camera
-to our servers through. You do this by providing the device ID of the Camio Box to this script. Currently, the easiest way
+To connect a camera to your Camio account, you must specify the Camio Box `device_id` that you will be connecting the camera
+to the Camio servers through. You do this by providing the device ID of the Camio Box to this script. Currently, the easiest way
 to get the device ID is by going to your https://www.camio.com/boxes page and getting the device ID out of the URL.
-(the URL will look like: https://www.camio.com/boxes?device_id=AABBCCDDEFFAABBDDEEFFCC, grab the AABBCCDDEFFAABBDDEEFFCC part)
+(the URL will look like: https://www.camio.com/boxes#device_id=AABBCCDDEFFAABBDDEEFFCC, grab the AABBCCDDEFFAABBDDEEFFCC part)
 
-*NOTE* - Camio only supports H264 encoded video streams, mjpeg, etc. will not work.
+*NOTE* - Camio only supports H.264 encoded video streams, mjpeg, etc. will not work.
 
 Camio uses mustache-style placeholders in the RTSP URLs for the following values:
     username
@@ -44,7 +43,7 @@ Camio uses mustache-style placeholders in the RTSP URLs for the following values
     stream
     channel
 
-You can place these as {{placeholder}} anywhere inside of the RTSP URL, and we will fill in the appropriate values before attempting to
+You can place these as {{placeholder}} anywhere inside of the RTSP URL, and Camio will fill in the appropriate values before attempting to
 connect to the given device.
 
 positional arguments:
@@ -85,14 +84,14 @@ optional arguments:
 
 ## Examples
 
-Below is an example of how to run the script to register a camera with our service. The camera connection parameters are listed, 
+Below is an example of how to run the script to register a camera with the Camio service. The camera connection parameters are listed, 
 and then below that is how you would arrange those parameters when running the script.
 
 To register a camera with:
 
 | key   | value  |
 | ----- | ---------------- |
-| name    |  my_new_camera |
+| name    |  Front Entrance |
 | make |        Hikvision  |
 | model |       DCS-2302-I |
 | username |    admin |
@@ -103,12 +102,12 @@ To register a camera with:
 | camera-ID |   AABBCCDDEEDD.0 | 
 | MAC address | AABBCCDDEEDD |
 
-you would do the following:
+you would execute the following command:
 
 ```
 python register_camera.py -v -u admin -p admin -s 1 -i 192.168.1.18 -p 8080 \
         --make Hikvision --model DCS-2302-I \
         rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}} \
-        /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 my_new_camera \
+        /live/{{stream}}.h264 AABBCCDDEEDD AABBCCDDEEDD.0 "Front Entrance" \
         $CAMIO_ACCOUNT_AUTH_TOKEN $CAMIOBOX_DEVICE_ID
 ```
