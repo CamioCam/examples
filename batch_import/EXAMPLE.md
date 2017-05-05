@@ -199,3 +199,12 @@ INFO:root:completed
 
 If you get any errors about missing the Device ID of the Camio Box or an unauthenticated error, try to set the environment variables again. To check that the environment variables
 are currently set, you can always `echo $CAMIO_BOX_DEVICE_ID` or `echo $CAMIO_OAUTH_TOKEN` and check that the values printed out match what you expect.
+
+
+#### Seeing the Imported Video
+
+Once the script has completed sending videos to Box for segmentation and first-order analysis, the video clips will begin to be available to search through on [your Camio feed](https://www.camio.com/#feed).
+You can search for the name of the camera (that was parsed from the filenames) to see the videos that have been uploaded.  
+
+We are currently writing some tools to help you recover all of the labels that were generated for the batch-imported videos, but this tool is not available yet. We are also designing tools and an API
+that will allow you to check on the status of your video processing.
