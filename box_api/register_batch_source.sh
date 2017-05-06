@@ -9,7 +9,7 @@
 # NOTE - this script assumed that you have some environment variables set, these varibles are
 # CAMIOTOKENPROD - access token (oauth) for you Camio account on the production servers
 # CAMIOIDPROD - ID of your camio account on production servers
-# then the same thing but for our testing server (test.camio.com)
+# then the same thing but for our tesing server (test.camio.com)
 
 function register_batch_camera {
     # args
