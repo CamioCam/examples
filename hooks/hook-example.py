@@ -5,6 +5,7 @@
 from __future__ import print_function
 from bottle import route, run, request, response, default_app
 import pymongo
+import sys
 import base64
 import json
 import os
@@ -102,6 +103,8 @@ def runtasks():
     t = 0
     while True:
         task = tasks.find_one({'status':'pending'})
+        sys.stdout.flush()
+        sys.stderr.flush()
         if task:
             t = 0
             print('processing task')
