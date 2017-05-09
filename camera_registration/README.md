@@ -1,4 +1,4 @@
-Registering a Camera Source With Camio
+Registering a Video Source With Camio
 ==========================
 
 ## Overview
