@@ -13,9 +13,9 @@ import requests
 Camio-specific hook examples for use with the video import script
 """
 
-# TODO - change the URLs to www.camio.com instead of www.camio.com after deployed to prod
-CAMIO_REGISTER_URL="https://www.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://www.camio.com/api/jobs"
+# TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
+CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
+CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
@@ -167,6 +167,7 @@ def assign_job_ids(self, db, unscheduled):
             key = params['key']
             params['job_id'] = job_id
             while k >= upload_urls[upload_urls_k][0]: 
+                print "upload_urls_k: %r" % upload_urls_k
                 upload_urls_k += 1
             params['shard_id'] = upload_urls[upload_urls_k][1]
             params['upload_url'] = upload_urls[upload_urls_k][2]
