@@ -155,12 +155,16 @@ def assign_job_ids(self, db, unscheduled):
             n += shard['item_count']
             upload_urls.append((n, shard_id, shard['upload_url']))
 
+        print upload_urls
         # for each new file to upload store the job_id and the upload_url from the proper shard
         upload_urls_k = 0
+        total_urls = 0
         for k, params in enumerate(unscheduled):        
             key = params['key']
             params['job_id'] = job_id
-            while k>=upload_urls[upload_urls_k][0]: upload_urls_k += 1
+            while k >= total_urls + upload_urls[upload_urls_k][0]: 
+                total_urls += upload_urls[upload_urls_k][0]
+                upload_urls_k += 1
             params['shard_id'] = upload_urls[upload_urls_k][1]
             params['upload_url'] = upload_urls[upload_urls_k][2]
             db[key] = params
