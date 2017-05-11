@@ -137,8 +137,11 @@ def assign_job_ids(self, db, unscheduled):
     if item_count:        
         device_id = CAMIO_PARAMS.get('device_id')
         camio_account_token = get_access_token()
-        item_average_size_bytes = 100 # making a guess here
-        payload = {'device_id':device_id, 'item_count':item_count, 
+        item_average_size_bytes = sum(len(json.dumps(
+                    {'key':params['key'], 
+                     'original_filename': params['filename'], 
+                     'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
+        payload = {'device_id':device_id, 'item_count':item_count,
                    'item_average_size_bytes':item_average_size_bytes}
         headers = {'Authorization': 'token %s' % camio_account_token}
         res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
