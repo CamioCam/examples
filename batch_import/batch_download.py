@@ -226,9 +226,10 @@ def parse_argv_or_exit():
     )
 
     # positional args
-    parser.add_argument('start_time_unix', type=int, help='the Unix-timestamp of the time to start downloading meta-data from')
-    parser.add_argument('end_time_unix', type=int, help='the Unix-timestamp to gather meta-data until')
-    parser.add_argument('camera_name', type=int, help='the name of the camera that you wish to download meta-data for')
+    parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
+
+    # optional arguments
+    parser.add_argument('-a', '--auth_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
     args = parser.parse_args()
     return args
             
