@@ -22,12 +22,11 @@ CAMIO_PARAMS = {}
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
+# handle to logger
+Log = None
+
 # plan definitions for actual_values entry
-CAMIO_PLANS = {
-    'pro': 'PRO',
-    'plus': 'PLUS',
-    'basic': 'BASIC'
-}
+CAMIO_PLANS = { 'pro': 'PRO', 'plus': 'PLUS', 'basic': 'BASIC' }
 
 def fail(msg):
     Log.error(msg)
@@ -35,8 +34,11 @@ def fail(msg):
 
 def set_hook_data(data_dict):
     global CAMIO_PARAMS
-    Log.info("setting camio_hooks data as:\n%r", data_dict)
+    global Log
+    Log.debug("setting camio_hooks data as:\n%r", data_dict)
     CAMIO_PARAMS.update(data_dict)
+    if CAMIO_PARAMS.get('logger'):
+        Log = CAMIO_PARAMS['logger']
 
 def get_access_token():
     if not CAMIO_PARAMS.get('access_token'):
@@ -194,7 +196,7 @@ def assign_job_ids(self, db, unscheduled):
         try:
             shards = res.json()
         except:
-            print 'server response error: %r' % res
+            Log.error('server response error: %r', res)
             sys.exit(1)
         job_id = shards['job_id']
         n = 0
@@ -206,8 +208,8 @@ def assign_job_ids(self, db, unscheduled):
 
         # for debug onlin
         for item in upload_urls:
-            print item[0]
-        print 'len(unscheduled)=',len(unscheduled)
+            Log.debug("upload item: %r", item[0])
+        Log.debug('len(unscheduled)=%s', len(unscheduled))
 
         # for each new file to upload store the job_id and the upload_url from the proper shard
         upload_urls_k = 0
@@ -216,7 +218,7 @@ def assign_job_ids(self, db, unscheduled):
             key = params['key']
             params['job_id'] = job_id
             while k >= upload_urls[upload_urls_k][0]: 
-                print "upload_urls_k: %r" % upload_urls_k
+                Log.debug("upload_urls_k: %r", upload_urls_k)
                 upload_urls_k += 1
             params['shard_id'] = upload_urls[upload_urls_k][1]
             params['upload_url'] = upload_urls[upload_urls_k][2]
