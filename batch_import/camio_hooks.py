@@ -22,6 +22,11 @@ CAMIO_PARAMS = {}
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
+# plan definitions for actual_values entry
+CAMIO_BASIC_PLAN = 'BASIC'
+CAMIO_PLUS_PLAN = 'PLUS'
+CAMIO_PRO_PLAN = 'PRO'
+
 def get_access_token():
     return os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR) 
 
@@ -79,14 +84,20 @@ def register_camera(camera_name, host=None, port=None):
     device_id = get_device_id()
     access_token = get_access_token()
     user_agent = "Linux"
+    camera_plan = CAMIO_PLUS_PLAN # TODO - get this value from the user somehow
     CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
+    plan = dict(
+        is_multiselect = False,
+        options = [ {'name': 'Plan', 'value': camera_plan }]
+    )
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
             local_camera_id=local_camera_id,
             name=camera_name,
+            actual_values = dict(plan=plan),
             mac_address=camera_name, # TODO - find out if this is still required.
             is_authenticated=True,
             should_config=True # toggles the camera 'ON'

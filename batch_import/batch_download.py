@@ -3,7 +3,7 @@
 DESCRIPTION = \
 """
 this script will cycle over a given time-period and download all videos from a given camera that come from
-within that time period using the Camio search API (https://api.camio.com/#search (https://api.camio.com/#search)
+within that time period using the Camio search API (https://api.camio.com/#search)
 
 This script is designed to be used after a batch-import job has been completed and you wish to retreive a
 compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
@@ -217,6 +217,7 @@ import sys
 import argparse
 import json
 import requests
+import textwrap
 
 def parse_argv_or_exit():
     parser = argparse.ArgumentParser(
@@ -225,20 +226,20 @@ def parse_argv_or_exit():
     )
 
     # positional args
-    parser.add_argument('start_time_unix', type=int, 'the Unix-timestamp of the time to start downloading meta-data from')
-    parser.add_argument('end_time_unix', type=int, 'the Unix-timestamp to gather meta-data until')
-    parser.add_argument('camera_name', type=int, 'the name of the camera that you wish to download meta-data for')
+    parser.add_argument('start_time_unix', type=int, help='the Unix-timestamp of the time to start downloading meta-data from')
+    parser.add_argument('end_time_unix', type=int, help='the Unix-timestamp to gather meta-data until')
+    parser.add_argument('camera_name', type=int, help='the name of the camera that you wish to download meta-data for')
     args = parser.parse_args()
     return args
             
 
 def get_results_for_epoch(start_time, end_time, camera_name):
-	""" 
-	use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
-	these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
-	into a dictionary of some sorts to be returned to the user
-	"""
-	pass
+    """ 
+    use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
+    these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
+    into a dictionary of some sorts to be returned to the user
+    """
+    pass
 
 
 def main():
