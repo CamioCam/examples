@@ -23,16 +23,48 @@ CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
 # plan definitions for actual_values entry
-CAMIO_BASIC_PLAN = 'BASIC'
-CAMIO_PLUS_PLAN = 'PLUS'
-CAMIO_PRO_PLAN = 'PRO'
+CAMIO_PLANS = {
+    'pro': 'PRO',
+    'plus': 'PLUS',
+    'basic': 'BASIC'
+}
+
+def fail(msg):
+    Log.error(msg)
+    sys.exit(1)
+
+def set_hook_data(data_dict):
+    global CAMIO_PARAMS
+    Log.info("setting camio_hooks data as:\n%r", data_dict)
+    CAMIO_PARAMS.update(data_dict)
 
 def get_access_token():
-    return os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR) 
+    if not CAMIO_PARAMS.get('access_token'):
+        token = os.environ.get(CAMIO_OAUTH_TOKEN)
+        if not token:
+            fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
+                 Please set or submit this token")
+        CAMIO_PARAMS['access_token'] = token
+    return CAMIO_PARAMS['access_token']
 
 def get_device_id():
-    return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
+    if not CAMIO_PARAMS.get('device_id'):
+        device = os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR)
+        if not device:
+            fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
+                  Please set or submit this value")
+        CAMIO_PARAMS['device_id'] = device 
+    return CAMIO_PARAMS['device_id']
 
+def get_camera_plan():
+    if not CAMIO_PARAMS.get('plan'):
+        Log.warn("no camera-plan value submitted in hook-data, assuming BASIC as plan for camera %s", camera_name)
+        return CAMIO_BASIC_PLAN
+    elif not CAMIO_PLANS.get(CAMIO_PARAMS['plan']):
+        Log.error("submitted invalid 'plan' value: %s, valid values are: %r",
+                CAMIO_PARAMS['plan'], [CAMIO_PLANS[key] for key in CAMIO_PLANS])
+        return CAMIO_BASIC_PLAN
+    return CAMIO_PLANS.get(CAMIO_PARAMS['plan'])
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -81,11 +113,8 @@ def register_camera(camera_name, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
-    device_id = get_device_id()
-    access_token = get_access_token()
-    user_agent = "Linux"
-    camera_plan = CAMIO_PLUS_PLAN # TODO - get this value from the user somehow
-    CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
+    device_id, access_token, camera_plan = get_device_id(), get_access_token(), get_camera_plan()
+    user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     plan = dict(
         is_multiselect = False,
