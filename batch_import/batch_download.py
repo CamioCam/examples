@@ -219,19 +219,40 @@ import json
 import requests
 import textwrap
 
+# TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
+CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
+CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
+CAMIO_PARAMS = {}
+
+# TODO - change to CAMIO_TEST_PROD when on production
+CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
+CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
+
+def get_access_token():
+    if not CAMIO_PARAMS.get('access_token'):
+        token = os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR)
+        if not token:
+            fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
+                 Please set or submit this token")
+        CAMIO_PARAMS['access_token'] = token
+    return CAMIO_PARAMS['access_token']
+
 def parse_argv_or_exit():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
-    )
-
-    # positional args
-    parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
-
-    # optional arguments
-    parser.add_argument('-a', '--auth_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
     args = parser.parse_args()
     return args
+
+class BatchDownloader(object):
+
+    def __init__(self):
+        self.parser = argparse.ArgumentParser(
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
+        )
+
+        # positional args
+        self.parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
+        # optional arguments
+        self.parser.add_argument('-a', '--auth_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
             
 
 def get_results_for_epoch(start_time, end_time, camera_name):

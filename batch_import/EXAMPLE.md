@@ -23,7 +23,8 @@ Your Camio Box can be registered through [the /box/register page](https://www.ca
 #### Clone the Importer and Use the Camio Hooks
 
 Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) repository, go into the 
-[examples/batch_import/video-importer](examples/batch_import/video-importer) directory.
+[examples/batch_import/video-importer](examples/batch_import/video-importer) directory. Then run the `setup.py` script
+to install the package onto your system.
 
 ```sh
 $ git clone https://www.github.com/CamioCam/examples
@@ -41,8 +42,9 @@ $ ls -l
 total 48
 -rw-r--r--  1 user  staff  1062 May  1 15:32 LICENSE
 -rw-r--r--  1 user  staff  7145 May  1 18:57 README.md
--rw-r--r--  1 user  staff  9408 May  1 18:57 importer.py
-
+-rw-r--r--  1 user  staff  9408 May  1 18:57 tncimporter.py
+$ python setup.py install
+#@TODO - include install output here <-----
 ```
 
 #### Set the Necessary Environment Variables
@@ -163,7 +165,7 @@ $ cd examples/batch_import/video-importer
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
-$ python importer.py -v \
+$ python tncimporter.py -v \
   --folder ~/batch_videos/ \
   --host 192.168.1.51 \
   --hook_module ~/examples/batch_import/camio_hooks.py 
