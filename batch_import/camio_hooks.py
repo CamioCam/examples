@@ -30,18 +30,25 @@ Log = None
 # plan definitions for actual_values entry
 CAMIO_PLANS = { 'pro': 'PRO', 'plus': 'PLUS', 'basic': 'BASIC' }
 
-def fail(msg):
-    Log.error(msg)
+def fail(msg, *args):
+    Log.error(msg, *args)
     sys.exit(1)
 
 def set_hook_data(data_dict):
+    """
+    let the importer pass in arbitrary key-value pairs for use by the hooks program
+    (we tend to use this to accept plan data or user-account information)
+    data_dict: a dictionary of values passed in from the video importer script, passed in by the
+                user under the --hook_data_json argument. 
+    """
     global CAMIO_PARAMS
     global Log
     CAMIO_PARAMS.update(data_dict)
     if CAMIO_PARAMS.get('logger'):
         Log = CAMIO_PARAMS['logger']
     else:
-        Log = logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+        Log = logging.getLogger()
     Log.debug("setting camio_hooks data as:\n%r", data_dict)
 
 def get_access_token():
@@ -210,7 +217,7 @@ def assign_job_ids(self, db, unscheduled):
             shards = res.json()
             Log.debug("server returned shards:\n%r", shards)
         except:
-            fail("server response error:\n%r" % res)
+            fail("server response error:\n%r", res)
         job_id = shards['job_id']
         n = 0
         upload_urls = []
@@ -239,17 +246,29 @@ def assign_job_ids(self, db, unscheduled):
             db.sync()
 
 def register_jobs(self, db, jobs):
+    success = True
     for job_id, shard_id in jobs:
-        rows = filter(lambda params: (params['job_id'], params['shard_id']) == (job_id, shard_id), db.values())
+        rows = filter(lambda params: \
+            (params['job_id'], params['shard_id']) == (job_id, shard_id), db.values()
+        )
         hash_map = {}
         for params in rows:
-            hash_map[params['key']] = {'original_filename': params['filename'], 'size_MB': params['size']/1e6}
+            hash_map[params['key']] = {
+                'original_filename': params['filename'], 'size_MB': params['size']/1e6
+            }
         payload = {
             'job_id': job_id,
             'shard_id': shard_id,
             'item_count':len(rows),
             'hash_map': hash_map
             }
+        Log.debug("registering job:\n ID=%s\n shard ID=%s\n num items=%d\n file-map=%r", 
+                job_id, shard_id, len(rows), hash_map)
         url = rows[0]['upload_url']
-        requests.put(url, json=payload)
+        ret = requests.put(url, json=payload)
+        if not ret.status_code in (200, 204):
+            Log.error("error registering job: %s", job_id)
+            Log.error("server returned: %d", ret.status_code)
+            success = False
+        return success
 
