@@ -6,6 +6,7 @@ import os
 import sys
 import json
 import logging
+import logging
 import hashlib
 import datetime
 import requests
@@ -23,16 +24,59 @@ CAMIO_PARAMS = {}
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
-def get_access_token():
-    return os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR) 
+# handle to logger
+Log = None
 
-def get_device_id():
-    return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
+# plan definitions for actual_values entry
+CAMIO_PLANS = { 'pro': 'PRO', 'plus': 'PLUS', 'basic': 'BASIC' }
+
+def fail(msg):
+    Log.error(msg)
+    sys.exit(1)
+
+def set_hook_data(data_dict):
+    global CAMIO_PARAMS
+    global Log
+    CAMIO_PARAMS.update(data_dict)
+    if CAMIO_PARAMS.get('logger'):
+        Log = CAMIO_PARAMS['logger']
+    else:
+        Log = logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    Log.debug("setting camio_hooks data as:\n%r", data_dict)
+
+def get_access_token():
+    if not CAMIO_PARAMS.get('access_token'):
+        token = os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR)
+        if not token:
+            fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
+                 Please set or submit this token")
+        CAMIO_PARAMS['access_token'] = token
+    return CAMIO_PARAMS['access_token']
 
 def dateshift(timestamp, seconds):
     date = datetime.datetime.strptime(timestamp[:23], "%Y-%m-%dT%H:%M:%S.%f")
     date = date + datetime.timedelta(seconds=seconds)
     return date.isoformat()
+
+def get_device_id():
+    if not CAMIO_PARAMS.get('device_id'):
+        device = os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR)
+        if not device:
+            fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
+                  Please set or submit this value")
+        CAMIO_PARAMS['device_id'] = device 
+    return CAMIO_PARAMS['device_id']
+
+def get_camera_plan():
+    if not CAMIO_PARAMS.get('plan'):
+        Log.warn("no camera-plan value submitted in hook-data, assuming PLUS as plan")
+        return CAMIO_PLANS['plus']
+    elif not CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower()):
+        Log.error("submitted invalid 'plan' value: %s, valid values are: %r",
+                CAMIO_PARAMS['plan'], [CAMIO_PLANS[key] for key in CAMIO_PLANS])
+        return CAMIO_PLANS['plus'] 
+    return CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower())
+>>>>>>> 87878f481af1721d071c5dd44ae469d34de5852d
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -81,17 +125,20 @@ def register_camera(camera_name, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
-    device_id = get_device_id()
-    access_token = get_access_token()
-    user_agent = "Linux"
-    CAMIO_PARAMS.update(device_id=device_id, user_agent=user_agent)
+    device_id, access_token, camera_plan = get_device_id(), get_access_token(), get_camera_plan()
+    user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
+    plan = dict(
+        is_multiselect = False,
+        options = [ {'name': 'Plan', 'value': camera_plan }]
+    )
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
             local_camera_id=local_camera_id,
             name=camera_name,
+            actual_values = dict(plan=plan),
             mac_address=camera_name, # TODO - find out if this is still required.
             is_authenticated=True,
             should_config=True # toggles the camera 'ON'
@@ -145,6 +192,7 @@ def assign_job_ids(self, db, unscheduled):
                           for params in unscheduled)
         device_id = CAMIO_PARAMS.get('device_id')
         camio_account_token = get_access_token()
+<<<<<<< HEAD
         item_average_size_bytes = sum(len(json.dumps(
                     {'key':params['key'], 
                      'earliest_date': earliest_date,
@@ -153,12 +201,26 @@ def assign_job_ids(self, db, unscheduled):
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
         payload = {'device_id':device_id, 'item_count':item_count,
                    'item_average_size_bytes':item_average_size_bytes}
+=======
+        item_average_size_bytes = sum(len(json.dumps( {
+                'key':params['key'], 
+                'original_filename': params['filename'], 
+                'size_MB': params['size']/1e6
+            })
+        ) for params in unscheduled)/item_count
+        payload = {
+            'device_id':device_id, 
+            'item_count':item_count,
+            'item_average_size_bytes':item_average_size_bytes
+        }
+>>>>>>> 87878f481af1721d071c5dd44ae469d34de5852d
         headers = {'Authorization': 'token %s' % camio_account_token}
         res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
+
         try:
             shards = res.json()
         except:
-            print 'server response error: %r' % res
+            Log.error('server response error: %r', res)
             sys.exit(1)
         job_id = shards['job_id']
         n = 0
@@ -170,8 +232,8 @@ def assign_job_ids(self, db, unscheduled):
 
         # for debug onlin
         for item in upload_urls:
-            print item[0]
-        print 'len(unscheduled)=',len(unscheduled)
+            Log.debug("upload item: %r", item[0])
+        Log.debug('len(unscheduled)=%s', len(unscheduled))
 
         # for each new file to upload store the job_id and the upload_url from the proper shard
         upload_urls_k = 0
@@ -180,7 +242,7 @@ def assign_job_ids(self, db, unscheduled):
             key = params['key']
             params['job_id'] = job_id
             while k >= upload_urls[upload_urls_k][0]: 
-                print "upload_urls_k: %r" % upload_urls_k
+                Log.debug("upload_urls_k: %r", upload_urls_k)
                 upload_urls_k += 1
             params['shard_id'] = upload_urls[upload_urls_k][1]
             params['upload_url'] = upload_urls[upload_urls_k][2]
