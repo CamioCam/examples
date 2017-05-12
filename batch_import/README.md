@@ -42,7 +42,7 @@ If you don't want to set them permanently like this, you can also prepend the va
 where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
 
 ```bash
-CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" CAMIO_BOX_DEVICE_ID="sdfsdfsdfsdfsdfsdfsdf" python importer.py $args
+CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" CAMIO_BOX_DEVICE_ID="sdfsdfsdfsdfsdfsdfsdf" python import_video.py $args
 ```
 
 Once these environment variables are set, there are three more steps before you can start the import:
@@ -60,7 +60,7 @@ must be a valid json dictionary, and anything defined in it will be passed to th
 'basic' for your camera.
 
 ```bash
-python importer.py "...some arguments.." --hook_data_json '{"plan": "basic"}'
+python import_video.py "...some arguments.." --hook_data_json '{"plan": "basic"}'
 ```
 
 Valid values for the plan variable are 'basic', 'plus', and 'pro'.
