@@ -193,13 +193,13 @@ def assign_job_ids(self, db, unscheduled):
         camio_account_token = get_access_token()
         item_average_size_bytes = sum(len(json.dumps(
                     {'key':params['key'], 
-                     'earliest_date': earliest_date,
-                     'latest_date': latest_date,
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
         payload = {
             'device_id':device_id, 
             'item_count':item_count,
+            'earliest_date': earliest_date,
+            'latest_date': latest_date,
             'item_average_size_bytes':item_average_size_bytes
         }
         headers = {'Authorization': 'token %s' % camio_account_token}
