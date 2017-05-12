@@ -63,13 +63,13 @@ def get_device_id():
 
 def get_camera_plan():
     if not CAMIO_PARAMS.get('plan'):
-        Log.warn("no camera-plan value submitted in hook-data, assuming BASIC as plan for camera %s", camera_name)
-        return CAMIO_BASIC_PLAN
-    elif not CAMIO_PLANS.get(CAMIO_PARAMS['plan']):
+        Log.warn("no camera-plan value submitted in hook-data, assuming PLUS as plan")
+        return CAMIO_PLANS['plus']
+    elif not CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower()):
         Log.error("submitted invalid 'plan' value: %s, valid values are: %r",
                 CAMIO_PARAMS['plan'], [CAMIO_PLANS[key] for key in CAMIO_PLANS])
-        return CAMIO_BASIC_PLAN
-    return CAMIO_PLANS.get(CAMIO_PARAMS['plan'])
+        return CAMIO_PLANS['plus'] 
+    return CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower())
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
