@@ -243,12 +243,12 @@ def register_jobs(self, db, jobs):
         hash_map = {}
         for params in rows:
             hash_map[params['key']] = {'original_filename': params['filename'], 'size_MB': params['size']/1e6}
-            payload = {
-                'job_id': job_id,
-                'shard_id': shard_id,
-                'item_count':len(rows),
-                'hash_map': hash_map
-                }
+        payload = {
+            'job_id': job_id,
+            'shard_id': shard_id,
+            'item_count':len(rows),
+            'hash_map': hash_map
+            }
         url = rows[0]['upload_url']
         requests.put(url, json=payload)
 
