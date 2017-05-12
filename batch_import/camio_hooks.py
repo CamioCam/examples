@@ -44,7 +44,7 @@ def set_hook_data(data_dict):
     global CAMIO_PARAMS
     global Log
     CAMIO_PARAMS.update(data_dict)
-    if CAMIO_PARAMS.get('logger'):
+    if CAMIO_PARAMS.get('logger') and not Log:
         Log = CAMIO_PARAMS['logger']
     else:
         logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -107,12 +107,12 @@ def get_device_data(host, port):
         return response.json()
     return None
 
-def get_camera_id(local_camera_id):
+def get_camera_config(local_camera_id):
     access_token = get_access_token()
     headers = {"Authorization": "token %s" % access_token}
     response = requests.get(CAMIO_REGISTER_URL, headers=headers)
     response = response.json()
-    return response[local_camera_id].get('camera_id')
+    return response[local_camera_id]
 
 def register_camera(camera_name, host=None, port=None):
     """
@@ -120,7 +120,10 @@ def register_camera(camera_name, host=None, port=None):
         camera_name   - the name of the camera (as parsed from the filename) 
         host          - the URI/IP address of the segmenter being used
         port          - the port to access the webserver of the segmenter
-    returns: this function returns the Camio-specific camera ID.
+    returns: this function returns a dctionary describing the new camera, including the camera ID
+             note - it is required that there is at least one property in this dictionary called
+             'camera_id', that is the unique ID of the camera as determined by the service this
+             function is registering the camera with.
                  
     description: this function is called when a new camera is found by the import script, 
                  if a camera needs to be registered with a service before content from that
@@ -131,6 +134,7 @@ def register_camera(camera_name, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
+
     device_id, access_token, camera_plan = get_device_id(), get_access_token(), get_camera_plan()
     user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
@@ -152,7 +156,7 @@ def register_camera(camera_name, host=None, port=None):
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
-    return get_camera_id(local_camera_id)
+    return get_camera_config(local_camera_id)
 
 def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, location=None):
     """
@@ -171,9 +175,10 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
                  this function where the logic should exist to post the file content to a video
                  segmenter.
     """
-    filehash = None
     device_id = CAMIO_PARAMS.get('device_id')
-    if not device_id: return False
+    if not device_id: 
+        Log.error("unable to find Camio Box device ID in --hook_data_json or env-vars.")
+        return False
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "http://%s:%s" % (host, port)
@@ -183,8 +188,9 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
         device_id, local_camera_id, camera_id, filehash, timestamp)
     url = urlbase + "?" + urlparams
     if not os.path.exists(filepath):
-        sys.stderr.write("unable to locate video-file: %s. exiting" % filepath)
+        Log.error("unable to locate video-file: %s, continuing", filepath)
         return False
+    Log.info("posting video content: file=%s, camera=%s, timestamp=%s", filepath, camera_name, timestamp)
     with open(filepath, 'rb') as fh:
         response = requests.post(url, data=fh)
     return response.status_code in (200, 204)
@@ -202,12 +208,15 @@ def assign_job_ids(self, db, unscheduled):
                     {'key':params['key'], 
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
+        cameras = CAMIO_PARAMS.get('cameras', {})
+        camera_payload = [cameras[name] for name in cameras]
         payload = {
             'device_id':device_id, 
             'item_count':item_count,
             'earliest_date': earliest_date,
             'latest_date': latest_date,
-            'item_average_size_bytes':item_average_size_bytes
+            'item_average_size_bytes':item_average_size_bytes,
+            'cameras': camera_payload
         }
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
