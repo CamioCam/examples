@@ -44,7 +44,49 @@ total 48
 -rw-r--r--  1 user  staff  7145 May  1 18:57 README.md
 -rw-r--r--  1 user  staff  9408 May  1 18:57 import_video.py
 $ python setup.py install
-#@TODO - include install output here <-----
+running install
+running bdist_egg
+running egg_info
+reading manifest file 'import_video.egg-info/SOURCES.txt'
+writing manifest file 'import_video.egg-info/SOURCES.txt'
+installing library code to build/bdist.macosx-10.12-x86_64/egg
+running install_lib
+running build_py
+zip_safe flag not set; analyzing archive contents...
+import_video: module references __file__
+creating 'dist/import_video-0.1-py2.7.egg' and adding 'build/bdist.macosx-10.12-x86_64/egg' to it
+Processing import_video-0.1-py2.7.egg
+Extracting import_video-0.1-py2.7.egg to /usr/local/lib/python2.7/site-packages
+Installing import_video script to /usr/local/bin
+
+Installed /usr/local/lib/python2.7/site-packages/import_video-0.1-py2.7.egg
+Processing dependencies for import-video==0.1
+Searching for psutil==4.3.1
+Best match: psutil 4.3.1
+Adding psutil 4.3.1 to easy-install.pth file
+
+Using /usr/local/lib/python2.7/site-packages
+Searching for requests==2.12.4
+Best match: requests 2.12.4
+Adding requests 2.12.4 to easy-install.pth file
+
+Using /usr/local/lib/python2.7/site-packages
+Searching for hachoir-metadata==1.3.3
+Best match: hachoir-metadata 1.3.3
+Adding hachoir-metadata 1.3.3 to easy-install.pth file
+
+Using /usr/local/lib/python2.7/site-packages
+Searching for hachoir-parser==1.3.4
+Best match: hachoir-parser 1.3.4
+Adding hachoir-parser 1.3.4 to easy-install.pth file
+
+Using /usr/local/lib/python2.7/site-packages
+Searching for hachoir-core==1.3.3
+Best match: hachoir-core 1.3.3
+Adding hachoir-core 1.3.3 to easy-install.pth file
+
+Using /usr/local/lib/python2.7/site-packages
+Finished processing dependencies for import-video==0.1
 ```
 
 #### Set the Necessary Environment Variables
