@@ -168,6 +168,7 @@ $ python importer.py \
   --folder "~/batch_videos" \
   --host 192.168.1.51 \
   --hook_module "~/examples/batch_import/camio_hooks.py"
+  --hook_data_json '{"plan": "pro"}'
 
 hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
 cwd: '/Users/user/examples/batch_import/video-importer'

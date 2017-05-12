@@ -6,6 +6,7 @@ import os
 import sys
 import json
 import logging
+import logging
 import hashlib
 import requests
 
@@ -35,14 +36,16 @@ def fail(msg):
 def set_hook_data(data_dict):
     global CAMIO_PARAMS
     global Log
-    Log.debug("setting camio_hooks data as:\n%r", data_dict)
     CAMIO_PARAMS.update(data_dict)
     if CAMIO_PARAMS.get('logger'):
         Log = CAMIO_PARAMS['logger']
+    else:
+        Log = logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    Log.debug("setting camio_hooks data as:\n%r", data_dict)
 
 def get_access_token():
     if not CAMIO_PARAMS.get('access_token'):
-        token = os.environ.get(CAMIO_OAUTH_TOKEN)
+        token = os.environ.get(CAMIO_OAUTH_TOKEN_ENVVAR)
         if not token:
             fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
                  Please set or submit this token")

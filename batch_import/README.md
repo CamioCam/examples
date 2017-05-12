@@ -18,7 +18,8 @@ segmentation and first-level analysis of the vidoe content before sending off th
 
 #### Setting up the Environment
 
-To use the [`camio_hooks.py`](camio_hooks.py) module, you first must define some environment variables for yourself. These variables are:
+To use the [`camio_hooks.py`](camio_hooks.py) module, Camio needs to know some account information. You can either define this in json format through the 
+`--hook_data_json` argument, or you can define some environment variables for yourself. These variables are:
 
 | Variable | Description |
 | -------- | ------------|
@@ -51,6 +52,19 @@ Once these environment variables are set, there are three more steps before you 
 use a network scanning tool like [Fing](https://help.camio.com/hc/en-us/articles/206214636) to find its IP address.
 3. Create a regular expression for the importer's [`--regex` argument](https://github.com/tnc-ca-geo/video-importer#metadata-extraction-with---regex) that defines the capture groups for `camera_name` and `timestamp` extracted from the video filenames being imported.
 
+#### Setting the Camera Plan
+
+Camio has varying levels of service; starting off with BASIC, moving up to PLUS, and finally the PRO plan. You can tell Camio which plan you would like to use for
+your batch-input source by specifying the 'plan' variable inside of the json passed to the `--hook_data_json` argument to the video-importer. This argument
+must be a valid json dictionary, and anything defined in it will be passed to the `camio_hooks.py` module. As an example, you would do the following to set the plan to
+'basic' for your camera.
+
+```bash
+python importer.py "...some arguments.." --hook_data_json '{"plan": "basic"}'
+```
+
+Valid values for the plan variable are 'basic', 'plus', and 'pro'.
+
 
 #### Running the Import
 
@@ -63,6 +77,7 @@ importer.py \
   --host 192.168.1.57 \
   --port 8080 \
   --hook_module camio_hooks
+  --hook_data_json '{"plan": "basic"}'
 ```
 
 In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:
