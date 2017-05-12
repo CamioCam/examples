@@ -188,7 +188,7 @@ def assign_job_ids(self, db, unscheduled):
     if item_count:        
         earliest_date = min(params['timestamp'] for params in unscheduled)
         latest_date = max(dateshift(params['timestamp'], params['duration']) 
-                          for params in unscheduled)
+                for params in unscheduled)
         device_id = CAMIO_PARAMS.get('device_id')
         camio_account_token = get_access_token()
         item_average_size_bytes = sum(len(json.dumps(
@@ -203,13 +203,14 @@ def assign_job_ids(self, db, unscheduled):
             'item_average_size_bytes':item_average_size_bytes
         }
         headers = {'Authorization': 'token %s' % camio_account_token}
+        Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
         res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
 
         try:
             shards = res.json()
+            Log.debug("server returned shards:\n%r", shards)
         except:
-            Log.error('server response error: %r', res)
-            sys.exit(1)
+            fail("server response error:\n%r" % res)
         job_id = shards['job_id']
         n = 0
         upload_urls = []
