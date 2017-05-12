@@ -76,7 +76,6 @@ def get_camera_plan():
                 CAMIO_PARAMS['plan'], [CAMIO_PLANS[key] for key in CAMIO_PLANS])
         return CAMIO_PLANS['plus'] 
     return CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower())
->>>>>>> 87878f481af1721d071c5dd44ae469d34de5852d
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -192,28 +191,17 @@ def assign_job_ids(self, db, unscheduled):
                           for params in unscheduled)
         device_id = CAMIO_PARAMS.get('device_id')
         camio_account_token = get_access_token()
-<<<<<<< HEAD
         item_average_size_bytes = sum(len(json.dumps(
                     {'key':params['key'], 
                      'earliest_date': earliest_date,
                      'latest_date': latest_date,
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
-        payload = {'device_id':device_id, 'item_count':item_count,
-                   'item_average_size_bytes':item_average_size_bytes}
-=======
-        item_average_size_bytes = sum(len(json.dumps( {
-                'key':params['key'], 
-                'original_filename': params['filename'], 
-                'size_MB': params['size']/1e6
-            })
-        ) for params in unscheduled)/item_count
         payload = {
             'device_id':device_id, 
             'item_count':item_count,
             'item_average_size_bytes':item_average_size_bytes
         }
->>>>>>> 87878f481af1721d071c5dd44ae469d34de5852d
         headers = {'Authorization': 'token %s' % camio_account_token}
         res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
 
