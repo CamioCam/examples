@@ -46,9 +46,11 @@ def set_hook_data(data_dict):
     CAMIO_PARAMS.update(data_dict)
     if CAMIO_PARAMS.get('logger') and not Log:
         Log = CAMIO_PARAMS['logger']
-    else:
-        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    elif not Log:
+        logging.basicConfig(stream=sys.stdout, level=logging.INFO)
         Log = logging.getLogger()
+    else:
+        return
     Log.debug("setting camio_hooks data as:\n%r", data_dict)
 
 def get_access_token():
@@ -190,7 +192,7 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     if not os.path.exists(filepath):
         Log.error("unable to locate video-file: %s, continuing", filepath)
         return False
-    Log.info("posting video content: file=%s, camera=%s, timestamp=%s", filepath, camera_name, timestamp)
+    Log.debug("posting video content: file=%s, camera=%s, timestamp=%s", filepath, camera_name, timestamp)
     with open(filepath, 'rb') as fh:
         response = requests.post(url, data=fh)
     return response.status_code in (200, 204)
@@ -209,14 +211,13 @@ def assign_job_ids(self, db, unscheduled):
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
         cameras = CAMIO_PARAMS.get('cameras', {})
-        camera_payload = [cameras[name] for name in cameras]
         payload = {
             'device_id':device_id, 
             'item_count':item_count,
             'earliest_date': earliest_date,
             'latest_date': latest_date,
             'item_average_size_bytes':item_average_size_bytes,
-            'cameras': camera_payload
+            'cameras': cameras
         }
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
@@ -235,7 +236,7 @@ def assign_job_ids(self, db, unscheduled):
             n += shard['item_count']
             upload_urls.append((n, shard_id, shard['upload_url']))
 
-        # for debug onlin
+        # for debug only 
         for item in upload_urls:
             Log.debug("upload item: %r", item[0])
         Log.debug('len(unscheduled)=%s', len(unscheduled))
@@ -253,6 +254,7 @@ def assign_job_ids(self, db, unscheduled):
             params['upload_url'] = upload_urls[upload_urls_k][2]
             db[key] = params
             db.sync()
+        return job_id
 
 def register_jobs(self, db, jobs):
     success = True
