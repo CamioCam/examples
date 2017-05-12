@@ -7,6 +7,7 @@ import sys
 import json
 import logging
 import hashlib
+import datetime
 import requests
 
 """
@@ -28,6 +29,10 @@ def get_access_token():
 def get_device_id():
     return os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR) 
 
+def dateshift(timestamp, seconds):
+    date = datetime.datetime.strptime(timestamp[:23], "%Y-%m-%dT%H:%M:%S.%f")
+    date = date + datetime.timedelta(seconds=seconds)
+    return date.isoformat()
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -135,10 +140,15 @@ def assign_job_ids(self, db, unscheduled):
     item_count = len(unscheduled)
     # if we have files to upload follow process in https://github.com/CamioCam/Camiolog-Web/issues/4555
     if item_count:        
+        earliest_date = min(params['timestamp'] for params in unscheduled)
+        latest_date = max(dateshift(params['timestamp'], params['duration']) 
+                          for params in unscheduled)
         device_id = CAMIO_PARAMS.get('device_id')
         camio_account_token = get_access_token()
         item_average_size_bytes = sum(len(json.dumps(
                     {'key':params['key'], 
+                     'earliest_date': earliest_date,
+                     'latest_date': latest_date,
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
         payload = {'device_id':device_id, 'item_count':item_count,
