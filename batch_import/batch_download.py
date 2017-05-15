@@ -272,6 +272,7 @@ import sys
 import argparse
 import logging
 import json
+import urllib
 import requests
 import textwrap
 
@@ -286,6 +287,7 @@ class BatchDownloader(object):
     def __init__(self):
         self.CAMIO_SERVER_URL = "https://www.camio.com"
         self.CAMIO_JOBS_EDNPOINT = "api/jobs"
+        self.CAMIO_SEARCH_ENDPOINT = "api/search"
         self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
         self.access_token = None
 	self.job_id = None
@@ -302,15 +304,6 @@ class BatchDownloader(object):
         self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
         self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
 
-    def get_access_token(self):
-        if not self.access_token:
-            token = os.environ.get(self.CAMIO_OAUTH_TOKEN_ENVVAR)
-            if not token:
-                fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
-                     Please set or submit this token")
-            self.access_token = token
-        return self.access_token
-
     def parse_argv_or_exit(self):
         self.args = self.parser.parse_args()
 	self.job_id = self.args.job_id
@@ -324,14 +317,28 @@ class BatchDownloader(object):
             logging.getLogger().setLevel(logging.ERROR)
         return self.args
 
+    def get_access_token(self):
+        if not self.access_token:
+            token = os.environ.get(self.CAMIO_OAUTH_TOKEN_ENVVAR)
+            if not token:
+                fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
+                     Please set or submit this token")
+            self.access_token = token
+        return self.access_token
+
+    def get_job_url(self):
+        return "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
+
     def gather_job_data(self):
-        url = "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
         headers = {"Authorization": "token %s" % self.get_access_token() }
-        logging.info("making GET request to endpoint %s, headers: %r", url, headers)
-        ret = requests.get(url, headers=headers)
+        logging.info("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
+        ret = requests.get(self.get_job_url(), headers=headers)
         job = ret.json()
         logging.info("got job-information returned from server:\n%r", ret.text)
         return job
+
+    def make_search_request(self, text):
+        pass
 
     def get_results_for_epoch(self, start_time, end_time, camera_name):
         """ 
@@ -344,8 +351,10 @@ class BatchDownloader(object):
     def run(self):
         args = self.parse_argv_or_exit()
         self.job = self.gather_job_data()
-        self.earliest_data, self.latest_data = job['request']['earliest_date'], job['request']['latest_date']
-        self.cameras = [camera['name'] for camera in job['request']['cameras']]
+        self.earliest_date, self.latest_date = self.job['request']['earliest_date'], self.job['request']['latest_date']
+        self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
+        logging.debug("earliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
+        logging.debug("cameras included in inquiry: %r", self.cameras)
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
