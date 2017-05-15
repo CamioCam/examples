@@ -343,7 +343,9 @@ class BatchDownloader(object):
 
     def run(self):
         args = self.parse_argv_or_exit()
-        self.gather_job_data()
+        self.job = self.gather_job_data()
+        self.earliest_data, self.latest_data = job['request']['earliest_date'], job['request']['latest_date']
+        self.cameras = [camera['name'] for camera in job['request']['cameras']]
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
