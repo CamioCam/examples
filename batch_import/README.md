@@ -71,13 +71,14 @@ Valid values for the plan variable are 'basic', 'plus', and 'pro'.
 Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#running-the-importer) with a command line that looks something like this:
 
 ```bash
-importer.py \
+$ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
-  --folder "/my-folder" \
   --host 192.168.1.57 \
   --port 8080 \
-  --hook_module camio_hooks
-  --hook_data_json '{"plan": "basic"}'
+  --hook_data_json '{"plan": "basic"}' \
+  "~/my-folder" \ # folder containing input videos
+  "camio_hooks" \ # hooks module with callback functions
+  "192.168.1.57"  # ip-address / hosntame of the segment server
 ```
 
 In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:

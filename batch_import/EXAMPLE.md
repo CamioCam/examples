@@ -35,6 +35,10 @@ remote: Total 394 (delta 68), reused 0 (delta 0), pack-reused 267
 Receiving objects: 100% (394/394), 87.31 KiB | 138.00 KiB/s, done.
 Resolving deltas: 100% (218/218), done.
 Checking connectivity... done.
+$ git submodule update --init
+Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
+Cloning into '/private/tmp/examples/batch_import/video-importer'...
+Submodule path 'batch_import/video-importer': checked out '79ef21f84697643824f6d31fb05699bc695d9135'
 $ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
@@ -45,18 +49,9 @@ total 48
 -rw-r--r--  1 user  staff  9408 May  1 18:57 import_video.py
 $ python setup.py install
 running install
-running bdist_egg
-running egg_info
-reading manifest file 'import_video.egg-info/SOURCES.txt'
-writing manifest file 'import_video.egg-info/SOURCES.txt'
-installing library code to build/bdist.macosx-10.12-x86_64/egg
 running install_lib
 running build_py
-zip_safe flag not set; analyzing archive contents...
-import_video: module references __file__
 creating 'dist/import_video-0.1-py2.7.egg' and adding 'build/bdist.macosx-10.12-x86_64/egg' to it
-Processing import_video-0.1-py2.7.egg
-Extracting import_video-0.1-py2.7.egg to /usr/local/lib/python2.7/site-packages
 Installing import_video script to /usr/local/bin
 
 Installed /usr/local/lib/python2.7/site-packages/import_video-0.1-py2.7.egg
@@ -64,27 +59,7 @@ Processing dependencies for import-video==0.1
 Searching for psutil==4.3.1
 Best match: psutil 4.3.1
 Adding psutil 4.3.1 to easy-install.pth file
-
-Using /usr/local/lib/python2.7/site-packages
-Searching for requests==2.12.4
-Best match: requests 2.12.4
-Adding requests 2.12.4 to easy-install.pth file
-
-Using /usr/local/lib/python2.7/site-packages
-Searching for hachoir-metadata==1.3.3
-Best match: hachoir-metadata 1.3.3
-Adding hachoir-metadata 1.3.3 to easy-install.pth file
-
-Using /usr/local/lib/python2.7/site-packages
-Searching for hachoir-parser==1.3.4
-Best match: hachoir-parser 1.3.4
-Adding hachoir-parser 1.3.4 to easy-install.pth file
-
-Using /usr/local/lib/python2.7/site-packages
-Searching for hachoir-core==1.3.3
-Best match: hachoir-core 1.3.3
-Adding hachoir-core 1.3.3 to easy-install.pth file
-
+# ... more output
 Using /usr/local/lib/python2.7/site-packages
 Finished processing dependencies for import-video==0.1
 ```
@@ -204,15 +179,47 @@ $ cd ~
 $ cd examples/batch_import/video-importer
 ```
 
+To see how the arguments are named/formatted/ordered as input to the scirpt you can always just give the `--help` flag to the script
+
+```python
+$ python import_video.py --help
+usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
+                       [-d HOOK_DATA_JSON]
+                       folder hook_module host
+
+positional arguments:
+  folder                full path to folder of input videos to process
+  hook_module           full path to hook module for custom functions (a
+                        python file)
+  host                  the IP-address / hostname of the segmenter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         set logging level to debug
+  -q, --quiet           set logging level to errors only
+  -c, --csv             dump csv log file
+  -p PORT, --port PORT  the segmenter port number
+  -r REGEX, --regex REGEX
+                        regex to find camera name
+                        (Default=".*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*")
+  -s STORAGE, --storage STORAGE
+                        location of the local storage db
+  -d HOOK_DATA_JSON, --hook_data_json HOOK_DATA_JSON
+                        a json object containing extra information to be
+                        passed to the hook-module
+```
+
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
-$ python import_video.py -v \
-  --folder ~/batch_videos/ \
-  --host 192.168.1.51 \
-  --hook_module ~/examples/batch_import/camio_hooks.py 
-  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4"
-  --hook_data_json '{"plan": "plus"}'
+$ python import_video.py \
+  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+  --host 192.168.1.57 \
+  --port 8080 \
+  --hook_data_json '{"plan": "basic"}' \
+  "~/my-folder" \ # folder containing input videos
+  "camio_hooks" \ # hooks module with callback functions
+  "192.168.1.57"  # ip-address / hosntame of the segment server
 
 INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
 INFO:root:camera_name: CAMERA_FRONT

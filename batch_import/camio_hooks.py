@@ -38,7 +38,7 @@ def set_hook_data(data_dict):
     """
     let the importer pass in arbitrary key-value pairs for use by the hooks program
     (we tend to use this to accept plan data or user-account information)
-    data_dict: a dictionary of values passed in from the video importer script, passed in by the
+    data_dict: a python list/dictionary of values passed in from the video importer script, passed in by the
                 user under the --hook_data_json argument. 
     """
     global CAMIO_PARAMS
