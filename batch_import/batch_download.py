@@ -215,19 +215,25 @@ here are some notes on example API calls taken from watching dev-tools in the we
 import os
 import sys
 import argparse
+import logging
 import json
 import requests
 import textwrap
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
+def fail(msg, *args):
+    logging.error(msg, *args)
+    sys.exit(1)
 
 class BatchDownloader(object):
 
     def __init__(self):
         # TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
-        self.CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
-        self.CAMIO_PARAMS = {}
+        self.CAMIO_SERVER_URL = "https://www.camio.com"
+        self.CAMIO_JOBS_EDNPOINT = "api/jobs"
         self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
+        self.access_token = None
 
         self.parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -237,22 +243,37 @@ class BatchDownloader(object):
         self.parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
+        self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
 
     def get_access_token(self):
-        if not self.CAMIO_PARAMS.get('access_token'):
+        if not self.access_token:
             token = os.environ.get(self.CAMIO_OAUTH_TOKEN_ENVVAR)
             if not token:
                 fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
                      Please set or submit this token")
-            self.CAMIO_PARAMS['access_token'] = token
-        return self.CAMIO_PARAMS['access_token']
+            self.access_token = token
+        return self.access_token
 
     def parse_argv_or_exit(self):
-        self.args = parser.parse_args()
+        self.args = self.parser.parse_args()
         if self.args.access_token:
-            self.CAMIO_PARAMS['access_token'] = self.args.access_token
+            self.access_token = self.args.access_token
+        if self.args.testing:
+            self.CAMIO_SERVER_URL = "https://test.camio.com"
+        if self.args.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        elif self.args.quiet:
+            logging.getLogger().setLevel(logging.ERROR)
         return self.args
-            
+
+    def gather_job_data(self):
+        url = "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.args.job_id)
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        logging.info("making GET request to endpoint %s", url)
+        ret = requests.get(url, headers=headers)
+        job = ret.json()
+        logging.info("got job-information returned from server:\n%r", job)
+        return job
 
     def get_results_for_epoch(self, start_time, end_time, camera_name):
         """ 
@@ -261,6 +282,14 @@ class BatchDownloader(object):
         into a dictionary of some sorts to be returned to the user
         """
         pass
+
+    def run(self):
+        args = self.parse_argv_or_exit()
+        # grab the job from the job API
+        # forward that job info to some function that loops over the start-to-end-time
+        # have the function call get_result_for_epoch with small time windows that assembles the 
+        # labels into a dictionary for you
+        return args
 
 
 def main():
