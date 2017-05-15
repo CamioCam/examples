@@ -208,8 +208,63 @@ here are some notes on example API calls taken from watching dev-tools in the we
 	"more_buckets": "listed_below ...",
     } # end buckets	
 } # end entire payload
+"""
 
+"""
+this is the payload returned from a GET to /api/jobs/{{job_id}}
 
+{
+  "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKCosOOdCww",
+  "shard_map": {
+    "0": {
+      "item_count": 1,
+      "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKCosOOdCww",
+      "shard_id": "0",
+      "status": "running"
+    }
+  },
+  "status": "shards_missing",
+  "request": {
+    "device_id": "AQABXriUowjF2gtSyEjyXwnRh8wiEYJZEdsT26mdiH7Kj2B_7B2hBv3-t56bk-sRoBVgaonxCMpi4CAmLkvmT0fz",
+    "item_count": 1,
+    "item_average_size_bytes": 160,
+    "earliest_date": "2016-10-09T06:12:37.000",
+    "latest_date": "2016-10-09T06:22:36.993000",
+    "cameras": [
+      {
+        "user_id": "109010722686218614620",
+        "name": "C2_Hi20161009",
+        "tags": [],
+        "camera_id": "109010722686218614620:C220161009:81219708c6fe2a5eb9cb35896b8ed78610ce9c6f",
+        "local_camera_id": "81219708c6fe2a5eb9cb35896b8ed78610ce9c6f",
+        "mac_address": "C220161009",
+        "default_values": {
+          "plan": {
+            "is_multiselect": false,
+            "options": [
+              {
+                "name": "Plus",
+                "value": "PLUS"
+              }
+            ]
+          }
+        },
+        "actual_values": {
+          "plan": {
+            "is_multiselect": false,
+            "options": [
+              {
+                "name": "Plan",
+                "value": "PLUS"
+              }
+            ]
+          }
+        },
+        "acquisition_method": "batch"
+      }
+    ]
+  }
+}
 """
 
 import os
@@ -229,11 +284,11 @@ def fail(msg, *args):
 class BatchDownloader(object):
 
     def __init__(self):
-        # TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
         self.CAMIO_SERVER_URL = "https://www.camio.com"
         self.CAMIO_JOBS_EDNPOINT = "api/jobs"
         self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
         self.access_token = None
+	self.job_id = None
 
         self.parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -244,6 +299,8 @@ class BatchDownloader(object):
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
+        self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
+        self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
 
     def get_access_token(self):
         if not self.access_token:
@@ -256,6 +313,7 @@ class BatchDownloader(object):
 
     def parse_argv_or_exit(self):
         self.args = self.parser.parse_args()
+	self.job_id = self.args.job_id
         if self.args.access_token:
             self.access_token = self.args.access_token
         if self.args.testing:
@@ -267,12 +325,12 @@ class BatchDownloader(object):
         return self.args
 
     def gather_job_data(self):
-        url = "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.args.job_id)
+        url = "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
         headers = {"Authorization": "token %s" % self.get_access_token() }
-        logging.info("making GET request to endpoint %s", url)
+        logging.info("making GET request to endpoint %s, headers: %r", url, headers)
         ret = requests.get(url, headers=headers)
         job = ret.json()
-        logging.info("got job-information returned from server:\n%r", job)
+        logging.info("got job-information returned from server:\n%r", ret.text)
         return job
 
     def get_results_for_epoch(self, start_time, end_time, camera_name):
@@ -285,15 +343,15 @@ class BatchDownloader(object):
 
     def run(self):
         args = self.parse_argv_or_exit()
+        self.gather_job_data()
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
         # labels into a dictionary for you
         return args
 
-
 def main():
-    args = parse_argv_or_exit()
+    return BatchDownloader().run()
 
 if __name__ == '__main__':
     main()
