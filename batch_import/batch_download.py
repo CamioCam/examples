@@ -291,6 +291,7 @@ class BatchDownloader(object):
         self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
         self.access_token = None
 	self.job_id = None
+        self.job = None
 
         self.parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -300,6 +301,8 @@ class BatchDownloader(object):
         self.parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
+        self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
+        self.parser.add_argument('-x', '--xml', action='store_true', help='set to export in XML format')
         self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
         self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
         self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
@@ -331,11 +334,17 @@ class BatchDownloader(object):
 
     def gather_job_data(self):
         headers = {"Authorization": "token %s" % self.get_access_token() }
-        logging.info("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
+        logging.debug("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
         ret = requests.get(self.get_job_url(), headers=headers)
-        job = ret.json()
-        logging.info("got job-information returned from server:\n%r", ret.text)
-        return job
+        if not ret.status_code in (200, 204):
+            fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
+        logging.debug("got job-information returned from server:\n%r", ret.text)
+        self.job = ret.json()
+        self.earliest_date, self.latest_date = self.job['request']['earliest_date'], self.job['request']['latest_date']
+        self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
+        logging.info("Job Definition | earliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
+        logging.info("\tcameras included in inquiry: %r", self.cameras)
+        return self.job
 
     def make_search_request(self, text):
         pass
@@ -349,17 +358,13 @@ class BatchDownloader(object):
         pass
 
     def run(self):
-        args = self.parse_argv_or_exit()
-        self.job = self.gather_job_data()
-        self.earliest_date, self.latest_date = self.job['request']['earliest_date'], self.job['request']['latest_date']
-        self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
-        logging.debug("earliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
-        logging.debug("cameras included in inquiry: %r", self.cameras)
+        self.parse_argv_or_exit()
+        self.gather_job_data()
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
         # labels into a dictionary for you
-        return args
+        return  True
 
 def main():
     return BatchDownloader().run()
