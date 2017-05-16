@@ -181,7 +181,7 @@ $ cd examples/batch_import/video-importer
 
 To see how the arguments are named/formatted/ordered as input to the scirpt you can always just give the `--help` flag to the script
 
-```python
+```bash
 $ python import_video.py --help
 usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
                        [-d HOOK_DATA_JSON]
