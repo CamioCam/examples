@@ -62,6 +62,7 @@ import os
 import json
 import textwrap
 import requests
+import logging
 
 CAMIO_SERVER_URL = "https://www.camio.com"
 CAMIO_TEST_SERVER_URL = "https://test.camio.com"
@@ -69,9 +70,7 @@ CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 REGISTER_CAMERA_ENDPOINT = "/api/cameras/discovered"
 DEBUG_OUTPUT = False
 
-def print_debug(string):
-    if DEBUG_OUTPUT:
-        sys.stderr.write(string + '\n')
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 def parse_cmd_line_or_exit():
     global DEBUG_OUTPUT
@@ -80,6 +79,8 @@ def parse_cmd_line_or_exit():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
     )
+
+    # optional arguments / flags
     parser.add_argument('-u', '--username', type=str, help='the username used to access the RTSP stream')
     parser.add_argument('-p', '--password', type=str, help='the password used to access the RTSP stream')
     parser.add_argument('-s', '--stream', type=str, help='the selected stream to use in the RTSP URL')
@@ -90,6 +91,12 @@ def parse_cmd_line_or_exit():
     parser.add_argument('--model', type=str, help='the model of the camera')
     parser.add_argument('--test', action='store_true', help='use the Camio testing servers instead of production')
     parser.add_argument('-v', '--verbose', action='store_true', help='print extra information to stdout for debugging purposes')
+    parser.add_argument('--img_x_size_cover', type=int, help='width (pixels) of the cover image')
+    parser.add_argument('--img_y_size_cover', type=int, help='height (pixels) of the cover image')
+    parser.add_argument('--img_x_size', type=int, help='width (pixels) of the other thumbnails')
+    parser.add_argument('--img_y_size', type=int, help='height (pixels) of the other thumbnails')
+
+    # positional arguments
     parser.add_argument('rtsp_server', type=str, 
         help='the RTSP URL that identifies the video server, with placeholder (e.g. rtsp://{{username}}:{{password}}@{{ip_address}})'
     )
@@ -102,19 +109,32 @@ def parse_cmd_line_or_exit():
     parser.add_argument('auth_token', type=str, help='your Camio OAuth token (see https://www.camio.com/settings/integrations/#api)')
     parser.add_argument('device_id', type=str, help='the device ID of the Camio Box you wish to connect this camera to')
     args = parser.parse_args()
-    if args.verbose: DEBUG_OUTPUT = True
+    if args.verbose: logging.getLogger().setLevel(logging.DEBUG)
     if args.test: CAMIO_SERVER_URL = CAMIO_TEST_SERVER_URL
     return args
-    
-def generate_payload(args):
+
+def generate_actual_values(arg_dict):
     actual_values=dict()
-    arg_dict = args.__dict__
     for item in [x for x in ['username', 'password', 'port'] if arg_dict.get(x)]:
         actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
     for item in [x for x in ['stream', 'channel'] if arg_dict.get(x)]:
         actual_values[item] = dict( 
             options = [ {'name': "%s %s" % (item, arg_dict.get(item)), 'value': arg_dict.get(item)}]
         )
+    if arg_dict.get('img_y_size_cover') or arg_dict.get('img_y_size'):
+        arg_dict['img_y_size_extraction'] = max(
+            arg_dict.get('img_y_size_cover', 1), arg_dict.get('img_y_size', 1)
+        )    
+    for item in ['img_%s_size%s' % (x,y) for x in ['x', 'y'] for y in ['', '_cover', '_extraction']]:
+        logging.debug("checking for item: %s, args.%s = %r", item, item, arg_dict.get(item))
+        if not arg_dict.get(item): continue 
+        actual_values[item] = dict(options=[{'value': arg_dict.get(item)}])
+    logging.debug("calculated actual values:\n%r", json.dumps(actual_values))
+    return actual_values
+    
+def generate_payload(args):
+    arg_dict = args.__dict__
+    actual_values = generate_actual_values(arg_dict)
     payload = dict(
         local_camera_id=args.local_camera_id,
         name=args.camera_name,
@@ -129,29 +149,29 @@ def generate_payload(args):
         device_id_discovering=args.device_id
     )
     payload = { args.local_camera_id: payload }
-    print_debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
+    logging.debug("JSON payload to Camio Servers:\n %s" % json.dumps(payload))
     return payload
 
 def generate_headers(args):
     headers = {"Authorization": "token %s" % args.auth_token}
-    print_debug("Generated Headers:\n %s" % headers)
+    logging.debug("Generated Headers:\n %s" % headers)
     return headers
 
 def post_payload(payload, headers):
     url = CAMIO_SERVER_URL + REGISTER_CAMERA_ENDPOINT
     ret = requests.post(url, headers=headers, json=payload)
-    print_debug("return from POST to /api/cameras/discovered:\n %s" % vars(ret))
+    logging.debug("return from POST to /api/cameras/discovered:\n %s" % vars(ret))
     return ret.status_code in (200, 204)
 
 def main():
     args = parse_cmd_line_or_exit()
-    print_debug("Parsed command line arguments:\n %s" % args.__dict__)
+    logging.debug("Parsed command line arguments:\n %s" % args.__dict__)
     post_values = generate_payload(args)
     headers = generate_headers(args)
     if not post_payload(post_values, headers):
-        sys.stderr.write("error registering camera (name: %s, ID: %s) with Camio servers" % (args.camera_name, args.local_camera_id))
+        logging.error("error registering camera (name: %s, ID: %s) with Camio servers", args.camera_name, args.local_camera_id)
         sys.exit(1)
-    sys.stdout.write("successfully registered camera (name: %s, ID: %s) with Camio servers" % (args.camera_name, args.local_camera_id))
+    logging.info("successfully registered camera (name: %s, ID: %s) with Camio servers", args.camera_name, args.local_camera_id)
     sys.exit(0)
 
 
