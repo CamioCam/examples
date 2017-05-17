@@ -2,8 +2,8 @@
 
 DESCRIPTION = \
 """
-this script will cycle over a given time-period and download all videos from a given camera that come from
-within that time period using the Camio search API (https://api.camio.com/#search)
+This script will take a Camio job-ID, find the time-boundaries and cameras involved in that job, and iterate over that 
+time range while downloading all of the labels that Camio has annotated the events with.
 
 This script is designed to be used after a batch-import job has been completed and you wish to retreive a
 compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
@@ -16,6 +16,10 @@ Example:
 
     Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
     submitted
+
+    python batch_download.py -v -t SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+
+    timestamp: { user-Id, camera = { camera_id, camera_name, user_id}, labels, event_id }
 """
 
 
@@ -132,7 +136,7 @@ class BatchDownloader(object):
         if not ret.status_code in (200, 204):
             logging.error("unable to obtain search results with query (%s)", text)
         logging.debug("got search results for query (%s)", text)
-        logging.debug("results:\n%r", ret.text)
+        #logging.debug("results:\n%r", ret.text)
         return ret.json()
 
     def get_results_for_epoch(self, start_time, end_time, camera_names):
@@ -144,15 +148,22 @@ class BatchDownloader(object):
         text = " ".join(camera_names)
         # start_time = start_time - timedelta(hours=7)
         # end_time = end_time - timedelta(hours=7)
-        text = text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
+        text = "all " + text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
         ret = self.make_search_request(text)
         results = ret.get('result')
         if not results: return None
         logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
         labels = dict() 
-        for bucket in results.get('buckets'):
-            logging.debug("for date (%s) found labels: %r", bucket['earliest_date'], bucket.get('labels'))
-            labels[bucket['earliest_date']] = bucket.get('labels')
+        for index, bucket in enumerate(results.get('buckets')):
+            logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
+            for frameidx, image in enumerate(bucket.get('images')):
+                logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image['labels'])
+                labels[image['date_created']] = {
+                    'labels': image['labels'],
+                    'camera': {
+                        'name': image['source']
+                    },
+                }
         return labels
     
     def datetimeIterator(self, from_date=datetime.now(), to_date=None, delta = timedelta(minutes = 10)):
@@ -169,6 +180,8 @@ class BatchDownloader(object):
             subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
             start = endtime
             labels.update(subset_labels)
+        logging.debug("\nall found labels:\n%r", json.dumps(labels))
+        return labels
 
     def run(self):
         self.parse_argv_or_exit()
