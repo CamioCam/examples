@@ -16,8 +16,9 @@ Camio-specific hook examples for use with the video import script
 """
 
 # TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
-CAMIO_REGISTER_URL="https://test.camio.com/api/cameras/discovered"
-CAMIO_JOBS_URL = "https://test.camio.com/api/jobs"
+CAMIO_SERVER_URL = "https://www.camio.com"
+CAMIO_REGISTER_ENDPOINT = "/api/cameras/discovered"
+CAMIO_JOBS_ENDPOINT = "/api/jobs"
 CAMIO_PARAMS = {}
 
 # TODO - change to CAMIO_TEST_PROD when on production
@@ -49,6 +50,9 @@ def set_hook_data(data_dict):
     elif not Log:
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
         Log = logging.getLogger()
+    if CAMIO_PARAMS.get('test'):
+        Log.info("using test.camio.com instead of www.camio.com")
+        CAMIO_SERVER_URL = "https://test.camio.com"
     Log.debug("setting camio_hooks data as:\n%r", CAMIO_PARAMS)
 
 def hash_file_in_chunks(fh, chunksize=65536):
@@ -127,7 +131,9 @@ def get_camera_image_resolutions(camera_name):
 def get_camera_config(local_camera_id):
     access_token = get_access_token()
     headers = {"Authorization": "token %s" % access_token}
-    response = requests.get(CAMIO_REGISTER_URL, headers=headers)
+    url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
+    response = requests.get(url, headers=headers)
+    Log.debug(response.text)
     response = response.json()
     return response[local_camera_id]
 
@@ -183,7 +189,9 @@ def register_camera(camera_name, host=None, port=None):
     Log.info("registering camera:\n\tname=%s\n\tlocal_camera_id=%s", camera_name, local_camera_id)
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
-    response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
+    url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
+    response = requests.post(url, headers=headers, json=payload)
+    Log.debug(response.text)
     try:
         config = get_camera_config(local_camera_id)
     except:
@@ -253,7 +261,8 @@ def assign_job_ids(self, db, unscheduled):
         }
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
-        res = requests.put(CAMIO_JOBS_URL, json=payload, headers=headers)         
+        url = CAMIO_SERVER_URL + CAMIO_JOBS_ENDPOINT
+        res = requests.put(url, json=payload, headers=headers)         
 
         try:
             shards = res.json()
