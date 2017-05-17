@@ -168,6 +168,50 @@ Then you would use the following string as the regular expression passed to the 
 This captures the `CAMERA_FRONT` part as the camera name (used for registering the camera with Camio), and parses the `1475973147` part as the Unix-timestamp
 of the video.
 
+
+#### Submitting Camera-Plan and Image-Resolution Data
+
+There are two main ways to get data into the `camio_hooks.py` module from the video-import script.
+
+1. Through the `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
+2. Through the `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to
+
+The values you can specify (meaningfully) as of now are:
+
+1. `plan` - can be any of `basic`, `plus`, and `pro`. See https://www.camio.com/price for information on plans
+2. `img_y_size_extraction` - the height of the frames extracted from the videos (before resizing!)
+3. `img_{x,y}_size_cover` - the x,y size (in pixels) of the cover-image after resizing.
+4. `img_{x,y}_size` - the x,y size (in pixels) of the non-cover images after resizing.
+
+Note that if `img_y_size` or `img_y_size_cover` are larger than `img_y_size_extraction` we will replace the value of `img_y_size_extraction` with the larger of the two other values.
+This is because it doesn't make sense to extract at a lower resolution only to scale up.
+
+
+Now we only have one camera (`CAMERA_FRONT`), and we want it on the `pro` plan with all thumbnails extracted to be at 1080p resolution. We would then 
+write the following to a file (call it `/tmp/hook_data.json` for this example).
+
+```json
+{
+    "plan": "pro",
+    "cameras": {
+        "CAMERA_FRONT": {
+            "plan": "pro",
+            "img_y_size_extraction": 1080,
+            "img_x_size_cover": 1920,
+            "img_y_size_cover": 1080,
+            "img_x_size": 1920,
+            "img_y_size": 1080 
+        },
+    },
+    "img_y_size_extraction": 1080,
+    "img_x_size_cover": 1920,
+    "img_y_size_cover": 1080
+}
+```
+
+This file we will pass to the video-import script in a later step.
+
+
 ####  Running the video-importer Script
 
 You are now ready to batch-import videos to Camio through your Camio Box. 
@@ -184,7 +228,7 @@ To see how the arguments are named/formatted/ordered as input to the scirpt you 
 ```bash
 $ python import_video.py --help
 usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
-                       [-d HOOK_DATA_JSON]
+                       [-d HOOK_DATA_JSON] [-f HOOK_DATA_JSON_FILE]
                        folder hook_module host
 
 positional arguments:
@@ -198,15 +242,19 @@ optional arguments:
   -v, --verbose         set logging level to debug
   -q, --quiet           set logging level to errors only
   -c, --csv             dump csv log file
-  -p PORT, --port PORT  the segmenter port number
+  -p PORT, --port PORT  the segmenter port number (default: 8080)
   -r REGEX, --regex REGEX
-                        regex to find camera name
-                        (Default=".*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*")
+                        regex to find camera name (default:
+                        .*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*)
   -s STORAGE, --storage STORAGE
-                        location of the local storage db
+                        full path to the local storage db (default:
+                        ./.processes.shelve)
   -d HOOK_DATA_JSON, --hook_data_json HOOK_DATA_JSON
                         a json object containing extra information to be
                         passed to the hook-module
+  -f HOOK_DATA_JSON_FILE, --hook_data_json_file HOOK_DATA_JSON_FILE
+                        full path to a file containing a json object of extra
+                        info to be passed to the hook module
 ```
 
 Run the importer with all of the values we've assembled in the previous steps.
@@ -216,7 +264,7 @@ $ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
   --host 192.168.1.57 \
   --port 8080 \
-  --hook_data_json '{"plan": "basic"}' \
+  --hook_data_json_file /tmp/hook_data.json \
   "~/my-folder" \ # folder containing input videos
   "camio_hooks" \ # hooks module with callback functions
   "192.168.1.57"  # ip-address / hosntame of the segment server
