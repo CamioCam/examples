@@ -44,6 +44,7 @@ def set_hook_data(data_dict):
                 user under the --hook_data_json argument. 
     """
     global CAMIO_PARAMS
+    global CAMIO_SERVER_URL
     global Log
     CAMIO_PARAMS.update(data_dict)
     if CAMIO_PARAMS.get('logger') and not Log:
