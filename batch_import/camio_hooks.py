@@ -53,10 +53,10 @@ def get_access_token():
         CAMIO_PARAMS['access_token'] = token
     return CAMIO_PARAMS['access_token']
 
-def dateshift(timestamp, seconds):
-    date = datetime.datetime.strptime(timestamp[:23], "%Y-%m-%dT%H:%M:%S.%f")
+def dateshift(timestamp, seconds, format = "%Y-%m-%dT%H:%M:%S.%f"):
+    date = datetime.datetime.strptime(timestamp[:23], format)
     date = date + datetime.timedelta(seconds=seconds)
-    return date.isoformat()
+    return date.strftime(format)
 
 def get_device_id():
     if not CAMIO_PARAMS.get('device_id'):
