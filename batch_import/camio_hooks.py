@@ -49,9 +49,18 @@ def set_hook_data(data_dict):
     elif not Log:
         logging.basicConfig(stream=sys.stdout, level=logging.INFO)
         Log = logging.getLogger()
-    else:
-        return
-    Log.debug("setting camio_hooks data as:\n%r", data_dict)
+    Log.debug("setting camio_hooks data as:\n%r", CAMIO_PARAMS)
+
+def hash_file_in_chunks(fh, chunksize=65536):
+    """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
+    entire file in memory (these can be large files) """
+    sha1 = hashlib.sha1()
+    while True:
+        data = fh.read(chunksize)
+        if not data:
+            break
+        sha1.update(data)
+    return sha1.hexdigest()
 
 def get_access_token():
     if not CAMIO_PARAMS.get('access_token'):
@@ -76,37 +85,44 @@ def get_device_id():
         CAMIO_PARAMS['device_id'] = device 
     return CAMIO_PARAMS['device_id']
 
-def get_camera_plan():
-    if not CAMIO_PARAMS.get('plan'):
+def get_camera_param(camera_name, key):
+    """
+    CAMIO_PARAMS = {
+       "key": "value",
+       "cameras": {
+         "camera_1": {
+           "key1": "value1" <-- given camera_name = camera_1 and key = key1, return this value "value1"
+         },
+         "camera_2": {
+           "key2": "value2"
+         }
+        }
+    }
+    """
+    return CAMIO_PARAMS.get('cameras', {}).get(camera_name, {}).get(key) or CAMIO_PARAMS.get(key)
+
+def get_camera_plan(camera_name):
+    """
+    plan will either be under the cameras.$camera_name.plan item or at the top-level 'plan'
+    """
+    plan = get_camera_param(camera_name, 'plan')
+    if not plan:
         Log.warn("no camera-plan value submitted in hook-data, assuming PLUS as plan")
         return CAMIO_PLANS['plus']
-    elif not CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower()):
+    elif not CAMIO_PLANS.get(plan.lower()):
         fail("submitted invalid 'plan' value: %s, valid values are: %r",
-                CAMIO_PARAMS['plan'], [CAMIO_PLANS[key] for key in CAMIO_PLANS])
-    return CAMIO_PLANS.get(CAMIO_PARAMS['plan'].lower())
+                plan, [CAMIO_PLANS[key] for key in CAMIO_PLANS])
+    return CAMIO_PLANS.get(plan.lower())
 
-def hash_file_in_chunks(fh, chunksize=65536):
-    """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
-    entire file in memory (these can be large files) """
-    sha1 = hashlib.sha1()
-    while True:
-        data = fh.read(chunksize)
-        if not data:
-            break
-        sha1.update(data)
-    return sha1.hexdigest()
-
-def get_device_data(host, port):
-    """ 
-    calls the /box/settings endpoint to get (Device_id, user-agent) pair that is needed
-    to register a camera properly
-    """
-    urlbase = "http://%s:%s" % (host, port)
-    url = urlbase + "/box/settings"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    return None
+def get_camera_image_resolutions(camera_name):
+    Log.debug("checking image resolution values")
+    actual_values = dict()
+    for item in ['img_%s_size%s' % (x,y) for x in ['x', 'y'] for y in ['', '_cover', '_extraction']]:
+        value = get_camera_param(camera_name, item)
+        Log.debug("value for (%s): %r", item, value)
+        if not value: continue
+        actual_values[item] = dict(options=[{'name': item, 'value': value}])
+    return actual_values
 
 def get_camera_config(local_camera_id):
     access_token = get_access_token()
@@ -114,6 +130,18 @@ def get_camera_config(local_camera_id):
     response = requests.get(CAMIO_REGISTER_URL, headers=headers)
     response = response.json()
     return response[local_camera_id]
+
+def generate_actual_values(camera_name):
+    camera_plan = get_camera_plan(camera_name)
+    image_values = get_camera_image_resolutions(camera_name)
+    plan = dict(
+        is_multiselect = False,
+        options = [ {'name': 'Plan', 'value': camera_plan }]
+    )
+    actual_values = dict(plan=plan)
+    actual_values.update(image_values)
+    Log.debug("final actual values:\n%r", actual_values)
+    return actual_values
 
 def register_camera(camera_name, host=None, port=None):
     """
@@ -136,20 +164,18 @@ def register_camera(camera_name, host=None, port=None):
                  input source.
     """
 
-    device_id, access_token, camera_plan = get_device_id(), get_access_token(), get_camera_plan()
+    device_id, access_token = get_device_id(), get_access_token()
     user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
-    plan = dict(
-        is_multiselect = False,
-        options = [ {'name': 'Plan', 'value': camera_plan }]
-    )
+    actual_values = generate_actual_values(camera_name)
     payload = dict(
             device_id_discovering=device_id,
             acquisition_method='batch',
             device_user_agent=user_agent,
             local_camera_id=local_camera_id,
             name=camera_name,
-            actual_values = dict(plan=plan),
+            actual_values = actual_values,
+            default_values = actual_values,
             mac_address=camera_name, # TODO - find out if this is still required.
             is_authenticated=True,
             should_config=True # toggles the camera 'ON'
@@ -209,7 +235,7 @@ def assign_job_ids(self, db, unscheduled):
                     {'key':params['key'], 
                      'original_filename': params['filename'], 
                      'size_MB': params['size']/1e6})) for params in unscheduled)/item_count
-        cameras = CAMIO_PARAMS.get('cameras', {})
+        cameras = CAMIO_PARAMS.get('registered_cameras', {})
         payload = {
             'device_id':device_id, 
             'item_count':item_count,
