@@ -184,7 +184,13 @@ def register_camera(camera_name, host=None, port=None):
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
-    return get_camera_config(local_camera_id)
+    try:
+        config = get_camera_config(local_camera_id)
+    except:
+        Log.debug("key error for new camera, waiting 15 seconds to retry")
+        time.sleep(15)
+        config = get_camera_config(local_camera_id)
+    return config
 
 def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, location=None):
     """
