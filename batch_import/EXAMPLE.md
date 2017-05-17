@@ -4,7 +4,7 @@ Batch Import Concrete Example
 ### What's Needed
 
 1. A registered Camio account
-2. A Camio Box (either [physical](https://www.camio.com/box) or a [VM](https://www.camio.com/box/vm))
+2. A [batch-import-enabled Camio Box Virtual Machine](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
 4. The Camio Box IP address (explained in the [get IP address section](#get-the-camio-box-ip-address))
 5. A directory of videos that you wish to process through Camio
@@ -15,6 +15,13 @@ Once you have all of the items listed above, you can start to batch-import video
 
 ### Instructions
 
+#### Obtain and Set-up Your Batch-Import Enabled Camio Box
+
+Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115000667046-How-to-Setup-Camio-Box-in-Oracle-VirtualBox) 
+but (IMPORTANT) use [this version of Camio Box VM for VirtualBox](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) instead of the version listed in that help-article. 
+The reason for the switch is that [this new version](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) of the Camio Box VM includes support for batch-video-import while the version listed 
+in that help-article does not. The rest of the steps are the same.
+
 #### Boot-Up Your Camio Box
 
 Your Camio Box needs to be powered on, registered under your account, and on the same local network as the computer running the batch-importer script.
@@ -23,7 +30,8 @@ Your Camio Box can be registered through [the /box/register page](https://www.ca
 #### Clone the Importer and Use the Camio Hooks
 
 Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) repository, go into the 
-[examples/batch_import/video-importer](examples/batch_import/video-importer) directory.
+[examples/batch_import/video-importer](examples/batch_import/video-importer) directory. Then run the `setup.py` script
+to install the package onto your system.
 
 ```sh
 $ git clone https://www.github.com/CamioCam/examples
@@ -34,6 +42,10 @@ remote: Total 394 (delta 68), reused 0 (delta 0), pack-reused 267
 Receiving objects: 100% (394/394), 87.31 KiB | 138.00 KiB/s, done.
 Resolving deltas: 100% (218/218), done.
 Checking connectivity... done.
+$ git submodule update --init
+Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
+Cloning into '/private/tmp/examples/batch_import/video-importer'...
+Submodule path 'batch_import/video-importer': checked out '79ef21f84697643824f6d31fb05699bc695d9135'
 $ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
@@ -41,8 +53,22 @@ $ ls -l
 total 48
 -rw-r--r--  1 user  staff  1062 May  1 15:32 LICENSE
 -rw-r--r--  1 user  staff  7145 May  1 18:57 README.md
--rw-r--r--  1 user  staff  9408 May  1 18:57 importer.py
+-rw-r--r--  1 user  staff  9408 May  1 18:57 import_video.py
+$ python setup.py install
+running install
+running install_lib
+running build_py
+creating 'dist/import_video-0.1-py2.7.egg' and adding 'build/bdist.macosx-10.12-x86_64/egg' to it
+Installing import_video script to /usr/local/bin
 
+Installed /usr/local/lib/python2.7/site-packages/import_video-0.1-py2.7.egg
+Processing dependencies for import-video==0.1
+Searching for psutil==4.3.1
+Best match: psutil 4.3.1
+Adding psutil 4.3.1 to easy-install.pth file
+# ... more output
+Using /usr/local/lib/python2.7/site-packages
+Finished processing dependencies for import-video==0.1
 ```
 
 #### Set the Necessary Environment Variables
@@ -149,6 +175,50 @@ Then you would use the following string as the regular expression passed to the 
 This captures the `CAMERA_FRONT` part as the camera name (used for registering the camera with Camio), and parses the `1475973147` part as the Unix-timestamp
 of the video.
 
+
+#### Submitting Camera-Plan and Image-Resolution Data
+
+There are two main ways to get data into the `camio_hooks.py` module from the video-import script.
+
+1. Through the `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
+2. Through the `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to
+
+The values you can specify (meaningfully) as of now are:
+
+1. `plan` - can be any of `basic`, `plus`, and `pro`. See https://www.camio.com/price for information on plans
+2. `img_y_size_extraction` - the height of the frames extracted from the videos (before resizing!)
+3. `img_{x,y}_size_cover` - the x,y size (in pixels) of the cover-image after resizing.
+4. `img_{x,y}_size` - the x,y size (in pixels) of the non-cover images after resizing.
+
+Note that if `img_y_size` or `img_y_size_cover` are larger than `img_y_size_extraction` we will replace the value of `img_y_size_extraction` with the larger of the two other values.
+This is because it doesn't make sense to extract at a lower resolution only to scale up.
+
+
+Now we only have one camera (`CAMERA_FRONT`), and we want it on the `pro` plan with all thumbnails extracted to be at 1080p resolution. We would then 
+write the following to a file (call it `/tmp/hook_data.json` for this example).
+
+```json
+{
+    "plan": "pro",
+    "cameras": {
+        "CAMERA_FRONT": {
+            "plan": "pro",
+            "img_y_size_extraction": 1080,
+            "img_x_size_cover": 1920,
+            "img_y_size_cover": 1080,
+            "img_x_size": 1920,
+            "img_y_size": 1080 
+        },
+    },
+    "img_y_size_extraction": 1080,
+    "img_x_size_cover": 1920,
+    "img_y_size_cover": 1080
+}
+```
+
+This file we will pass to the video-import script in a later step.
+
+
 ####  Running the video-importer Script
 
 You are now ready to batch-import videos to Camio through your Camio Box. 
@@ -160,41 +230,60 @@ $ cd ~
 $ cd examples/batch_import/video-importer
 ```
 
+To see how the arguments are named/formatted/ordered as input to the scirpt you can always just give the `--help` flag to the script
+
+```bash
+$ python import_video.py --help
+usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
+                       [-d HOOK_DATA_JSON] [-f HOOK_DATA_JSON_FILE]
+                       folder hook_module host
+
+positional arguments:
+  folder                full path to folder of input videos to process
+  hook_module           full path to hook module for custom functions (a
+                        python file)
+  host                  the IP-address / hostname of the segmenter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         set logging level to debug
+  -q, --quiet           set logging level to errors only
+  -c, --csv             dump csv log file
+  -p PORT, --port PORT  the segmenter port number (default: 8080)
+  -r REGEX, --regex REGEX
+                        regex to find camera name (default:
+                        .*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*)
+  -s STORAGE, --storage STORAGE
+                        full path to the local storage db (default:
+                        ./.processes.shelve)
+  -d HOOK_DATA_JSON, --hook_data_json HOOK_DATA_JSON
+                        a json object containing extra information to be
+                        passed to the hook-module
+  -f HOOK_DATA_JSON_FILE, --hook_data_json_file HOOK_DATA_JSON_FILE
+                        full path to a file containing a json object of extra
+                        info to be passed to the hook module
+```
+
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
-$ python importer.py -v \
-  --folder ~/batch_videos/ \
-  --host 192.168.1.51 \
-  --hook_module ~/examples/batch_import/camio_hooks.py 
-  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4"
-  --hook_data_json '{"plan": "plus"}'
+$ python import_video.py \
+  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+  --host 192.168.1.57 \
+  --port 8080 \
+  --hook_data_json_file /tmp/hook_data.json \
+  "~/my-folder" \ # folder containing input videos
+  "camio_hooks" \ # hooks module with callback functions
+  "192.168.1.57"  # ip-address / hosntame of the segment server
 
 INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
-DEBUG:root:setting camio_hooks data as:
-{'logger': <module 'logging' from '/usr/local/lib/python/2.7.13/lib/python2.7/logging/__init__.pyc'>, u'plan': u'plus'}
-INFO:root:camera_name: C2_Hi20161009
-INFO:root:epoch: 1476018757
-INFO:root:/Users/user/batch_videos/CAMERA_FRONT-rand-1475973147.mp4 (scheduled for upload)
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): test.camio.com
-DEBUG:requests.packages.urllib3.connectionpool:https://test.camio.com:443 "POST /api/cameras/discovered HTTP/1.1" 200 33548
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): test.camio.com
-DEBUG:requests.packages.urllib3.connectionpool:https://test.camio.com:443 "GET /api/cameras/discovered HTTP/1.1" 200 37221
-DEBUG:root:Camera ID: u'ABD07226DFG218614620:CAMERA_FRONT:81219708c6fe2a5eb9cb35896b8ed78610ce9c6f'
-DEBUG:root:assigning job id: [{'job_id': None, 'timestamp': '2016-10-09T06:12:37.000', 'uploaded_on': None, 'filename': '/Users/user/batch_videos/C2_Hi20161009-131237-1476018757.mp4', 'shard_id': None, 'camera': 'C2_Hi20161009', 'given_name': 'C2_Hi20161009.2016-10-09T06:12:37.000.3385bfc912590c2521d829524a7d2136fae517f3.mp4', 'key': '3385bfc912590c2521d829524a7d2136fae517f3', 'discovered_on': '2017-05-11T18:00:14.229431', 'lat': None, 'lng': None, 'confirmed_on': None, 'size': 125297958}]
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): test.camio.com
-DEBUG:requests.packages.urllib3.connectionpool:https://test.camio.com:443 "PUT /api/jobs HTTP/1.1" 200 575
-DEBUG:root:upload item: 1
-DEBUG:root:len(unscheduled)=1
-INFO:root:1/1 uploading /Users/user/batch_videos/C2_Hi20161009-131237-1476018757.mp4
-INFO:root:input-file /Users/user/batch_videos/C2_Hi20161009-131237-1476018757.mp4 has been renamed C2_Hi20161009.2016-10-09T06:12:37.000.3385bfc912590c2521d829524a7d2136fae517f3.mp4
-DEBUG:root:Params: {'job_id': u'lkSSSNhbWlvL443RyEAsSA0pvYhiAgKCIoeaACgw', 'timestamp': '2016-10-09T06:12:37.000', 'uploaded_on': None, 'filename': '/Users/user/batch_videos/C2_Hi20161009-131237-1476018757.mp4', 'shard_id': u'0', 'camera': 'C2_Hi20161009', 'given_name': 'C2_Hi20161009.2016-10-09T06:12:37.000.3385bfc912590c2521d829524a7d2136fae517f3.mp4', 'key': '3385bfc912590c2521d829524a7d2136fae517f3', 'discovered_on': '2017-05-11T18:00:14.229431', 'lat': None, 'lng': None, 'upload_url': u'https://storage.googleapis.com/camio_test_mr_output/bij-agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKCIoeaACgw-0?GoogleAccessId=397790679937@developer.gserviceaccount.com&Expires=1494552017&Signature=J0WIg9QDbDsKwUPyrsCbqAs2aFf34V%2BacINp9p0wvt1dZSTb%2BadEsZ1QsqkDTNC6n5%2FHUExuVcXTNkq1GT%2BPEPY9RyzMwEkUYr2CT7Ctkmai7SqQ0GiRdZx5DUTVht77huEGYh6Ypt3YJouzoPLZIRoWTmR3kW4CQ1h%2BpzOAsxU%3D', 'confirmed_on': None, 'size': 125297958}
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 192.168.1.13
-DEBUG:requests.packages.urllib3.connectionpool:http://192.168.1.13:8080 "POST /box/content?access_token=AQA453ffXowjFgtSyEyXnRh8wiEYJZEdsT26mdiH7Kj2B_73-t56bk-sRoBVgaonxCMpi4CAmLkvmT0fz&local_camera_id=81219708c6fe2a5eb9cb35896b8ed78610ce9c6f&camera_id=109010722686218614620:C220161009:81219708c6fe2a5eb9cb35896b8ed78610ce9c6f&hash=646c65289f24f26577912ea1deac8f6b26a847be&timestamp=2016-10-09T06:12:37.000 HTTP/1.1" 204 0
+INFO:root:camera_name: CAMERA_FRONT
+INFO:root:epoch: 1475973350
+INFO:root:/Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4 (scheduled for upload)
+INFO:root:1/1 uploading /Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4
 INFO:root:completed
-DEBUG:root:registering jobs: set([(u'lkSSSNhbWlvL443RyEAsSA0pvYhiAgKCIoeaACgw', u'0')])
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): storage.googleapis.com
-DEBUG:requests.packages.urllib3.connectionpool:https://storage.googleapis.com:443 "PUT /camio_test_mr_output/bij-SDFzfmNhbW234FSDwsssvYhiAgKCIoeaACgw-0?GoogleAccessId=984550679937@developer.gserviceaccount.com&Expires=1494552017&Signature=J0WIg9QDbDsKwUPyrsCbqAs2aFf34V%2BacINp9p0wvt1dZSTb%2BadEsZ1QsqkDTNC6n5%2FHUExuVcXTNkq1GT%2BPEPY9RyzMwEkUYr2CT7Ctkmai7SqQ0GiRdZx5DUTVht77huEGYh6Ypt3YJouzoPLZIRoWTmR3kW4CQ1h%2BpzOAsxU%3D HTTP/1.1" 200 0
+INFO:root:finishing up...
+INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
 ```
 
 If you get any errors about missing the [`device_id`](#set-the-necessary-environment-variables) of the Camio Box or an unauthenticated error, try to set the environment variables again. To check that the environment variables

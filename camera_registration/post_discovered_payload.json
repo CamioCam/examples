@@ -8,7 +8,7 @@
         "rtsp_server": "rtsp://{{username}}:{{password}}@{{ip_address}}:{{port}}",
         "rtsp_path": "/live/stream/{{stream}}",
         "user_id": "camio_user_id",
-        "default_values": {
+        "actual_values": {
             "password": {
                 "is_multiselect": "false",
                 "options": [{"value": "default_password_for_camera"}]
@@ -30,9 +30,29 @@
                 ]
             },
             "channel" : {
+            },
+            "img_x_size": {
+                "options": [
+                    {"value": 1280}
+                ]
+            },
+            "img_y_size": {
+                "options": [
+                    {"value": 720}
+                ]
+            },
+            "img_x_size_cover": {
+                "options": [
+                    {"value": 1280}
+                ]
+            },
+            "img_y_size_cover": {
+                "options": [
+                    {"value": 720}
+                ]
             }
         },
-        "actual_values": {
+        "default_values": {
         },
         "is_authenticated": false
     }
