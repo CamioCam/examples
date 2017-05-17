@@ -57,9 +57,9 @@ class BatchDownloader(object):
         )
         # positional args
         self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
-        self.parser.add_argument('output_file', nargs='?', type=str, default="{{job_id}}_results.json", 
-                help="full path to the output file where the resulting labels will be stored in json format")
-
+        self.parser.add_argument('output_file', nargs='?', type=str, default=None,
+                                help="full path to the output file where the resulting labels will \
+                                be stored in json format (default = {job_id}_results.json)")
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
@@ -73,6 +73,10 @@ class BatchDownloader(object):
         if not self.args.job_id:
             logging.info("no job_id specified, getting list of jobs")
         self.job_id = self.args.job_id
+        if not self.args.output_file and self.job_id:
+            self.results_file = "%s_results.json" % self.job_id
+        else:
+            self.results_file = self.args.output_file
         if self.args.access_token:
             self.access_token = self.args.access_token
         if self.args.testing:
@@ -145,25 +149,31 @@ class BatchDownloader(object):
         these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
         into a dictionary of some sorts to be returned to the user
         """
-        text = " ".join(camera_names)
-        # start_time = start_time - timedelta(hours=7)
-        # end_time = end_time - timedelta(hours=7)
-        text = "all " + text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
-        ret = self.make_search_request(text)
-        results = ret.get('result')
-        if not results: return None
-        logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
+        more_results = True
         labels = dict() 
-        for index, bucket in enumerate(results.get('buckets')):
-            logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
-            for frameidx, image in enumerate(bucket.get('images')):
-                logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image['labels'])
-                labels[image['date_created']] = {
-                    'labels': image['labels'],
-                    'camera': {
-                        'name': image['source']
-                    },
-                }
+        while more_results:
+            text = " ".join(camera_names)
+            text = "all " + text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
+            ret = self.make_search_request(text)
+            results = ret.get('result')
+            if not results: return None
+            logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
+            for index, bucket in enumerate(results.get('buckets')):
+                logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
+                for frameidx, image in enumerate(bucket.get('images')):
+                    logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image['labels'])
+                    if labels.get(image['date_created']):
+                        logging.warning("NOTE - duplicate timestamps found, possible bug in iteration")
+                    labels[image['date_created']] = {
+                        'labels': image['labels'],
+                        'camera': {
+                            'name': image['source']
+                        },
+                    }
+            # see if there are more results and if so shift the start time of the query to reflect the new range
+            more_results = results.get('more_results', False)
+            if more_results and results.get('latest_date_considered'): 
+                start_time = dateutil.parser.parse(results.get('latest_date_considered'))
         return labels
     
     def datetimeIterator(self, from_date=datetime.now(), to_date=None, delta = timedelta(minutes = 10)):
@@ -174,14 +184,19 @@ class BatchDownloader(object):
 
     def gather_labels(self):
         start, end = self.earliest_datetime, self.latest_datetime
-        labels = dict()
+        labels = dict(job_id=self.job_id, earliest_date=self.earliest_date, latest_date=self.latest_date, labels={})
         for endtime in self.datetimeIterator(from_date=start, to_date=end):
             logging.debug("iterating over time slot: %r to %r", start, endtime)
             subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
             start = endtime
-            labels.update(subset_labels)
+            labels['labels'].update(subset_labels)
         logging.debug("\nall found labels:\n%r", json.dumps(labels))
         return labels
+
+    def dump_labels_to_file(self):
+        logging.debug("dumping label info to file: %s", self.results_file)
+        with open(self.results_file, 'w') as fh:
+            fh.write(json.dumps(self.labels))
 
     def run(self):
         self.parse_argv_or_exit()
@@ -189,6 +204,7 @@ class BatchDownloader(object):
             self.gather_all_job_data()
         self.job = self.gather_job_data()
         self.labels = self.gather_labels()
+        self.dump_labels_to_file()
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
