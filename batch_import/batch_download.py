@@ -26,7 +26,9 @@ import logging
 import json
 import urllib
 import requests
+import dateutil.parser
 import textwrap
+from datetime import datetime,timedelta
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
@@ -42,7 +44,7 @@ class BatchDownloader(object):
         self.CAMIO_SEARCH_ENDPOINT = "api/search"
         self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
         self.access_token = None
-	self.job_id = None
+        self.job_id = None
         self.job = None
 
         self.parser = argparse.ArgumentParser(
@@ -50,7 +52,10 @@ class BatchDownloader(object):
             description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
         )
         # positional args
-        self.parser.add_argument('job_id', type=str, help='the ID of the job that you wish to download the labels for')
+        self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
+        self.parser.add_argument('output_file', nargs='?', type=str, default="{{job_id}}_results.json", 
+                help="full path to the output file where the resulting labels will be stored in json format")
+
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
@@ -61,7 +66,9 @@ class BatchDownloader(object):
 
     def parse_argv_or_exit(self):
         self.args = self.parser.parse_args()
-	self.job_id = self.args.job_id
+        if not self.args.job_id:
+            logging.info("no job_id specified, getting list of jobs")
+        self.job_id = self.args.job_id
         if self.args.access_token:
             self.access_token = self.args.access_token
         if self.args.testing:
@@ -81,8 +88,25 @@ class BatchDownloader(object):
             self.access_token = token
         return self.access_token
 
+    def gather_all_job_data(self):
+        """ GET /api/jobs to list all job data to user """
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        logging.debug("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
+        ret = requests.get(self.get_job_url(), headers=headers)
+        if not ret.status_code in (200, 204):
+            fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
+        jobs = ret.json()
+        logging.info("found job data:\n%r", jobs)
+        sys.exit(0)
+
     def get_job_url(self):
-        return "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
+        if self.job_id:
+            return "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
+        else:
+            return "%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT)
+
+    def get_search_url(self, text):
+        return "%s/%s?text=%s&num_results=100" % (self.CAMIO_SERVER_URL, self.CAMIO_SEARCH_ENDPOINT, text)
 
     def gather_job_data(self):
         headers = {"Authorization": "token %s" % self.get_access_token() }
@@ -93,25 +117,65 @@ class BatchDownloader(object):
         logging.debug("got job-information returned from server:\n%r", ret.text)
         self.job = ret.json()
         self.earliest_date, self.latest_date = self.job['request']['earliest_date'], self.job['request']['latest_date']
+        self.earliest_datetime = dateutil.parser.parse(self.earliest_date)
+        self.latest_datetime = dateutil.parser.parse(self.latest_date)
+        logging.debug("earliest datetime: %r, latest datetime: %r", self.earliest_datetime, self.latest_datetime)
         self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
         logging.info("Job Definition | earliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
         logging.info("\tcameras included in inquiry: %r", self.cameras)
         return self.job
 
     def make_search_request(self, text):
-        pass
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        url = self.get_search_url(text)
+        ret = requests.get(url, headers=headers)
+        if not ret.status_code in (200, 204):
+            logging.error("unable to obtain search results with query (%s)", text)
+        logging.debug("got search results for query (%s)", text)
+        logging.debug("results:\n%r", ret.text)
+        return ret.json()
 
-    def get_results_for_epoch(self, start_time, end_time, camera_name):
+    def get_results_for_epoch(self, start_time, end_time, camera_names):
         """ 
         use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
         these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
         into a dictionary of some sorts to be returned to the user
         """
-        pass
+        text = " ".join(camera_names)
+        # start_time = start_time - timedelta(hours=7)
+        # end_time = end_time - timedelta(hours=7)
+        text = text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
+        ret = self.make_search_request(text)
+        results = ret.get('result')
+        if not results: return None
+        logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
+        labels = dict() 
+        for bucket in results.get('buckets'):
+            logging.debug("for date (%s) found labels: %r", bucket['earliest_date'], bucket.get('labels'))
+            labels[bucket['earliest_date']] = bucket.get('labels')
+        return labels
+    
+    def datetimeIterator(self, from_date=datetime.now(), to_date=None, delta = timedelta(minutes = 10)):
+        while to_date is None or from_date <= to_date:
+            from_date = from_date + delta
+            yield from_date
+        return
+
+    def gather_labels(self):
+        start, end = self.earliest_datetime, self.latest_datetime
+        labels = dict()
+        for endtime in self.datetimeIterator(from_date=start, to_date=end):
+            logging.debug("iterating over time slot: %r to %r", start, endtime)
+            subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
+            start = endtime
+            labels.update(subset_labels)
 
     def run(self):
         self.parse_argv_or_exit()
-        self.gather_job_data()
+        if not self.job_id:
+            self.gather_all_job_data()
+        self.job = self.gather_job_data()
+        self.labels = self.gather_labels()
         # grab the job from the job API
         # forward that job info to some function that loops over the start-to-end-time
         # have the function call get_result_for_epoch with small time windows that assembles the 
