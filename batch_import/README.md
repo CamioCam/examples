@@ -52,18 +52,54 @@ Once these environment variables are set, there are three more steps before you 
 use a network scanning tool like [Fing](https://help.camio.com/hc/en-us/articles/206214636) to find its IP address.
 3. Create a regular expression for the importer's [`--regex` argument](https://github.com/tnc-ca-geo/video-importer#metadata-extraction-with---regex) that defines the capture groups for `camera_name` and `timestamp` extracted from the video filenames being imported.
 
-#### Setting the Camera Plan
+#### Setting Camera-specific Data (plans, image resolution, etc)
 
-Camio has varying levels of service; starting off with BASIC, moving up to PLUS, and finally the PRO plan. You can tell Camio which plan you would like to use for
-your batch-input source by specifying the 'plan' variable inside of the json passed to the `--hook_data_json` argument to the video-importer. This argument
-must be a valid json dictionary, and anything defined in it will be passed to the `camio_hooks.py` module. As an example, you would do the following to set the plan to
-'basic' for your camera.
+There are two main ways to get data into the `camio_hooks.py` module from the video-import script.
 
-```bash
-python import_video.py "...some arguments.." --hook_data_json '{"plan": "basic"}'
+1. Through the `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
+2. Through the `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to the hooks.
+
+The structure of the JSON passed in should look something like what follows:
+
+```json
+{
+    "plan": "plus",
+    "cameras": {
+        "camera_name_2": {
+            "plan": "pro",
+            "img_y_size_extraction": 1080,
+            "img_x_size_cover": 1920,
+            "img_y_size_cover": 1080,
+            "img_x_size": 1280,
+            "img_y_size": 720
+        },
+        "camera_name_1": {
+            "plan": "pro",
+            "img_y_size_extraction": 1080,
+            "img_x_size_cover": 1920,
+            "img_y_size_cover": 1080,
+            "img_x_size": 1280,
+            "img_y_size": 720
+        },
+    },
+    "img_y_size_extraction": 1080,
+    "img_x_size_cover": 1920,
+    "img_y_size_cover": 1080
+}
 ```
 
-Valid values for the plan variable are 'basic', 'plus', and 'pro'.
+Notice that you are able to specify on a per-camera basis by putting the values inside of the `cameras.{{camera_name}}` objects. These values will only apply to the camera with
+`camera_name` as the name. If you place the values at the top-level, then we will use those values for any cameras who do not have custom values specified.
+
+The values you can specify (meaningfully) as of now are:
+
+1. `plan` - can be any of `basic`, `plus`, and `pro`. See https://www.camio.com/price for information on plans
+2. `img_y_size_extraction` - the height of the frames extracted from the videos (before resizing!)
+3. `img_{x,y}_size_cover` - the x,y size (in pixels) of the cover-image after resizing.
+4. `img_{x,y}_size` - the x,y size (in pixels) of the non-cover images after resizing.
+
+Note that if `img_y_size` or `img_y_size_cover` are larger than `img_y_size_extraction` we will replace the value of `img_y_size_extraction` with the larger of the two other values.
+This is because it doesn't make sense to extract at a lower resolution only to scale up.
 
 
 #### Running the Import
@@ -75,7 +111,7 @@ $ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
   --host 192.168.1.57 \
   --port 8080 \
-  --hook_data_json '{"plan": "basic"}' \
+  --hook_data_json_file /tmp/camio_hook_data.json \
   "~/my-folder" \ # folder containing input videos
   "camio_hooks" \ # hooks module with callback functions
   "192.168.1.57"  # ip-address / hosntame of the segment server
