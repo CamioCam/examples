@@ -65,7 +65,7 @@ import requests
 import logging
 
 CAMIO_SERVER_URL = "https://www.camio.com"
-CAMIO_TEST_SERVER_URL = "https://camio-test.appspot.com"
+CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 
 REGISTER_CAMERA_ENDPOINT = "/api/cameras/discovered"
 DEBUG_OUTPUT = False
