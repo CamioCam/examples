@@ -180,6 +180,7 @@ def register_camera(camera_name, host=None, port=None):
             is_authenticated=True,
             should_config=True # toggles the camera 'ON'
     )
+    Log.info("registering camera:\n\tname=%s\n\tlocal_camera_id=%s", camera_name, local_camera_id)
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     response = requests.post(CAMIO_REGISTER_URL, headers=headers, json=payload)
