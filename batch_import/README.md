@@ -23,10 +23,6 @@ segmentation and first-level analysis of the video content before submitting the
 
 Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115002492123)
 
-#### Boot-Up Your Camio Box
-
-Your Camio Box needs to be powered on, registered under your account, and on the same local network as the computer running the `import_video.py` script.
-Your Camio Box can be registered through [the /box/register page](https://www.camio.com/box/register).
 
 #### Setting up the Environment
 
