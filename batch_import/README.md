@@ -227,5 +227,37 @@ Example:
 So this script takes in a job-id, queries the [Camio API](https://api.camio.com/#jobs) to get the job definition, then uses 
 the job definition and the [Camio search API](https://api.camio.com/#search) to go through all events that belong to that job. While
 going through all of these events it assembles the labels into a json object and writes this object to the output file (which can be specified 
-by you or simply defaults to {job_id}_results.json).
+by you or simply defaults to `{job_id}_results.json`). This json object has the following structure
+
+```json
+{
+    "earliest_date": "1970-01-01T12:00:00.0000-0000",
+    "latest_date": "1970-01-01T12:30:00.0000-0000",
+    "job_id": "sdfslkjfjowejoijsldkjflksjdf",
+    "labels": {
+         "1970-01-01T12:00:01.0345-0000": {
+              "cameras": {
+                  "camera_name_1": {
+                   }
+                },
+                "labels": [
+                    "dog",
+                    "car",
+                    "human"
+                ]
+            }
+         "1970-01-01T12:00:03.02089-0000": {
+              "cameras": {
+                  "camera_name_1": {
+                   }
+                },
+                "labels": [
+                    "human",
+                    "suv",
+                    "tree"
+                ]
+            }
+    }
+}
+```
 
