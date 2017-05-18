@@ -1,25 +1,33 @@
 Batch Import
 ===============
 
-These examples show how to import video files in bulk using Camio.
+This README documents the usage of both the `import_video.py` script that will traverse and upload a directory of videos and the `camio_hooks.py` module
+that allows the `import_video.py` script to interface with the Camio service. 
+
+For a concrete, step-by-step example of how to use these programs, see the [EXAMPLE.md](batch_import/EXAMPLE.md) file. 
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 
 The open source [video importer](https://github.com/tnc-ca-geo/video-importer) allows you to specify a set of hooks that describe how the importer
 should interact with the segmentation and labeling service of your choosing. To use the video-importer with the Camio service, you must supply the
 [`camio_hooks.py`](camio_hooks.py) module as the value for the the [`--hooks_module`](https://github.com/tnc-ca-geo/video-importer#hooks_module)
- argument of the video importer.
+argument of the video importer. You must also have a [batch-import-enabled Camio Box VM](#obtain-and-set-up-your-batch-import-enabled-camio-box) 
+running on your local network.
 
 The video importer calls the [`register_camera`](https://github.com/tnc-ca-geo/video-importer#register_camera) 
 and [`post_video_content`](https://github.com/tnc-ca-geo/video-importer#post_video_content) functions that take care 
 of processing the video with Camio services. These functions integrate seamlessly with a Camio Box running on your local network and will handle the 
 segmentation and first-level analysis of the video content before submitting the results to Camio servers for further processing and labeling.
 
+#### Obtain and Set-up Your Batch-Import Enabled Camio Box
+
+Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115002492123)
+
 
 #### Setting up the Environment
 
-To use the [`camio_hooks.py`](camio_hooks.py) module, Camio needs to know some account information. You can either supply this information in json format through the 
-`--hook_data_json` argument, or you can define environment variables. The environment variables are:
+To use the [`camio_hooks.py`](camio_hooks.py) module properly, you must define some information specific to your Camio account. This information is defined through
+the usage of environment variables. The required variables are:
 
 | Variable | Description |
 | -------- | ------------|
@@ -106,7 +114,7 @@ Camio will replace the value of `img_y_size_extraction` with the larger of the t
 This is because it doesn't make sense to extract at a lower resolution only to scale up.
 
 
-#### Running the Import
+#### Running `import_video.py` 
 
 Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#running-the-importer) with a command line that looks something like this:
 
@@ -180,7 +188,7 @@ Where `{{job_id}}` is the value returned returned from a `PUT` request to the `h
 ### Getting Job Results
 
 After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a `job_id`. 
-You can use this value along with the [`batch_download.py](batch_import/batch_download.py) script to download bookmarks of all labels for all events that
+You can use this value along with the [`batch_download.py`](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
 were processed through the batch-import job.
 
 To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
