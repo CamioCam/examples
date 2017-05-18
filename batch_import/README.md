@@ -118,7 +118,7 @@ Camio will replace the value of `img_y_size_extraction` with the larger of the t
 This is because it doesn't make sense to extract at a lower resolution only to scale up.
 
 
-#### Running the Import
+#### Running `import_video.py` 
 
 Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#running-the-importer) with a command line that looks something like this:
 
@@ -192,7 +192,7 @@ Where `{{job_id}}` is the value returned returned from a `PUT` request to the `h
 ### Getting Job Results
 
 After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a `job_id`. 
-You can use this value along with the [`batch_download.py](batch_import/batch_download.py) script to download bookmarks of all labels for all events that
+You can use this value along with the [`batch_download.py`](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
 were processed through the batch-import job.
 
 To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
