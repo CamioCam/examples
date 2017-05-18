@@ -43,14 +43,16 @@ $ git submodule update --init
 Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
 Cloning into '/private/tmp/examples/batch_import/video-importer'...
 Submodule path 'batch_import/video-importer': checked out '79ef21f84697643824f6d31fb05699bc695d9135'
-$ cd examples/batch_import/video-importer
+$ cd examples/batch_import/video-importer/
 $ pwd
 /home/user/examples/batch_import/video-importer
 $ ls -l
-total 48
--rw-r--r--  1 user  staff  1062 May  1 15:32 LICENSE
--rw-r--r--  1 user  staff  7145 May  1 18:57 README.md
--rw-r--r--  1 user  staff  9408 May  1 18:57 import_video.py
+total 80
+-rw-r--r--  1 john  wheel   1062 May 18 16:07 LICENSE
+-rw-r--r--  1 john  wheel  10368 May 18 16:07 README.md
+-rw-r--r--  1 john  wheel   2552 May 18 16:07 hooks_template.py
+-rw-r--r--  1 john  wheel  14911 May 18 16:07 import_video.py
+-rw-r--r--  1 john  wheel    762 May 18 16:07 setup.py
 $ python setup.py install
 running install
 running install_lib
