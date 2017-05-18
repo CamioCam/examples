@@ -20,12 +20,7 @@ segmentation and first-level analysis of the video content before sending off th
 
 #### Obtain and Set-up Your Batch-Import Enabled Camio Box
 
-Follow all of the instructions listed in 
-[this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115000667046-How-to-Setup-Camio-Box-i)
-but (IMPORTANT) use [this version of Camio Box VM for VirtualBox](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) 
-instead of the version The reason for the switch is that 
-[this new version](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) of the Camio Box VM includes support for batch-import mode
-while the version shown in that help-article does not. The rest of the steps are the same.
+Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115002492123)
 
 #### Boot-Up Your Camio Box
 
