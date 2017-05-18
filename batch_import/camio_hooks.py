@@ -26,6 +26,9 @@ CAMIO_PARAMS = {}
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
+# if posting to box fails, wait this long before trying again
+POST_FAILURE_RETRY_SECONDS = 25
+
 # handle to logger
 Log = None
 
@@ -135,8 +138,8 @@ def get_camera_config(local_camera_id):
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
     response = requests.get(url, headers=headers)
-    Log.debug(response.text)
     response = response.json()
+    Log.debug("cameras under account:\n%r", [response[camera].get('name') for camera in response])
     return response[local_camera_id]
 
 def generate_actual_values(camera_name):
@@ -193,11 +196,10 @@ def register_camera(camera_name, host=None, port=None):
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
     response = requests.post(url, headers=headers, json=payload)
-    Log.debug(response.text)
     try:
         config = get_camera_config(local_camera_id)
     except:
-        Log.debug("key error for new camera, waiting 15 seconds to retry")
+        Log.info("key error for new camera, waiting 15 seconds to retry")
         time.sleep(15)
         config = get_camera_config(local_camera_id)
     return config
@@ -235,9 +237,21 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
         Log.error("unable to locate video-file: %s, continuing", filepath)
         return False
     Log.debug("posting video content: file=%s, camera=%s, timestamp=%s", filepath, camera_name, timestamp)
-    with open(filepath, 'rb') as fh:
-        response = requests.post(url, data=fh)
-    return response.status_code in (200, 204)
+    repsonse = None
+    try:
+        with open(filepath, 'rb') as fh:
+            response = requests.post(url, data=fh)
+    except Exception, e:
+        Log.error("error while posting video content to Box")
+        Log.error(traceback.format_exc())
+        Log.error("backing off for %d seconds before retry", POST_FAILURE_RETRY_SECONDS)
+        for i in range(0, POST_FAILURE_RETRY_SECONDS, 5):
+            Log.info("waited: %d seconds...", i)
+        Log.info("back-off wait over, retrying POST video content")
+        with open(filepath, 'rb') as fh:
+            response = requests.post(url, data=fh)
+
+    return response and response.status_code in (200, 204)
 
 def assign_job_ids(self, db, unscheduled):
     item_count = len(unscheduled)

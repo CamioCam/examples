@@ -169,9 +169,11 @@ def main():
     post_values = generate_payload(args)
     headers = generate_headers(args)
     if not post_payload(post_values, headers):
-        logging.error("error registering camera (name: %s, ID: %s) with Camio servers", args.camera_name, args.local_camera_id)
+        logging.error("error registering camera (name: %s, ID: %s) with Camio servers",
+                      args.camera_name, args.local_camera_id)
         sys.exit(1)
-    logging.info("successfully registered camera (name: %s, ID: %s) with Camio servers", args.camera_name, args.local_camera_id)
+    logging.info("successfully registered camera (name: %s, ID: %s) with Camio servers",
+                 args.camera_name, args.local_camera_id)
     sys.exit(0)
 
 
