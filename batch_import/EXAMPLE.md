@@ -318,7 +318,6 @@ python batch_download.py --help
 Which will output the following:
 
 ```sh
-john@Carters-MacBook-Pro-2: ~/examples/batch_import   (john)
 $ python batch_download.py --help
 usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
                          [job_id] [output_file]
@@ -336,4 +335,73 @@ INFO:root:gathering over time slot: '2017-05-17T13:17:36' to '2017-05-17T13:27:3
 INFO:root:finished gathering labels
 INFO:root:writing label info to file: /home/user/mylabels.json
 INFO:root:labels are now available in: /home/user/mylabels.json
+```
+
+Now if you go and look at the output file (`/home/user/mylabels.json`), it will look something like this.
+
+```json
+{
+  "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw",
+  "latest_date": "2016-10-08T17:42:26.771000",
+  "earliest_date": "2016-10-08T17:02:27.000",
+  "labels": {
+    "2016-10-08T17:30:56.715-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "b60d4781f4a42649c9734d77af71d5aa4f047ff9",
+        "_color_orange",
+        "_color_gray",
+        "_color_red"
+      ]
+    },
+    "2016-10-08T17:22:07.674-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "_color_black",
+        "window",
+        "tire",
+        "_color_gray",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+      ]
+    },
+    "2016-10-08T17:41:49.294-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "806f3186880404b7d37a75802e59fae18c677671",
+        "_ml_mail",
+        "_color_black",
+        "_ml_human",
+        "_color_blue",
+        "_color_gray",
+        "_ml_approaching"
+      ]
+    },
+    "2016-10-08T17:20:48.254-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "_color_black",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+      ]
+    },
+    "2016-10-08T17:39:36.374-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": []
+    },
+    "2016-10-08T17:37:59.741-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": []
+    },
+}
 ```
