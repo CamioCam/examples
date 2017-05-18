@@ -179,7 +179,6 @@ python batch_download.py --help
 Which will output the following:
 
 ```sh
-john@Carters-MacBook-Pro-2: ~/examples/batch_import   (john)
 $ python batch_download.py --help
 usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
                          [job_id] [output_file]
@@ -248,6 +247,7 @@ by you or simply defaults to `{job_id}_results.json`). This json object has the 
                     "human"
                 ]
             }
+         },
          "1970-01-01T12:00:03.02089-0000": {
               "cameras": {
                   "camera_name_1": {
@@ -261,6 +261,7 @@ by you or simply defaults to `{job_id}_results.json`). This json object has the 
                     "tree"
                 ]
             }
+        }
     }
 }
 ```
