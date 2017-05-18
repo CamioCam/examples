@@ -7,7 +7,7 @@ Batch Import Concrete Example
 2. A [batch-import-enabled Camio Box Virtual Machine](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
 4. The Camio Box IP address (explained in the [get IP address section](#get-the-camio-box-ip-address))
-5. A directory of videos that you wish to process through Camio
+5. [The testing directory of videos](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip)
 6. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 7. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
 
@@ -155,17 +155,34 @@ Look for the entry with the MAC address of your Camio Box (for VMs this will sta
 Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. This will kick off a scan
 of the network, displaying all of the devices that it has located. Look through the list for the MAC address of your Camio Box and note down the IP address listed.
 
-
 ##### Constructing the File-Parsing Regex
 
-For the sake of the example, let's say that your directory of video files for batch-import is located at `~/batch_videos/`, and the filesnames have the
-format of 
+You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
+[supplied by Camio](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip). To get these files perform the following:
+
+```sh
+$ cd ~
+$ wget https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
+--2017-05-18 01:39:21--  https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
+Resolving storage.googleapis.com... 2607:f8b0:4005:809::2010, 172.217.6.48
+Connecting to storage.googleapis.com|2607:f8b0:4005:809::2010|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 318625401 (304M) [application/zip]
+Saving to: ‘batch_import_video_files.zip’
+batch_import_video_files  75%[=========================>         ] 230.87M  27.1MB/s    eta 3s
+
+$ unzip batch_import_video_files.zip
+Archive:  batch_import_video_files.zip
+   creating: input_videos/
+  inflating: input_videos/hikvision_office_test-camera-1495068758.mp4
+  inflating: input_videos/hikvision_office_test-camera-1495069946.mp4
+```
+
+You will now have a directory `input_videos` that contians the two files:
 
 ```
-$ ls ~/batch_videos
-CAMERA_FRONT-rand-1475973147.mp4
-CAMERA_FRONT-rand-1475973267.mp4
-CAMERA_FRONT-rand-1475973350.mp4
+hikvision_office_test-camera-1495068758.mp4
+hikvision_office_test-camera-1495069946.mp4
 ```
 
 Then you would use the following string as the regular expression passed to the video-import script.
@@ -272,7 +289,7 @@ $ python import_video.py \
   --host 192.168.1.57 \
   --port 8080 \
   --hook_data_json_file /tmp/hook_data.json \
-  "~/my-folder" \ # folder containing input videos
+  "~/input_videos" \ # folder containing input videos
   "camio_hooks" \ # hooks module with callback functions
   "192.168.1.57"  # ip-address / hosntame of the segment server
 

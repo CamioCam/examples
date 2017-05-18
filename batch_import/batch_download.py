@@ -27,6 +27,7 @@ import os
 import sys
 import argparse
 import logging
+import traceback
 import json
 import urllib
 import requests
@@ -162,9 +163,11 @@ class BatchDownloader(object):
             for index, bucket in enumerate(results.get('buckets')):
                 logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
                 for frameidx, image in enumerate(bucket.get('images')):
-                    logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image['labels'])
+                    logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image.get('labels'))
                     if labels.get(image['date_created']):
                         logging.debug("WARN - duplicate timestamps found, possible bug in iteration")
+                    if not image.get('labels') or len(image['labels']) == 0:
+                        continue
                     labels[image['date_created']] = {
                         'labels': image['labels'],
                         'camera': {
@@ -202,16 +205,17 @@ class BatchDownloader(object):
         logging.info("labels are now available in: %s", self.results_file)
 
     def run(self):
-        self.parse_argv_or_exit()
-        if not self.job_id:
-            self.gather_all_job_data()
-        self.job = self.gather_job_data()
-        self.labels = self.gather_labels()
-        self.dump_labels_to_file()
-        # grab the job from the job API
-        # forward that job info to some function that loops over the start-to-end-time
-        # have the function call get_result_for_epoch with small time windows that assembles the 
-        # labels into a dictionary for you
+        try:
+            self.parse_argv_or_exit()
+            if not self.job_id:
+                self.gather_all_job_data()
+            self.job = self.gather_job_data()
+            self.labels = self.gather_labels()
+            self.dump_labels_to_file()
+        except Exception, e:
+            logging.error("exception during main program flow")
+            logging.error(traceback.format_exc())
+            sys.exit(1)
         return  True
 
 def main():
