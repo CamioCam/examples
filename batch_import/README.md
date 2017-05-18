@@ -8,32 +8,34 @@ For a concrete, step-by-step example of how to use these programs, see the [EXAM
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 
-The open source [video importer](https://github.com/tnc-ca-geo/video-importer) allows you to specify a set of hooks that describe how the importer
-should interact with the segmentation and labeling service of your choosing. To use the video-importer with the Camio service, you must supply the
+The open source [`import_video.py`](https://github.com/tnc-ca-geo/video-importer) program allows you to specify a set of hooks that describe how the importer
+should interact with the segmentation and labeling service of your choosing. To use `import_video.py` with the Camio service, you must supply the
 [`camio_hooks.py`](camio_hooks.py) module as the value for the the [`--hooks_module` argument](https://github.com/tnc-ca-geo/video-importer#hook-module)
- of the video importer. You must also have a batch-import-enabled Camio Box VM running on your local network.
+ of the video importer. You must also have a [batch-import-enabled Camio Box VM](#obtain-and-set-up-your-batch-import-enabled-camio-box) running on your local network.
 
-The video importer calls the [`register_camera`](https://github.com/tnc-ca-geo/video-importer#camera-registration-function) 
-and [`post_video_content`](https://github.com/tnc-ca-geo/video-importer#post-video-content-function) functions that take care 
+The `import_video.py` program calls the [`register_camera`](https://github.com/tnc-ca-geo/video-importer#camera-registration-function) 
+and [`post_video_content`](https://github.com/tnc-ca-geo/video-importer#post-video-content-function) functions defined in the `camio_hooks.py` module that take care 
 of processing the video with the Camio services. These functions are designed to seemelessly integrate with a Camio Box on your local network, which will handle the 
-segmentation and first-level analysis of the vidoe content before sending off the results to Camio servers for further processing and labeling.
+segmentation and first-level analysis of the video content before sending off the results to Camio servers for further processing and labeling.
 
 #### Obtain and Set-up Your Batch-Import Enabled Camio Box
 
-Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115000667046-How-to-Setup-Camio-Box-i
-but (IMPORTANT) use [this version of Camio Box VM for VirtualBox](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) instead of the version
-The reason for the switch is that [this new version](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) of the Camio Box VM includes suppor
-in that help-article does not. The rest of the steps are the same.
+Follow all of the instructions listed in 
+[this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115000667046-How-to-Setup-Camio-Box-i)
+but (IMPORTANT) use [this version of Camio Box VM for VirtualBox](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) 
+instead of the version The reason for the switch is that 
+[this new version](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) of the Camio Box VM includes support for batch-import mode
+while the version shown in that help-article does not. The rest of the steps are the same.
 
 #### Boot-Up Your Camio Box
 
-Your Camio Box needs to be powered on, registered under your account, and on the same local network as the computer running the batch-importer script.
+Your Camio Box needs to be powered on, registered under your account, and on the same local network as the computer running the `import_video.py` script.
 Your Camio Box can be registered through [the /box/register page](https://www.camio.com/box/register).
 
 #### Setting up the Environment
 
-To use the [`camio_hooks.py`](camio_hooks.py) module, Camio needs to know some account information. You can either define this in json format through the 
-`--hook_data_json` argument, or you can define some environment variables for yourself. These variables are:
+To use the [`camio_hooks.py`](camio_hooks.py) module properly, you must define some information specific to your Camio account. This information is defined through
+the usage of environment variables. The required variables are:
 
 | Variable | Description |
 | -------- | ------------|
