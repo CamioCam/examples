@@ -4,16 +4,23 @@ Batch Import Concrete Example
 ### What's Needed
 
 1. A registered Camio account
-2. A Camio Box (either [physical](https://www.camio.com/box) or a [VM](https://www.camio.com/box/vm))
+2. A [batch-import-enabled Camio Box Virtual Machine](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
 4. The Camio Box IP address (explained in the [get IP address section](#get-the-camio-box-ip-address))
-5. A directory of videos that you wish to process through Camio
+5. [The testing directory of videos](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip)
 6. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 7. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
 
 Once you have all of the items listed above, you can start to batch-import videos to Camio.
 
 ### Instructions
+
+#### Obtain and Set-up Your Batch-Import Enabled Camio Box
+
+Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115000667046-How-to-Setup-Camio-Box-in-Oracle-VirtualBox) 
+but (IMPORTANT) use [this version of Camio Box VM for VirtualBox](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) instead of the version listed in that help-article. 
+The reason for the switch is that [this new version](https://storage.googleapis.com/camio_firmware_images/camio-box-os-virtualbox-2017-05-16.zip) of the Camio Box VM includes support for batch-video-import while the version listed 
+in that help-article does not. The rest of the steps are the same.
 
 #### Boot-Up Your Camio Box
 
@@ -23,7 +30,8 @@ Your Camio Box can be registered through [the /box/register page](https://www.ca
 #### Clone the Importer and Use the Camio Hooks
 
 Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) repository, go into the 
-[examples/batch_import/video-importer](examples/batch_import/video-importer) directory.
+[examples/batch_import/video-importer](examples/batch_import/video-importer) directory. Then run the `setup.py` script
+to install the package onto your system.
 
 ```sh
 $ git clone https://www.github.com/CamioCam/examples
@@ -34,6 +42,10 @@ remote: Total 394 (delta 68), reused 0 (delta 0), pack-reused 267
 Receiving objects: 100% (394/394), 87.31 KiB | 138.00 KiB/s, done.
 Resolving deltas: 100% (218/218), done.
 Checking connectivity... done.
+$ git submodule update --init
+Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
+Cloning into '/private/tmp/examples/batch_import/video-importer'...
+Submodule path 'batch_import/video-importer': checked out '79ef21f84697643824f6d31fb05699bc695d9135'
 $ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
@@ -41,8 +53,22 @@ $ ls -l
 total 48
 -rw-r--r--  1 user  staff  1062 May  1 15:32 LICENSE
 -rw-r--r--  1 user  staff  7145 May  1 18:57 README.md
--rw-r--r--  1 user  staff  9408 May  1 18:57 importer.py
+-rw-r--r--  1 user  staff  9408 May  1 18:57 import_video.py
+$ python setup.py install
+running install
+running install_lib
+running build_py
+creating 'dist/import_video-0.1-py2.7.egg' and adding 'build/bdist.macosx-10.12-x86_64/egg' to it
+Installing import_video script to /usr/local/bin
 
+Installed /usr/local/lib/python2.7/site-packages/import_video-0.1-py2.7.egg
+Processing dependencies for import-video==0.1
+Searching for psutil==4.3.1
+Best match: psutil 4.3.1
+Adding psutil 4.3.1 to easy-install.pth file
+# ... more output
+Using /usr/local/lib/python2.7/site-packages
+Finished processing dependencies for import-video==0.1
 ```
 
 #### Set the Necessary Environment Variables
@@ -129,17 +155,34 @@ Look for the entry with the MAC address of your Camio Box (for VMs this will sta
 Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. This will kick off a scan
 of the network, displaying all of the devices that it has located. Look through the list for the MAC address of your Camio Box and note down the IP address listed.
 
-
 ##### Constructing the File-Parsing Regex
 
-For the sake of the example, let's say that your directory of video files for batch-import is located at `~/batch_videos/`, and the filesnames have the
-format of 
+You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
+[supplied by Camio](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip). To get these files perform the following:
+
+```sh
+$ cd ~
+$ wget https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
+--2017-05-18 01:39:21--  https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
+Resolving storage.googleapis.com... 2607:f8b0:4005:809::2010, 172.217.6.48
+Connecting to storage.googleapis.com|2607:f8b0:4005:809::2010|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 318625401 (304M) [application/zip]
+Saving to: ‘batch_import_video_files.zip’
+batch_import_video_files  75%[=========================>         ] 230.87M  27.1MB/s    eta 3s
+
+$ unzip batch_import_video_files.zip
+Archive:  batch_import_video_files.zip
+   creating: input_videos/
+  inflating: input_videos/hikvision_office_test-camera-1495068758.mp4
+  inflating: input_videos/hikvision_office_test-camera-1495069946.mp4
+```
+
+You will now have a directory `input_videos` that contians the two files:
 
 ```
-$ ls ~/batch_videos
-CAMERA_FRONT-rand-1475973147.mp4
-CAMERA_FRONT-rand-1475973267.mp4
-CAMERA_FRONT-rand-1475973350.mp4
+hikvision_office_test-camera-1495068758.mp4
+hikvision_office_test-camera-1495069946.mp4
 ```
 
 Then you would use the following string as the regular expression passed to the video-import script.
@@ -148,6 +191,50 @@ Then you would use the following string as the regular expression passed to the 
 
 This captures the `CAMERA_FRONT` part as the camera name (used for registering the camera with Camio), and parses the `1475973147` part as the Unix-timestamp
 of the video.
+
+
+#### Submitting Camera-Plan and Image-Resolution Data
+
+There are two main ways to get data into the `camio_hooks.py` module from the video-import script.
+
+1. Through the `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
+2. Through the `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to
+
+The values you can specify (meaningfully) as of now are:
+
+1. `plan` - can be any of `basic`, `plus`, and `pro`. See https://www.camio.com/price for information on plans
+2. `img_y_size_extraction` - the height of the frames extracted from the videos (before resizing!)
+3. `img_{x,y}_size_cover` - the x,y size (in pixels) of the cover-image after resizing.
+4. `img_{x,y}_size` - the x,y size (in pixels) of the non-cover images after resizing.
+
+Note that if `img_y_size` or `img_y_size_cover` are larger than `img_y_size_extraction` we will replace the value of `img_y_size_extraction` with the larger of the two other values.
+This is because it doesn't make sense to extract at a lower resolution only to scale up.
+
+
+Now we only have one camera (`CAMERA_FRONT`), and we want it on the `pro` plan with all thumbnails extracted to be at 1080p resolution. We would then 
+write the following to a file (call it `/tmp/hook_data.json` for this example).
+
+```json
+{
+    "plan": "pro",
+    "cameras": {
+        "CAMERA_FRONT": {
+            "plan": "pro",
+            "img_y_size_extraction": 1080,
+            "img_x_size_cover": 1920,
+            "img_y_size_cover": 1080,
+            "img_x_size": 1920,
+            "img_y_size": 1080 
+        },
+    },
+    "img_y_size_extraction": 1080,
+    "img_x_size_cover": 1920,
+    "img_y_size_cover": 1080
+}
+```
+
+This file we will pass to the video-import script in a later step.
+
 
 ####  Running the video-importer Script
 
@@ -160,42 +247,64 @@ $ cd ~
 $ cd examples/batch_import/video-importer
 ```
 
+To see how the arguments are named/formatted/ordered as input to the scirpt you can always just give the `--help` flag to the script
+
+```bash
+$ python import_video.py --help
+usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
+                       [-d HOOK_DATA_JSON] [-f HOOK_DATA_JSON_FILE]
+                       folder hook_module host
+
+positional arguments:
+  folder                full path to folder of input videos to process
+  hook_module           full path to hook module for custom functions (a
+                        python file)
+  host                  the IP-address / hostname of the segmenter
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         set logging level to debug
+  -q, --quiet           set logging level to errors only
+  -c, --csv             dump csv log file
+  -p PORT, --port PORT  the segmenter port number (default: 8080)
+  -r REGEX, --regex REGEX
+                        regex to find camera name (default:
+                        .*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*)
+  -s STORAGE, --storage STORAGE
+                        full path to the local storage db (default:
+                        ./.processes.shelve)
+  -d HOOK_DATA_JSON, --hook_data_json HOOK_DATA_JSON
+                        a json object containing extra information to be
+                        passed to the hook-module
+  -f HOOK_DATA_JSON_FILE, --hook_data_json_file HOOK_DATA_JSON_FILE
+                        full path to a file containing a json object of extra
+                        info to be passed to the hook module
+```
+
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
-$ python importer.py \
+$ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
-  --folder "~/batch_videos" \
-  --host 192.168.1.51 \
-  --hook_module "~/examples/batch_import/camio_hooks.py"
+  --host 192.168.1.57 \
+  --port 8080 \
+  --hook_data_json_file /tmp/hook_data.json \
+  "~/input_videos" \ # folder containing input videos
+  "camio_hooks" \ # hooks module with callback functions
+  "192.168.1.57"  # ip-address / hosntame of the segment server
 
-hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
-cwd: '/Users/user/examples/batch_import/video-importer'
-camera_name: CAMERA_FRONT
-epoch: 1475971347
-INFO:root:/Users/user/natconv_test/CAMERA_FRONT-rand-1475971347.mp4 (scheduled for upload)
-camera_name: CAMERA_FRONT
-epoch: 1475971947
-INFO:root:/Users/user/natconv_test/CAMERA_FRONT-rand-1475971947.mp4 (scheduled for upload)
-camera_name: CAMERA_FRONT
-epoch: 1475972547
-INFO:root:/Users/user/natconv_test/CAMERA_FRONT-rand-1475972547.mp4 (scheduled for upload)
-camera_name: CAMERA_FRONT
-epoch: 1475973147
-INFO:root:/Users/user/natconv_test/CAMERA_FRONT-003227-1475973147.mp4 (scheduled for upload)
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): test.camio.com
-DEBUG:requests.packages.urllib3.connectionpool:https://test.camio.com:443 "POST /api/cameras/discovered HTTP/1.1" 200 3244
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): test.camio.com
-DEBUG:requests.packages.urllib3.connectionpool:https://test.camio.com:443 "GET /api/cameras/discovered HTTP/1.1" 200 3402
-Camera ID: u'109010722686218614620:C220161009:81219708c6fe2a5eb9cb35896b8ed78610ce9c6f'
-INFO:root:1/4 uploading /Users/user/natconv_test/CAMERA_FRONT-rand-1475971347.mp4
-Params: {'job_id': None, 'timestamp': '2016-10-08T17:02:27.000', 'uploaded_on': None, 'filename': '/Users/user/natconv_test/CAMERA_FRONT-rand-1475971347.mp4', 'shard_id': None, 'camera': 'CAMERA_FRONT', 'given_name': 'CAMERA_FRONT.2016-10-08T17:02:27.000.4b0bef93c8b4f6a26f5081630b8ad9fb87bb80e0.mp4', 'key': '4b0bef93c8b4f6a26f5081630b8ad9fb87bb80e0', 'discovered_on': '2017-05-05T12:59:12.476759', 'lat': None, 'lng': None, 'confirmed_on': None, 'size': 372157776}
-DEBUG:requests.packages.urllib3.connectionpool:Starting new HTTP connection (1): 192.168.1.13
+INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
+INFO:root:camera_name: CAMERA_FRONT
+INFO:root:epoch: 1475973350
+INFO:root:/Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4 (scheduled for upload)
+INFO:root:1/1 uploading /Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4
 INFO:root:completed
-INFO:root:2/4 uploading /Users/john/natconv_test/CAMERA_FRONT-rand-1475971947.mp4
-#  ....
-INFO:root:completed
+INFO:root:finishing up...
+INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
 ```
+
+*NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you will need to give it to the [`batch_download.py`](batch_import/batch_download.py)
+script in order to recover the dictionary of labels for all events discovered in the batch-import run you just finished.
 
 If you get any errors about missing the [`device_id`](#set-the-necessary-environment-variables) of the Camio Box or an unauthenticated error, try to set the environment variables again. To check that the environment variables
 are currently set, you can always `echo $CAMIO_BOX_DEVICE_ID` or `echo $CAMIO_OAUTH_TOKEN` and check that the values printed out match what you expect.
@@ -209,3 +318,107 @@ You can search for the name of the camera (that was parsed from the filenames) t
 
 Camio is currently writing some tools to help you recover all of the labels that were generated for the batch-imported videos, but this tool is not available yet. Camio is also designing tools and an API
 that will allow you to check on the status of your video processing.
+
+#### Gathering the Labels
+
+After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a job ID. 
+You can use this value along with the [`batch_download.py](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
+were processed through the batch-import job.
+
+
+To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
+
+```bash
+python batch_download.py --help
+```
+
+Which will output the following:
+
+```sh
+$ python batch_download.py --help
+usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
+                         [job_id] [output_file]
+```
+
+To gather your labels into the file `/home/user/mylabels.json`, you would run the following (assuming the `job_id` is `agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw` as returned from the example above).
+
+```sh
+$ python batch_download.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
+INFO:root:Job Definition:
+INFO:root:  earliest date: u'2017-05-17T13:07:36.000', latest date: u'2017-05-17T13:17:36.120000'
+INFO:root:  cameras included in inquiry: [u'CAMERA_FRONT']
+INFO:root:gathering over time slot: '2017-05-17T13:07:36' to '2017-05-17T13:17:36'
+INFO:root:gathering over time slot: '2017-05-17T13:17:36' to '2017-05-17T13:27:36'
+INFO:root:finished gathering labels
+INFO:root:writing label info to file: /home/user/mylabels.json
+INFO:root:labels are now available in: /home/user/mylabels.json
+```
+
+Now if you go and look at the output file (`/home/user/mylabels.json`), it will look something like this.
+
+```json
+{
+  "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw",
+  "latest_date": "2016-10-08T17:42:26.771000",
+  "earliest_date": "2016-10-08T17:02:27.000",
+  "labels": {
+    "2016-10-08T17:30:56.715-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "b60d4781f4a42649c9734d77af71d5aa4f047ff9",
+        "_color_orange",
+        "_color_gray",
+        "_color_red"
+      ]
+    },
+    "2016-10-08T17:22:07.674-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "_color_black",
+        "window",
+        "tire",
+        "_color_gray",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+      ]
+    },
+    "2016-10-08T17:41:49.294-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "806f3186880404b7d37a75802e59fae18c677671",
+        "_ml_mail",
+        "_color_black",
+        "_ml_human",
+        "_color_blue",
+        "_color_gray",
+        "_ml_approaching"
+      ]
+    },
+    "2016-10-08T17:20:48.254-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "_color_black",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+      ]
+    },
+    "2016-10-08T17:39:36.374-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": []
+    },
+    "2016-10-08T17:37:59.741-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": []
+    },
+}
+```

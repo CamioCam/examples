@@ -1,0 +1,13 @@
+{
+  "555666777": {
+    "rtsp_server": "udp://@224.3.29.71:6972",
+    "model": "IES01MFBNWIY",
+    "local_camera_id": "555666777",
+    "name": "Illustra Essentials IES01MFBNWIY",
+    "rtsp_path": "/",
+    "device_id_discovering": "AQB_CgZYrQLic451f9XOhhkJ7C0JpM4aDS74qnmubCS6UoEl6ldi-k026k-HIcjxmJ4jqXzzK-njLqpBkMrOIwnr",
+    "mac_address": "00:50:f9:e8:29:c4",
+    "ip_address": "",
+    "maker": "Illustra Essentials"
+  }
+}

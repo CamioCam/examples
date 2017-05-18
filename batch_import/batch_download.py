@@ -2,8 +2,8 @@
 
 DESCRIPTION = \
 """
-this script will cycle over a given time-period and download all videos from a given camera that come from
-within that time period using the Camio search API (https://api.camio.com/#search (https://api.camio.com/#search)
+This script will take a Camio job-ID, find the time-boundaries and cameras involved in that job, and iterate over that 
+time range while downloading all of the labels that Camio has annotated the events with.
 
 This script is designed to be used after a batch-import job has been completed and you wish to retreive a
 compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
@@ -16,233 +16,210 @@ Example:
 
     Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
     submitted
+
+    python batch_download.py -v -t SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+
+    timestamp: { user-Id, camera = { camera_id, camera_name, user_id}, labels, event_id }
 """
 
-API_NOTES = \
-"""
-here are some notes on example API calls taken from watching dev-tools in the webapp
-
-
-{
-  "query":
-  {
-    "date":"2017-05-05T20:06:00.005-0000","sort":"desc","cameras":["sharx-east"],"labels":[],
-	"motion_type":"lmo","object_type":"event","content_type":"image","user":"john@camiolog.com","earliest_date_considered":"2017-05-05T04:24:50.871-0000",
-	"latest_date_considered":"2017-05-05T20:01:03.702-0000","text":"sharx-east john@camiolog.com","remainder":"","zones":[],"colors":[],
-	"text_without_date_lowercase":"sharx-east john@camiolog.com","view_tokens_text_matched":[]
-  },
-  "result":
-  {
-    "bucket_type":"event",
-	"buckets": [
-	{
-	  "bucket_id": "ag1zfmNhbWlvbG9nZ2VycncLEgVFdmVudCJsZXYtMTA5MDEwNzIyNjg2MjE4NjE0NjIwLTAwRTA0Q0MyN0NDNS4wXzIwMTctMDUtMDVUMjE6MzM6MTYuNDcwOTk4X2Q5MDU4OWIzLTJkNGItNGYyYy1iNTk4LThmZDVkNjJjNzBlNi5qc29uDA",
-	  "source": "sharx-east",
-	  "labels": [
-	    "_ml_mail",
-	    "_ml_departing",
-	    "_color_black",
-	    "_ml_human",
-	    "_color_gray",
-	    "_ml_approaching"
-	  ],
-	  "earliest_date": "2017-05-05T21:32:58.679-0000",
-	  "latest_date": "2017-05-05T21:33:06.499-0000",
-	  "cover_image_id": "eyJsIjp7ImMiOiJnIiwiayI6ImNvdi0xMDkwMTA3MjI2ODYyMTg2MTQ2MjAtMDBFMDRDQzI3Q0M1LjBfMjAxNy0wNS0wNVQyMTozMzowNC44MDkwNzRfZTJjM2JjOGMtMTlhZi00NGY5LWI0ZjktNTRlY2IyODg4ODFlLmpwZyIsImIiOiJjYW1pb19pbWFnZXMifX0",
-	  "max_interest_level": 3,
-	  "aspect_ratio": 1.7777778,
-	  "images": [
-	    {
-	      "id": "eyJpZCI6IjAwRTA0Q0MyN0NDNS4wXzIwMTctMDUtMDVUMjE6MzM6MDAuNzA4NDA5Xzg4YmI3MjVjLTk1OGItNDI5Ny1iZmQwLWMyMmE2OTI3M2EzYy5qcGciLCJsIjp7ImMiOiJnIiwiayI6InRoLTEwOTAxMDcyMjY4NjIxODYxNDYyMC0wMEUwNENDMjdDQzUuMF8yMDE3LTA1LTA1VDIxOjMzOjI5LjA2OTI5MV9hZmJhYjZmOC1hMjQ4LTQ1ZjAtOWNiNC02OTg1MjUwYTNmMDIudGh1bWJuYWlscy5qc29uIiwiYiI6ImNhbWlvX2ltYWdlcyJ9fQ",
-	      "date_created": "2017-05-05T21:33:00.708-0000",
-	      "content_type": "image/jpeg",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "access_token": "AQBLHWfyV35-Y527KlaxCZHpAs_bVWpMRuXcKrdZd_qGTNkkeuCl_cF1OTPQhKeRROXpbOuPiq8rhGnrIOgWOfZW7sBpKqK1jITqZxXe2vGoLVuhPWGSHN5I9sbgMVv4KJ5BdrOZx_wfiynzvCGQwy8BZgwnt0VEtTQiCXHoLNyT45m3ldc0ANJ8u5icyNVALo9ClknRZYoiIJfWiOoVuY2TID-sq6YjGwtAqHkprBv6sUul-9O_QI1l4MNm3JIojXMxLVBIXtHo8MBAle5-HqKKWgRlRm5gRirLL2u4nZDgqrbm2Z1BLkmtJ-MDIOhrttj11iNj9izLZhAA9D9ivhlrDLbgA-iNfedc333wq7aPlv5JWptQ5dGRjzN6891d7Rx1k7NmsWT-dt9fSryJZGgvRE6aEmBJUAzpSKYvkEYGIWDeCmL9Z363vet4RR8jOlAlKS8T-nGEIbmAqwySrkEX33CQKo_j2bCyz25dbHb9Lw"
-	    },
-	    {
-	      "id": "eyJpZCI6IjAwRTA0Q0MyN0NDNS4wXzIwMTctMDUtMDVUMjE6MzM6MDMuNzk1NTE4X2ZhMzUwYzZmLTk4ZTYtNGM3ZS04MjhkLWU0ZTA1OWUwYzhkYS5qcGciLCJsIjp7ImMiOiJnIiwiayI6InRoLTEwOTAxMDcyMjY4NjIxODYxNDYyMC0wMEUwNENDMjdDQzUuMF8yMDE3LTA1LTA1VDIxOjMzOjI5LjA2OTI5MV9hZmJhYjZmOC1hMjQ4LTQ1ZjAtOWNiNC02OTg1MjUwYTNmMDIudGh1bWJuYWlscy5qc29uIiwiYiI6ImNhbWlvX2ltYWdlcyJ9fQ",
-	      "date_created": "2017-05-05T21:33:03.795-0000",
-	      "content_type": "image/jpeg",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "access_token": "AQBLHWfyV35-Y527KlaxCZHpAs_bVWpMRuXcKrdZd_qGTNkkeuCl_cF1OTPQhKeRROWArjzqdTN-R8qb9jGLI5cMszu2sYSSFEYKNhosntWnxvT52CY_nhKOTO9GbNoZBJy1HPvcdt_VnFcVZFGwhowaD0FWcOTVxEtr94-McX0lLJm3ldc0ANJ8u5icyNVALo9ClknRZYoiIJfWiOoVuY2TID-sq6YjGwtAqHkprBv6sUul-9O_QI1l4MNm3JIojXMxLVBIXtHo8MBAle5-HqKKWgRlRm5gRirLL2u4nZDgqrbm2Z1BLkmtJ-MDIOhrttj11iNj9izLZhAA9D9ivhlrDLbgA-iNfedc333wq7aPlv5JWptQ5dGRjzN6891d7Rx1k7NmsWT-dt9fSryJZGgvRE6aEmBJUAzpSKYvkEYGIWDeCmL9Z363vet4RR8jOlAlKS8T-nGEIbmAqwySrkEX33CQKo_j2bCyz25dbHb9Lw"
-	    },
-	    {
-	      "id": "eyJsIjp7ImMiOiJnIiwiayI6ImNvdi0xMDkwMTA3MjI2ODYyMTg2MTQ2MjAtMDBFMDRDQzI3Q0M1LjBfMjAxNy0wNS0wNVQyMTozMzowNC44MDkwNzRfZTJjM2JjOGMtMTlhZi00NGY5LWI0ZjktNTRlY2IyODg4ODFlLmpwZyIsImIiOiJjYW1pb19pbWFnZXMifX0",
-	      "date_created": "2017-05-05T21:33:04.809-0000",
-	      "content_type": "image/jpeg",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "access_token": "AQCkmgMahb56dfBckAfVXw7q47kASgTjE4Z-SsLrF90IFMnfI6T-Ucc1xQOTPAWdncLuPzdKGHFL85VDlRIR07HdzqZ0eM7Z8ReuE32g3PBTNkAzotdDQnstdazGz4AqFwfHCvcvklloj1yd8x8l_9L60ojl0JkeaMAZtNu82xHw1XrhlaF1LXZqoqjraubx4E1dirme5h3UPURLKh4JxJ2ayIBUfgOp_9Wumi5UJrUyLDA2Lv7qwnLLNUz-iGDx3UlCPCZUFIILvPdsLMB7vsrx_94cVyMIDYJ3nTKh2WDz30Efg2loIdwnIbACvYEPXkQ"
-	    },
-	    {
-	      "id": "eyJpZCI6IjAwRTA0Q0MyN0NDNS4wXzIwMTctMDUtMDVUMjE6MzM6MDUuNDMxODQxXzEzYjdhNjU5LTEyMWMtNDAyYy04ODk3LTlmMWVkYWVkYzM5Mi5qcGciLCJsIjp7ImMiOiJnIiwiayI6InRoLTEwOTAxMDcyMjY4NjIxODYxNDYyMC0wMEUwNENDMjdDQzUuMF8yMDE3LTA1LTA1VDIxOjMzOjI5LjA2OTI5MV9hZmJhYjZmOC1hMjQ4LTQ1ZjAtOWNiNC02OTg1MjUwYTNmMDIudGh1bWJuYWlscy5qc29uIiwiYiI6ImNhbWlvX2ltYWdlcyJ9fQ",
-	      "date_created": "2017-05-05T21:33:05.431-0000",
-	      "content_type": "image/jpeg",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "access_token": "AQBLHWfyV35-Y527KlaxCZHpAs_bVWpMRuXcKrdZd_qGTNkkeuCl_cF1OTPQhKeRROWMRTnFFffpv_fz2NKxQUGeDoySFALvkAbgxIlEGZn0TYZkrz-_TO9iiDSPWF276EWgDgVIR9gbhdSMMeVoxL5FAGSd_RvgPnVSc64AZmCL3Jm3ldc0ANJ8u5icyNVALo9ClknRZYoiIJfWiOoVuY2TID-sq6YjGwtAqHkprBv6sUul-9O_QI1l4MNm3JIojXMxLVBIXtHo8MBAle5-HqKKWgRlRm5gRirLL2u4nZDgqrbm2Z1BLkmtJ-MDIOhrttj11iNj9izLZhAA9D9ivhlrDLbgA-iNfedc333wq7aPlv5JWptQ5dGRjzN6891d7Rx1k7NmsWT-dt9fSryJZGgvRE6aEmBJUAzpSKYvkEYGIWDeCmL9Z363vet4RR8jOlAlKS8T-nGEIbmAqwySrkEX33CQKo_j2bCyz25dbHb9Lw"
-	    },
-	    {
-	      "id": "eyJpZCI6IjAwRTA0Q0MyN0NDNS4wXzIwMTctMDUtMDVUMjE6MzM6MDYuNDk5NDQxXzRmODYzN2RiLTk1MGQtNGQ3YS05NDlhLTYxZjc1YzNiNDBmMi5qcGciLCJsIjp7ImMiOiJnIiwiayI6InRoLTEwOTAxMDcyMjY4NjIxODYxNDYyMC0wMEUwNENDMjdDQzUuMF8yMDE3LTA1LTA1VDIxOjMzOjI5LjA2OTI5MV9hZmJhYjZmOC1hMjQ4LTQ1ZjAtOWNiNC02OTg1MjUwYTNmMDIudGh1bWJuYWlscy5qc29uIiwiYiI6ImNhbWlvX2ltYWdlcyJ9fQ",
-	      "date_created": "2017-05-05T21:33:06.499-0000",
-	      "content_type": "image/jpeg",
-	      "source": "sharx-east",
-	    "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "access_token": "AQBLHWfyV35-Y527KlaxCZHpAs_bVWpMRuXcKrdZd_qGTNkkeuCl_cF1OTPQhKeRROXNFavajVtKzv2M8TMJH7crnDPf5e1xThxa_d9bRzGtlVkuK656GcnyvlVlvwAJllNmCONRRZKGdw0Iyikr_9LRpNPkb74Fyy6DukNk5WCDMJm3ldc0ANJ8u5icyNVALo9ClknRZYoiIJfWiOoVuY2TID-sq6YjGwtAqHkprBv6sUul-9O_QI1l4MNm3JIojXMxLVBIXtHo8MBAle5-HqKKWgRlRm5gRirLL2u4nZDgqrbm2Z1BLkmtJ-MDIOhrttj11iNj9izLZhAA9D9ivhlrDLbgA-iNfedc333wq7aPlv5JWptQ5dGRjzN6891d7Rx1k7NmsWT-dt9fSryJZGgvRE6aEmBJUAzpSKYvkEYGIWDeCmL9Z363vet4RR8jOlAlKS8T-nGEIbmAqwySrkEX33CQKo_j2bCyz25dbHb9Lw"
-	    }
-	  ],
-	  "videos": [
-	    {
-	      "id": "eyJ0IjoiQVFDellvMzZLZ2NpaW5fenRYNFNjQVlrazNHNUZQengzXzc5bGx4a0s4UlVRN1pPRW5yeEREdjBNN3VYN2hSNGI4TklNbGFUWW9Jb0tURTdPTWxoUVduUy1Ua3ZGTmdnRHBLeHNjYnN4d2FTLWpNS2I3S1g0bVJ2azFYQmhacTJOODJCYnoyVmpwV2NCdlRPVUN0RnlEQnNiYTVLWlNfdDhXYXdjRndXejhyOG1ncG51WTY3c2VPTTQwRnpiQ1hNWGxrIiwibCI6eyJjIjoiZyIsImsiOiJtdi0xMDkwMTA3MjI2ODYyMTg2MTQ2MjAtMDBFMDRDQzI3Q0M1LjBfMjAxNy0wNS0wNVQyMTozMjo1My44Mjg1NjVfNzI5NWJmODQtOGY2Ni00M2JiLTgxYjYtMTkwMjdjOGM4YWMwLm1wNCIsImIiOiJjYW1pbyJ9fQ",
-	      "date_created": "2017-05-05T21:32:53.828-0000",
-	      "content_type": "video/mp4",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "video_length": 11.29,
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "movie": {
-		"server_id": "mv-109010722686218614620-00E04CC27CC5.0_2017-05-05T21:32:53.828565_7295bf84-8f66-43bb-81b6-19027c8c8ac0.mp4",
-		"content_type": "video/mp4",
-		"duration_sec": 11.29,
-		"timestamp": {
-		  "meta_class": "datetime.datetime",
-		  "date": "2017-05-05T21:32:53.828565"
-		},
-		"playback_speed_ratio": 1,
-		"format_info": {
-		  "codec_name": "h264",
-		  "profile": "Baseline"
-		}
-	      }
-	    },
-	    {
-	      "id": "eyJ0IjoiQVFDellvMzZLZ2NpaW5fenRYNFNjQVlrazNHNUZQengzXzc5bGx4a0s4UlVRN1pPRW5yeEREdjBNN3VYN2hSNGI4UEdDRS10MmctZHJfQk5TVkg4M2h6ZTdaM3VvWWxXNjhqVDRjVER2ZXRpbExMeHRFNlZvQTlVcDM4aTEzSldqTGhIUkI2c3F6ejEtSjVic1FvVGo1RzFiYTVLWlNfdDhXYXdjRndXejhyOG1ncG51WTY3c2VPTTQwRnpiQ1hNWGxrIiwibCI6eyJjIjoiZyIsImsiOiJtdi0xMDkwMTA3MjI2ODYyMTg2MTQ2MjAtMDBFMDRDQzI3Q0M1LjBfMjAxNy0wNS0wNVQyMTozMzowNC4yNzUyNzRfNjFiMmQwNDctOWY1OC00NTUyLWI0Y2EtNzdhODYxZjVmZDJjLm1wNCIsImIiOiJjYW1pbyJ9fQ",
-	      "date_created": "2017-05-05T21:33:04.275-0000",
-	      "content_type": "video/mp4",
-	      "source": "sharx-east",
-	      "labels": [
-		"_ml_mail",
-		"_ml_departing",
-		"_color_black",
-		"_ml_human",
-		"_color_gray",
-		"_ml_approaching"
-	      ],
-	      "video_length": 10.676,
-	      "interest_level": 0,
-	      "interest_score": 0,
-	      "movie": {
-		"server_id": "mv-109010722686218614620-00E04CC27CC5.0_2017-05-05T21:33:04.275274_61b2d047-9f58-4552-b4ca-77a861f5fd2c.mp4",
-		"content_type": "video/mp4",
-		"duration_sec": 10.676,
-		"timestamp": {
-		  "meta_class": "datetime.datetime",
-		  "date": "2017-05-05T21:33:04.275274"
-		},
-		"playback_speed_ratio": 1,
-		"format_info": {
-		  "codec_name": "h264",
-		  "profile": "Baseline"
-		}
-	      }
-	    }
-	  ],
-	  "color": "#dadada",
-	  "count": 6
-	}
-	"more_buckets": "listed_below ...",
-    } # end buckets	
-} # end entire payload
-
-
-"""
 
 import os
 import sys
 import argparse
+import logging
+import traceback
 import json
+import urllib
 import requests
+import dateutil.parser
+import textwrap
+from datetime import datetime,timedelta
 
-def parse_argv_or_exit():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
-    )
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
-    # positional args
-	parser.add_argument('start_time_unix', type=int, 'the Unix-timestamp of the time to start downloading meta-data from')
-	parser.add_argument('end_time_unix', type=int, 'the Unix-timestamp to gather meta-data until')
-	parser.add_argument('camera_name', type=int, 'the name of the camera that you wish to download meta-data for')
-	args = parser.parse_args()
-	return args
-	
+def fail(msg, *args):
+    logging.error(msg, *args)
+    sys.exit(1)
 
-def get_results_for_epoch(start_time, end_time, camera_name):
-	""" 
-	use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
-	these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
-	into a dictionary of some sorts to be returned to the user
-	"""
-	pass
+class BatchDownloader(object):
 
+    def __init__(self):
+        self.CAMIO_SERVER_URL = "https://www.camio.com"
+        self.CAMIO_JOBS_EDNPOINT = "api/jobs"
+        self.CAMIO_SEARCH_ENDPOINT = "api/search"
+        self.CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
+        self.access_token = None
+        self.job_id = None
+        self.job = None
+
+        self.parser = argparse.ArgumentParser(
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description = textwrap.dedent(DESCRIPTION), epilog=EXAMPLES
+        )
+        # positional args
+        self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
+        self.parser.add_argument('output_file', nargs='?', type=str, default=None,
+                                help="full path to the output file where the resulting labels will \
+                                be stored in json format (default = {job_id}_results.json)")
+        # optional arguments
+        self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
+        self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
+        self.parser.add_argument('-x', '--xml', action='store_true', help='set to export in XML format')
+        self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
+        self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
+        self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
+
+    def parse_argv_or_exit(self):
+        self.args = self.parser.parse_args()
+        if not self.args.job_id:
+            logging.info("no job_id specified, getting list of jobs")
+        self.job_id = self.args.job_id
+        if not self.args.output_file and self.job_id:
+            self.results_file = "%s_results.json" % self.job_id
+        else:
+            self.results_file = self.args.output_file
+        if self.args.access_token:
+            self.access_token = self.args.access_token
+        if self.args.testing:
+            self.CAMIO_SERVER_URL = "https://test.camio.com"
+        if self.args.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        elif self.args.quiet:
+            logging.getLogger().setLevel(logging.ERROR)
+        return self.args
+
+    def get_access_token(self):
+        if not self.access_token:
+            token = os.environ.get(self.CAMIO_OAUTH_TOKEN_ENVVAR)
+            if not token:
+                fail("unable to find Camio OAuth token in either hook-params json or CAMIO_OAUTH_TOKEN envvar. \
+                     Please set or submit this token")
+            self.access_token = token
+        return self.access_token
+
+    def gather_all_job_data(self):
+        """ GET /api/jobs to list all job data to user """
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        logging.debug("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
+        ret = requests.get(self.get_job_url(), headers=headers)
+        if not ret.status_code in (200, 204):
+            fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
+        jobs = ret.json()
+        logging.info("found job data:\n%r", jobs)
+        sys.exit(0)
+
+    def get_job_url(self):
+        if self.job_id:
+            return "%s/%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT, self.job_id)
+        else:
+            return "%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT)
+
+    def get_search_url(self, text):
+        return "%s/%s?text=%s&num_results=100" % (self.CAMIO_SERVER_URL, self.CAMIO_SEARCH_ENDPOINT, text)
+
+    def gather_job_data(self):
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        logging.debug("making GET request to endpoint %s, headers: %r", self.get_job_url(), headers)
+        ret = requests.get(self.get_job_url(), headers=headers)
+        if not ret.status_code in (200, 204):
+            fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
+        logging.debug("got job-information returned from server:\n%r", ret.text)
+        self.job = ret.json()
+        self.earliest_date, self.latest_date = self.job['request']['earliest_date'], self.job['request']['latest_date']
+        self.earliest_datetime = dateutil.parser.parse(self.earliest_date)
+        self.latest_datetime = dateutil.parser.parse(self.latest_date)
+        logging.debug("earliest datetime: %r, latest datetime: %r", self.earliest_datetime, self.latest_datetime)
+        self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
+        logging.info("Job Definition:")
+        logging.info("\tearliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
+        logging.info("\tcameras included in inquiry: %r", self.cameras)
+        return self.job
+
+    def make_search_request(self, text):
+        headers = {"Authorization": "token %s" % self.get_access_token() }
+        url = self.get_search_url(text)
+        ret = requests.get(url, headers=headers)
+        if not ret.status_code in (200, 204):
+            logging.error("unable to obtain search results with query (%s)", text)
+        logging.debug("got search results for query (%s)", text)
+        #logging.debug("results:\n%r", ret.text)
+        return ret.json()
+
+    def get_results_for_epoch(self, start_time, end_time, camera_names):
+        """ 
+        use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
+        these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
+        into a dictionary of some sorts to be returned to the user
+        """
+        more_results = True
+        labels = dict() 
+        while more_results:
+            text = " ".join(camera_names)
+            text = "all " + text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
+            ret = self.make_search_request(text)
+            results = ret.get('result')
+            if not results: return None
+            logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
+            for index, bucket in enumerate(results.get('buckets')):
+                logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
+                for frameidx, image in enumerate(bucket.get('images')):
+                    logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image.get('labels'))
+                    if labels.get(image['date_created']):
+                        logging.debug("WARN - duplicate timestamps found, possible bug in iteration")
+                    if not image.get('labels') or len(image['labels']) == 0:
+                        continue
+                    labels[image['date_created']] = {
+                        'labels': image['labels'],
+                        'camera': {
+                            'name': image['source']
+                        },
+                    }
+            # see if there are more results and if so shift the start time of the query to reflect the new range
+            more_results = results.get('more_results', False)
+            if more_results and results.get('latest_date_considered'): 
+                start_time = dateutil.parser.parse(results.get('latest_date_considered'))
+        return labels
+    
+    def datetimeIterator(self, from_date=datetime.now(), to_date=None, delta = timedelta(minutes = 10)):
+        while to_date is None or from_date <= to_date:
+            from_date = from_date + delta
+            yield from_date
+        return
+
+    def gather_labels(self):
+        start, end = self.earliest_datetime, self.latest_datetime
+        labels = dict(job_id=self.job_id, earliest_date=self.earliest_date, latest_date=self.latest_date, labels={})
+        for endtime in self.datetimeIterator(from_date=start, to_date=end):
+            logging.info("gathering over time slot: %r to %r", start.isoformat(), endtime.isoformat())
+            subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
+            start = endtime
+            labels['labels'].update(subset_labels)
+        logging.debug("\nall found labels:\n%r", json.dumps(labels))
+        logging.info("finished gathering labels")
+        return labels
+
+    def dump_labels_to_file(self):
+        logging.info("writing label info to file: %s", self.results_file)
+        with open(self.results_file, 'w') as fh:
+            fh.write(json.dumps(self.labels))
+        logging.info("labels are now available in: %s", self.results_file)
+
+    def run(self):
+        try:
+            self.parse_argv_or_exit()
+            if not self.job_id:
+                self.gather_all_job_data()
+            self.job = self.gather_job_data()
+            self.labels = self.gather_labels()
+            self.dump_labels_to_file()
+        except Exception, e:
+            logging.error("exception during main program flow")
+            logging.error(traceback.format_exc())
+            sys.exit(1)
+        return  True
 
 def main():
-    args = parse_argv_or_exit()
+    return BatchDownloader().run()
 
 if __name__ == '__main__':
     main()
