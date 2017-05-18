@@ -152,10 +152,10 @@ Look for the entry with the MAC address of your Camio Box (for VMs this will sta
 Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. This will kick off a scan
 of the network, displaying all of the devices that it has located. Look through the list for the MAC address of your Camio Box and note down the IP address listed.
 
-##### Constructing the File-Parsing Regex
+##### Get the Testing Videos
 
-You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
-[supplied by Camio](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip). To get these files perform the following:
+Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip) 
+that you can use with the `import_video.py` program for testing purposes.  
 
 ```sh
 $ cd ~
@@ -182,11 +182,24 @@ hikvision_office_test-camera-1495068758.mp4
 hikvision_office_test-camera-1495069946.mp4
 ```
 
+##### Constructing the File-Parsing Regex
+
+You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
+[supplied by Camio](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip). Downloading and unzipping these files was described
+in the [last section](#get-the-testing-videos)
+
+As described in the previous section, you now have a directory `input_videos` that contians the two files:
+
+```
+hikvision_office_test-camera-1495068758.mp4
+hikvision_office_test-camera-1495069946.mp4
+```
+
 Then you would use the following string as the regular expression passed to the video-import script.
 
 `.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
 
-This captures the `CAMERA_FRONT` part as the camera name (used for registering the camera with Camio), and parses the `1475973147` part as the Unix-timestamp
+This captures the `hikvision_office_test` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
 
 
