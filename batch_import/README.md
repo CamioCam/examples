@@ -238,6 +238,8 @@ by you or simply defaults to `{job_id}_results.json`). This json object has the 
          "1970-01-01T12:00:01.0345-0000": {
               "cameras": {
                   "camera_name_1": {
+                      "name": "camera_name_1",
+                      "camera_id": "wer9ikjsodfj09j34rojiosj"
                    }
                 },
                 "labels": [
@@ -249,6 +251,8 @@ by you or simply defaults to `{job_id}_results.json`). This json object has the 
          "1970-01-01T12:00:03.02089-0000": {
               "cameras": {
                   "camera_name_1": {
+                      "name": "camera_name_1",
+                      "camera_id": "wer9ikjsodfj09j34rojiosj"
                    }
                 },
                 "labels": [

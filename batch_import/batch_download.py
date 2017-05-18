@@ -129,7 +129,8 @@ class BatchDownloader(object):
         self.latest_datetime = dateutil.parser.parse(self.latest_date)
         logging.debug("earliest datetime: %r, latest datetime: %r", self.earliest_datetime, self.latest_datetime)
         self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
-        logging.info("Job Definition | earliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
+        logging.info("Job Definition:")
+        logging.info("\tearliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
         logging.info("\tcameras included in inquiry: %r", self.cameras)
         return self.job
 
@@ -163,7 +164,7 @@ class BatchDownloader(object):
                 for frameidx, image in enumerate(bucket.get('images')):
                     logging.debug("\timage #%d - for date (%s) found labels: %r", frameidx, image['date_created'], image['labels'])
                     if labels.get(image['date_created']):
-                        logging.warning("NOTE - duplicate timestamps found, possible bug in iteration")
+                        logging.debug("WARN - duplicate timestamps found, possible bug in iteration")
                     labels[image['date_created']] = {
                         'labels': image['labels'],
                         'camera': {
@@ -186,17 +187,19 @@ class BatchDownloader(object):
         start, end = self.earliest_datetime, self.latest_datetime
         labels = dict(job_id=self.job_id, earliest_date=self.earliest_date, latest_date=self.latest_date, labels={})
         for endtime in self.datetimeIterator(from_date=start, to_date=end):
-            logging.debug("iterating over time slot: %r to %r", start, endtime)
+            logging.info("gathering over time slot: %r to %r", start.isoformat(), endtime.isoformat())
             subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
             start = endtime
             labels['labels'].update(subset_labels)
         logging.debug("\nall found labels:\n%r", json.dumps(labels))
+        logging.info("finished gathering labels")
         return labels
 
     def dump_labels_to_file(self):
-        logging.debug("dumping label info to file: %s", self.results_file)
+        logging.info("writing label info to file: %s", self.results_file)
         with open(self.results_file, 'w') as fh:
             fh.write(json.dumps(self.labels))
+        logging.info("labels are now available in: %s", self.results_file)
 
     def run(self):
         self.parse_argv_or_exit()

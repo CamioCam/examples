@@ -286,6 +286,9 @@ INFO:root:finishing up...
 INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
 ```
 
+*NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you will need to give it to the [`batch_download.py`](batch_import/batch_download.py)
+script in order to recover the dictionary of labels for all events discovered in the batch-import run you just finished.
+
 If you get any errors about missing the [`device_id`](#set-the-necessary-environment-variables) of the Camio Box or an unauthenticated error, try to set the environment variables again. To check that the environment variables
 are currently set, you can always `echo $CAMIO_BOX_DEVICE_ID` or `echo $CAMIO_OAUTH_TOKEN` and check that the values printed out match what you expect.
 
@@ -298,3 +301,39 @@ You can search for the name of the camera (that was parsed from the filenames) t
 
 Camio is currently writing some tools to help you recover all of the labels that were generated for the batch-imported videos, but this tool is not available yet. Camio is also designing tools and an API
 that will allow you to check on the status of your video processing.
+
+#### Gathering the Labels
+
+After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a job ID. 
+You can use this value along with the [`batch_download.py](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
+were processed through the batch-import job.
+
+
+To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
+
+```bash
+python batch_download.py --help
+```
+
+Which will output the following:
+
+```sh
+john@Carters-MacBook-Pro-2: ~/examples/batch_import   (john)
+$ python batch_download.py --help
+usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
+                         [job_id] [output_file]
+```
+
+To gather your labels into the file `/home/user/mylabels.json`, you would run the following (assuming the `job_id` is `agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw` as returned from the example above).
+
+```sh
+$ python batch_download.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
+INFO:root:Job Definition:
+INFO:root:  earliest date: u'2017-05-17T13:07:36.000', latest date: u'2017-05-17T13:17:36.120000'
+INFO:root:  cameras included in inquiry: [u'CAMERA_FRONT']
+INFO:root:gathering over time slot: '2017-05-17T13:07:36' to '2017-05-17T13:17:36'
+INFO:root:gathering over time slot: '2017-05-17T13:17:36' to '2017-05-17T13:27:36'
+INFO:root:finished gathering labels
+INFO:root:writing label info to file: /home/user/mylabels.json
+INFO:root:labels are now available in: /home/user/mylabels.json
+```
