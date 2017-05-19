@@ -120,13 +120,12 @@ Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#runnin
 
 ```bash
 $ python import_video.py \
-  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+  --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
   --host 192.168.1.57 \
-  --port 8080 \
-  --hook_data_json_file /tmp/camio_hook_data.json \
-  "~/my-folder" \ # folder containing input videos
-  "camio_hooks" \ # hooks module with callback functions
-  "192.168.1.57"  # ip-address / hosntame of the segment server
+  --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
+  "~/input_videos" \ 
+  "~/examples/batch_import/camio_hooks.py" \ 
+  "192.168.1.57"  
 ```
 
 In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:
