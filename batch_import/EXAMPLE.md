@@ -187,13 +187,13 @@ in the [last section](#get-the-testing-videos)
 As described in the previous section, you now have a directory `input_videos` that contians the two files:
 
 ```
-hikvision_office_test-camera-1495068758.mp4
-hikvision_office_test-camera-1495069946.mp4
+office_street-1495068758.mp4
+office_street-1495069946.mp4
 ```
 
 Then you would use the following string as the regular expression passed to the video-import script.
 
-`.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
+`.*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
 
 This captures the `hikvision_office_test` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
@@ -216,23 +216,12 @@ The values you can specify (meaningfully) as of now are:
 Note that if `img_y_size` or `img_y_size_cover` are larger than `img_y_size_extraction` we will replace the value of `img_y_size_extraction` with the larger of the two other values.
 This is because it doesn't make sense to extract at a lower resolution only to scale up.
 
-
-Now we only have one camera (`CAMERA_FRONT`), and we want it on the `pro` plan with all thumbnails extracted to be at 1080p resolution. We would then 
-write the following to a file (call it `/tmp/hook_data.json` for this example).
+In the [samples](/batch_import/samples/sample_hook_data.json) directory there is a sample json file that defines the plan as 'Pro' and the extraction and resizing parameters
+to be high-definition.
 
 ```json
 {
     "plan": "pro",
-    "cameras": {
-        "CAMERA_FRONT": {
-            "plan": "pro",
-            "img_y_size_extraction": 1080,
-            "img_x_size_cover": 1920,
-            "img_y_size_cover": 1080,
-            "img_x_size": 1920,
-            "img_y_size": 1080 
-        },
-    },
     "img_y_size_extraction": 1080,
     "img_x_size_cover": 1920,
     "img_y_size_cover": 1080
@@ -249,61 +238,25 @@ You are now ready to batch-import videos to Camio through your Camio Box.
 To start, go to the `video-importer` directory.
 
 ```sh
-$ cd ~
-$ cd examples/batch_import/video-importer
-```
-
-To see how the arguments are named/formatted/ordered as input to the scirpt you can always just give the `--help` flag to the script
-
-```bash
-$ python import_video.py --help
-usage: import_video.py [-h] [-v] [-q] [-c] [-p PORT] [-r REGEX] [-s STORAGE]
-                       [-d HOOK_DATA_JSON] [-f HOOK_DATA_JSON_FILE]
-                       folder hook_module host
-
-positional arguments:
-  folder                full path to folder of input videos to process
-  hook_module           full path to hook module for custom functions (a
-                        python file)
-  host                  the IP-address / hostname of the segmenter
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --verbose         set logging level to debug
-  -q, --quiet           set logging level to errors only
-  -c, --csv             dump csv log file
-  -p PORT, --port PORT  the segmenter port number (default: 8080)
-  -r REGEX, --regex REGEX
-                        regex to find camera name (default:
-                        .*/(?P<camera>.+?)/(?P<epoch>\d+(.\d+)?).*)
-  -s STORAGE, --storage STORAGE
-                        full path to the local storage db (default:
-                        ./.processes.shelve)
-  -d HOOK_DATA_JSON, --hook_data_json HOOK_DATA_JSON
-                        a json object containing extra information to be
-                        passed to the hook-module
-  -f HOOK_DATA_JSON_FILE, --hook_data_json_file HOOK_DATA_JSON_FILE
-                        full path to a file containing a json object of extra
-                        info to be passed to the hook module
+$ cd ~/examples/batch_import/video-importer
 ```
 
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
 $ python import_video.py \
-  --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+  --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
   --host 192.168.1.57 \
-  --port 8080 \
-  --hook_data_json_file /tmp/hook_data.json \
-  "~/input_videos" \ # folder containing input videos
-  "camio_hooks" \ # hooks module with callback functions
-  "192.168.1.57"  # ip-address / hosntame of the segment server
+  --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
+  "~/input_videos" \ 
+  "~/examples/batch_import/camio_hooks.py" \ 
+  "192.168.1.57"  
 
 INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
-INFO:root:camera_name: CAMERA_FRONT
+INFO:root:camera_name: office_street
 INFO:root:epoch: 1475973350
-INFO:root:/Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4 (scheduled for upload)
-INFO:root:1/1 uploading /Users/user/batch_videos/CAMERA_FRONT-rand-1475973350.mp4
+INFO:root:/Users/user/batch_videos/office_street-1475973350.mp4 (scheduled for upload)
+INFO:root:1/1 uploading /Users/user/batch_videos/office_street-1475973350.mp4
 INFO:root:completed
 INFO:root:finishing up...
 INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
@@ -352,7 +305,7 @@ To gather your labels into the file `/home/user/mylabels.json`, you would run th
 $ python batch_download.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
 INFO:root:Job Definition:
 INFO:root:  earliest date: u'2017-05-17T13:07:36.000', latest date: u'2017-05-17T13:17:36.120000'
-INFO:root:  cameras included in inquiry: [u'CAMERA_FRONT']
+INFO:root:  cameras included in inquiry: [u'office_street']
 INFO:root:gathering over time slot: '2017-05-17T13:07:36' to '2017-05-17T13:17:36'
 INFO:root:gathering over time slot: '2017-05-17T13:17:36' to '2017-05-17T13:27:36'
 INFO:root:finished gathering labels
