@@ -121,10 +121,9 @@ Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#runnin
 ```bash
 $ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
-  --host 192.168.1.57 \
   --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
-  "~/input_videos" \ 
-  "~/examples/batch_import/camio_hooks.py" \ 
+  "~/input_videos" \
+  "~/examples/batch_import/camio_hooks.py" \
   "192.168.1.57"  
 ```
 
