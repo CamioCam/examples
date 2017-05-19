@@ -167,15 +167,15 @@ $ curl https://storage.googleapis.com/camio_firmware_images/batch_import_video_f
 $ unzip batch_import_video_files.zip
 Archive:  batch_import_video_files.zip
    creating: input_videos/
-  inflating: input_videos/hikvision_office_test-camera-1495068758.mp4
-  inflating: input_videos/hikvision_office_test-camera-1495069946.mp4
+  inflating: input_videos/office_street-camera-1495068758.mp4
+  inflating: input_videos/office_street-camera-1495069946.mp4
 ```
 
 You will now have a directory `input_videos` that contians the two files:
 
 ```
-hikvision_office_test-camera-1495068758.mp4
-hikvision_office_test-camera-1495069946.mp4
+office_street-1495068758.mp4
+office_street-1495069946.mp4
 ```
 
 ##### Constructing the File-Parsing Regex
@@ -195,7 +195,7 @@ Then you would use the following string as the regular expression passed to the 
 
 `.*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
 
-This captures the `hikvision_office_test` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
+This captures the `office_street` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
 
 
