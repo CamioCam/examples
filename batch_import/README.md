@@ -122,7 +122,7 @@ Now [run the video importer](https://github.com/tnc-ca-geo/video-importer#runnin
 $ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
   --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
-  "~/input_videos" \
+  ~/input_videos \
   ~/examples/batch_import/camio_hooks.py \
   "192.168.1.57"  
 ```
@@ -141,7 +141,7 @@ The downloaded JSON includes the `camera_id`, `camera_name`, `earliest_date`, `l
 Here is the full documentation for the [Jobs API](https://api.camio.com/#jobs). 
 To get information about a specific job given a `job_id`, you would do the following.
 
-`GET https://www.camio.com/api/jobs/{{job_id}}`
+GET https://www.camio.com/api/jobs/{{job_id}}`
 
 Where `{{job_id}}` is the value returned returned from a `PUT` request to the `https://www.camio.com/api/jobs` endpoint. This `GET` request returns the following payload
 
