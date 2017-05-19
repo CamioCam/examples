@@ -114,24 +114,14 @@ with the `route` tool:
 
 **route On OSX**
 ```sh
-$ route get example.com   
-route to: 93.184.216.34
-destination: default
-       mask: default
-    gateway: 192.168.1.1
-  interface: en0 ## <--- this is the interface name ##
-      flags: <UP,GATEWAY,DONE,STATIC,PRCLONING>
- recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire
-       0         0         0         0         0         0      1500         0
+$ route get example.com | grep -Eo 'interface:\s*([^\s]*)' | cut -d\  -f2
+en0 # <-- this is your interface name
 ```
 
 **route On Linux**
 ```sh
-$ route
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface 
-default         192.168.1.1     0.0.0.0         UG    0      0        0 enp0s3 ## <-- this is the interface name
-192.168.1.0     *               255.255.255.0   U     0      0        0 enp0s3
+$ route | grep default | awk '{print $NF}'
+enp0s3
 ``` 
 
 Then run the `arp-scan` tool (replace `eth0` with your interface name)
@@ -159,17 +149,23 @@ of the network, displaying all of the devices that it has located. Look through 
 Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip) 
 that you can use with the `import_video.py` program for testing purposes.  
 
+You can either download them through your browser by click [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
+or you can do it with `curl` via a terminal by following the steps below.
+
 ```sh
 $ cd ~
-$ wget https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
---2017-05-18 01:39:21--  https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip
-Resolving storage.googleapis.com... 2607:f8b0:4005:809::2010, 172.217.6.48
-Connecting to storage.googleapis.com|2607:f8b0:4005:809::2010|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 318625401 (304M) [application/zip]
-Saving to: ‘batch_import_video_files.zip’
-batch_import_video_files  75%[=========================>         ] 230.87M  27.1MB/s    eta 3s
-
+$ brew install curl
+==> Downloading https://homebrew.bintray.com/bottles/curl-7.54.0.sierra.bottle.tar.gz
+######################################################################## 100.0%
+==> Pouring curl-7.54.0.sierra.bottle.tar.gz
+==> Using the sandbox
+==> Caveats
+==> Summary
+🍺  /usr/local/Cellar/curl/7.54.0: 392 files, 2.8MB
+$ curl https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip  -o batch_import_video_files.zip
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  303M  100  303M    0     0  2233k      0  0:02:19  0:02:19 --:--:-- 1647k
 $ unzip batch_import_video_files.zip
 Archive:  batch_import_video_files.zip
    creating: input_videos/
