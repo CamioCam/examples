@@ -31,35 +31,33 @@ Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) 
 to install the package onto your system.
 
 ```sh
-$ git clone https://www.github.com/CamioCam/examples
+$ git clone --recursive https://www.github.com/CamioCam/examples
 Cloning into 'examples'...
-remote: Counting objects: 394, done.
-remote: Compressing objects: 100% (127/127), done.
-remote: Total 394 (delta 68), reused 0 (delta 0), pack-reused 267
-Receiving objects: 100% (394/394), 87.31 KiB | 138.00 KiB/s, done.
-Resolving deltas: 100% (218/218), done.
+remote: Counting objects: 764, done.
+remote: Compressing objects: 100% (18/18), done.
+remote: Total 764 (delta 8), reused 0 (delta 0), pack-reused 746
+Receiving objects: 100% (764/764), 161.65 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (486/486), done.
 Checking connectivity... done.
-$ git submodule update --init
 Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
 Cloning into '/private/tmp/examples/batch_import/video-importer'...
-Submodule path 'batch_import/video-importer': checked out '79ef21f84697643824f6d31fb05699bc695d9135'
-$ cd examples/batch_import/video-importer/
+Submodule path 'batch_import/video-importer': checked out '0b677c1d8c7f7cfca14896de8e1948080e942e17'
+$ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
 $ ls -l
 total 80
--rw-r--r--  1 john  wheel   1062 May 18 16:07 LICENSE
--rw-r--r--  1 john  wheel  10368 May 18 16:07 README.md
--rw-r--r--  1 john  wheel   2552 May 18 16:07 hooks_template.py
--rw-r--r--  1 john  wheel  14911 May 18 16:07 import_video.py
--rw-r--r--  1 john  wheel    762 May 18 16:07 setup.py
+-rw-r--r--  1 john  staff   1062 May  1 15:32 LICENSE
+-rw-r--r--  1 john  staff  10373 May 18 12:37 README.md
+-rw-r--r--  1 john  staff   2555 May 18 12:37 hooks_template.py
+-rw-r--r--  1 john  staff  15104 May 18 12:55 import_video.py
+-rw-r--r--  1 john  staff    682 May 18 12:55 setup.py
 $ python setup.py install
 running install
 running install_lib
 running build_py
 creating 'dist/import_video-0.1-py2.7.egg' and adding 'build/bdist.macosx-10.12-x86_64/egg' to it
 Installing import_video script to /usr/local/bin
-
 Installed /usr/local/lib/python2.7/site-packages/import_video-0.1-py2.7.egg
 Processing dependencies for import-video==0.1
 Searching for psutil==4.3.1
@@ -205,8 +203,8 @@ of the video.
 
 There are two main ways to get data into the `camio_hooks.py` module from the video-import script.
 
-1. Through the `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
-2. Through the `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to
+1. `--hook_data_json` argument. Supply this argument and then follow it up with a string representing a json object that contains the data needed to be passed in.
+2. `--hook_data_json_file` argument. Supply this argument and then the path to a file containing a string represeting a json object with the data needed to be passed to
 
 The values you can specify (meaningfully) as of now are:
 
