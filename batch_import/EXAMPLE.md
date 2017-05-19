@@ -247,8 +247,8 @@ Run the importer with all of the values we've assembled in the previous steps.
 $ python import_video.py \
   --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
   --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
-  "~/input_videos" \ 
-  "~/examples/batch_import/camio_hooks.py" \ 
+  "~/input_videos" \
+  "~/examples/batch_import/camio_hooks.py" \
   "192.168.1.57"  
 
 INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
