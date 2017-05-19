@@ -7,7 +7,7 @@ Batch Import Concrete Example
 2. A [batch-import-enabled Camio Box Virtual Machine](https://help.camio.com/hc/en-us/articles/115002492123)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
 4. The Camio Box IP address (explained in the [get IP address section](#get-the-camio-box-ip-address))
-5. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_input_test_videos.zip)
+5. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
 6. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 7. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
 
@@ -160,7 +160,7 @@ $ brew install curl
 ==> Caveats
 ==> Summary
 🍺  /usr/local/Cellar/curl/7.54.0: 392 files, 2.8MB
-$ curl https://storage.googleapis.com/camio_test_general/batch_input_test_videos.zip -o batch_import_video_files.zip
+$ curl https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip -o batch_import_video_files.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100  303M  100  303M    0     0  2233k      0  0:02:19  0:02:19 --:--:-- 1647k
@@ -181,7 +181,7 @@ office_street-1495069946.mp4
 ##### Constructing the File-Parsing Regex
 
 You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
-[supplied by Camio](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip). Downloading and unzipping these files was described
+[supplied by Camio](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip). Downloading and unzipping these files was described
 in the [last section](#get-the-testing-videos)
 
 As described in the previous section, you now have a directory `input_videos` that contians the two files:
