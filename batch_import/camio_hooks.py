@@ -239,18 +239,36 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
         return False
     Log.debug("posting video content: file=%s, camera=%s, timestamp=%s", filepath, camera_name, timestamp)
     repsonse = None
-    try:
-        with open(filepath, 'rb') as fh:
-            response = requests.post(url, data=fh)
-    except Exception, e:
-        Log.error("error while posting video content to Box")
-        Log.error(traceback.format_exc())
-        Log.error("backing off for %d seconds before retry", POST_FAILURE_RETRY_SECONDS)
-        for i in range(0, POST_FAILURE_RETRY_SECONDS, 5):
-            Log.info("waited: %d seconds...", i)
-        Log.info("back-off wait over, retrying POST video content")
-        with open(filepath, 'rb') as fh:
-            response = requests.post(url, data=fh)
+    failed_attempts_left = 2 # 2 max failed attempts to contact server at all
+    max_rate_limits_reached = 5 # 5 max back-off for space to open on Box
+    rate_limit_reached_counter = 0
+    sleep_time = 15 # seconds to sleep when rate-limit hit
+    while failed_attempts_left > 0:
+        try:
+            with open(filepath, 'rb') as fh:
+                response = requests.post(url, data=fh)
+            if response.status_code in (200, 204):
+                return True
+            elif response.status_code == 429:
+                # hit the rate-limiter, sleep for a while then try again. This
+                # isn't an error, we just need to slow down.
+                rate_limit_reached_counter += 1
+                if rate_limit_reached_count >= max_rate_limits_reached:
+                    Log.error("unable to post content after %d retries, failing..", max_rate_limits_reached)
+                    return False
+                # exponential back-off on rate-limits, max waited = sum([15*(2^x) for x in range(0, 5)]) = 465 seconds
+                actual_sleep_time = sleep_time * (2 ** rate_limit_reached_count)
+                Log.info("reached rate-limit of Box web-server")
+                Log.info("sleeping for %d seconds before retrying..", actual_sleep_time)
+                time.sleep(actual_sleep_time)
+        # this means we couldn't even contact the web-server, maybe it's taking some
+        # time to wake up, so back off a bit
+        except requests.exceptions.ConnectionError, e:
+            Log.error("connection error while contacting Box server")
+            Log.error("sleeping to wait for server to wake up, %d more retries left", failed_attempts_left)
+            Log.error(traceback.format_exc())
+            failed_attempts_left -= 1
+            time.sleep(30)
 
     return response and response.status_code in (200, 204)
 
