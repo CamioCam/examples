@@ -48,9 +48,10 @@ def network_request(reqtype, url, data=None, json=None):
     headers = {"Authorization": "token %s" % access_token}
     func = getattr(requests, reqtype)
     ret = None
-    Log.debug("making %s request to URL (%s)")
+    Log.debug("making %s request to URL (%s)", reqtype, url)
     try:
         ret = func(url, headers=headers, data=data, json=json)
+        Log.debug("return from call: %r", ret)
     except Exception, e:
         Log.error("%s request to url (%s) failed")
         Log.error(traceback.format_exc())
@@ -205,7 +206,7 @@ def generate_actual_values(camera_name):
     Log.debug("final actual values:\n%r", actual_values)
     return actual_values
 
-def register_camera(camera_name, port=None):
+def register_camera(camera_name, port=None, host=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
@@ -272,7 +273,7 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
                  this function where the logic should exist to post the file content to a video
                  segmenter.
     """
-    device_id, host = get_account_info()
+    host, device_id = get_account_info()
     if not port:
         port = BATCH_IMPORT_DEFAULT_PORT
     with open(filepath) as fh:
