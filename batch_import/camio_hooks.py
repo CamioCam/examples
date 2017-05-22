@@ -95,7 +95,24 @@ def get_account_info():
         devices = ret.json()
         if not devices or len(devices) < 1:
             fail('no Camio Box devices found on your account, have you registered your Box yet?')
-        device_id = devices[0]['device_id']
+        elif len(devices) == 1:
+            device_id = devices[0]['device_id']
+        else: # multiple devices, prompt for which one they want
+            lines = ["%d. %s" % (index+1, device.get('name', 'unknown')) for (index, device) in enumerate(devices)]
+            prompt = "Multiple Camio Box devices belong to your account. Please select the one you wish to use\n"
+            prompt = prompt + '\n'.join(lines) + '\n'
+            selection = None
+            while not selection:
+                selection = raw_input(prompt)
+                try:
+                    selection = int(selection)
+                    if selection <= 0 or selection > len(devices):
+                        Log.error("invalid selection (#%d), valid range: 1-%d", selection, len(devices))
+                        selection = None
+                except:
+                    Log.error("invalid input choice: %r", selection)
+                    selection = None
+            device_id = devices[selection-1]['device_id']
         CAMIO_PARAMS['device_id'] = device_id
     if not ip_address:
         url = CAMIO_SERVER_URL + CAMIO_STATE_ENDPOINT + "?device_id=%s" % device_id
@@ -103,7 +120,7 @@ def get_account_info():
         device = ret.json()
         network_config = device.get('state').get('network_configuration_actual')
         if not network_config:
-            fail("unable to obtain IP address of Camio box")
+            fail("unable to obtain IP address of Camio box. If you just started the machine wait a minute before trying again")
         ip_address = network_config.get('ip_address')
         if not network_config:
             fail("unable to obtain IP address of Camio box")
@@ -138,14 +155,18 @@ def dateshift(timestamp, seconds, format = "%Y-%m-%dT%H:%M:%S.%f"):
 
 def get_device_id(fail=True):
     """ if fail we exit if the ID cannot be located """
+    device = None
     if CAMIO_PARAMS.get('device_id') is None:
         device = os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR)
         if not device and fail:
             fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
                   Please set or submit this value")
+        elif not fail:
+            Log.warning("device_id not found in environment variables")
+            return None
         else:
             CAMIO_PARAMS['device_id'] = device 
-    return device
+    return CAMIO_PARAMS['device_id']
 
 def get_camera_param(camera_name, key):
     """
