@@ -21,7 +21,10 @@ Camio-specific hook examples for use with the video import script
 CAMIO_SERVER_URL = "https://www.camio.com"
 CAMIO_REGISTER_ENDPOINT = "/api/cameras/discovered"
 CAMIO_JOBS_ENDPOINT = "/api/jobs"
+CAMIO_DEVICES_ENDPOINT = "/api/devices"
+CAMIO_STATE_ENDPOINT = "/api/devices/state/"
 CAMIO_PARAMS = {}
+BATCH_IMPORT_DEFAULT_PORT = 8080
 
 # TODO - change to CAMIO_TEST_PROD when on production
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
@@ -39,6 +42,19 @@ CAMIO_PLANS = { 'pro': 'PRO', 'plus': 'PLUS', 'basic': 'BASIC' }
 def fail(msg, *args):
     Log.error(msg, *args)
     sys.exit(1)
+
+def network_request(reqtype, url, data=None, json=None):
+    access_token = get_access_token()
+    headers = {"Authorization": "token %s" % access_token}
+    func = getattr(requests, reqtype)
+    ret = None
+    Log.debug("making %s request to URL (%s)")
+    try:
+        ret = func(url, headers=headers, data=data, json=json)
+    except Exception, e:
+        Log.error("%s request to url (%s) failed")
+        Log.error(traceback.format_exc())
+    return ret
 
 def set_hook_data(data_dict):
     """
@@ -60,6 +76,39 @@ def set_hook_data(data_dict):
         Log.info("using test.camio.com instead of www.camio.com")
         CAMIO_SERVER_URL = "https://test.camio.com"
     Log.debug("setting camio_hooks data as:\n%r", CAMIO_PARAMS)
+
+def get_account_info():
+    """
+    this function takes an auth token and gathers both the device ID of their
+    Camio Box and then uses that device ID to query for the current local IP
+    address. This way the user doesn't have to supply those items to use manually
+    """
+    access_token = get_access_token()
+    device_id = get_device_id()
+    ip_address = CAMIO_PARAMS.get('ip_address')
+    if not device_id:
+        url = CAMIO_SERVER_URL + CAMIO_DEVICES_ENDPOINT
+        ret = network_request('get', url)
+        if not ret:
+            fail("unable to obtain account info (device_id and Box IP address")
+        devices = ret.json()
+        if not devices or len(devices) < 1:
+            fail('no Camio Box devices found on your account, have you registered your Box yet?')
+        device_id = devices[0]['device_id']
+        CAMIO_PARAMS['device_id'] = device_id
+    if not ip_address:
+        url = CAMIO_SERVER_URL + CAMIO_STATE_ENDPOINT + "?device_id=%s" % device_id
+        ret = network_request('get', url)
+        device = ret.json()
+        network_config = device.get('state').get('network_configuration_actual')
+        if not network_config:
+            fail("unable to obtain IP address of Camio box")
+        ip_address = network_config.get('ip_address')
+        if not network_config:
+            fail("unable to obtain IP address of Camio box")
+        CAMIO_PARAMS['ip_address'] = ip_address
+    return ip_address, device_id
+
 
 def hash_file_in_chunks(fh, chunksize=65536):
     """ get the SHA1 of $filename but by reading it in $chunksize at a time to not keep the
@@ -86,7 +135,7 @@ def dateshift(timestamp, seconds, format = "%Y-%m-%dT%H:%M:%S.%f"):
     date = date + datetime.timedelta(seconds=seconds)
     return date.strftime(format)
 
-def get_device_id():
+def get_device_id(fail=True):
     if not CAMIO_PARAMS.get('device_id'):
         device = os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR)
         if not device:
@@ -138,7 +187,8 @@ def get_camera_config(local_camera_id):
     access_token = get_access_token()
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    response = requests.get(url, headers=headers)
+    #response = requests.get(url, headers=headers)
+    response = network_request('get', url)
     response = response.json()
     Log.debug("cameras under account:\n%r", [response[camera].get('name') for camera in response])
     return response[local_camera_id]
@@ -155,11 +205,10 @@ def generate_actual_values(camera_name):
     Log.debug("final actual values:\n%r", actual_values)
     return actual_values
 
-def register_camera(camera_name, host=None, port=None):
+def register_camera(camera_name, port=None):
     """
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
-        host          - the URI/IP address of the segmenter being used
         port          - the port to access the webserver of the segmenter
     returns: this function returns a dctionary describing the new camera, including the camera ID
              note - it is required that there is at least one property in this dictionary called
@@ -175,8 +224,8 @@ def register_camera(camera_name, host=None, port=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
-
-    device_id, access_token = get_device_id(), get_access_token()
+    device_id, host = get_account_info()
+    access_token = get_access_token()
     user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
     actual_values = generate_actual_values(camera_name)
@@ -196,7 +245,8 @@ def register_camera(camera_name, host=None, port=None):
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    response = requests.post(url, headers=headers, json=payload)
+    #response = requests.post(url, headers=headers, json=payload)
+    response = network_request('post', url, json=payload)
     try:
         config = get_camera_config(local_camera_id)
     except:
@@ -205,7 +255,7 @@ def register_camera(camera_name, host=None, port=None):
         config = get_camera_config(local_camera_id)
     return config
 
-def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, location=None):
+def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, port=None, location=None):
     """
     arguments:
         host        - the url of the segmenter
@@ -222,10 +272,9 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
                  this function where the logic should exist to post the file content to a video
                  segmenter.
     """
-    device_id = CAMIO_PARAMS.get('device_id')
-    if not device_id: 
-        Log.error("unable to find Camio Box device ID in --hook_data_json or env-vars.")
-        return False
+    device_id, host = get_account_info()
+    if not port:
+        port = BATCH_IMPORT_DEFAULT_PORT
     with open(filepath) as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "http://%s:%s" % (host, port)
@@ -241,7 +290,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
     repsonse = None
     try:
         with open(filepath, 'rb') as fh:
-            response = requests.post(url, data=fh)
+            #response = requests.post(url, data=fh)
+            response = network_request('post', url, data=fh)
     except Exception, e:
         Log.error("error while posting video content to Box")
         Log.error(traceback.format_exc())
@@ -250,7 +300,8 @@ def post_video_content(host, port, camera_name, camera_id, filepath, timestamp, 
             Log.info("waited: %d seconds...", i)
         Log.info("back-off wait over, retrying POST video content")
         with open(filepath, 'rb') as fh:
-            response = requests.post(url, data=fh)
+            #response = requests.post(url, data=fh)
+            response = network_request('post', url, data=fh)
 
     return response and response.status_code in (200, 204)
 
@@ -279,7 +330,8 @@ def assign_job_ids(self, db, unscheduled):
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
         url = CAMIO_SERVER_URL + CAMIO_JOBS_ENDPOINT
-        res = requests.put(url, json=payload, headers=headers)         
+        #res = requests.put(url, json=payload, headers=headers)         
+        res = network_request('put', url, json=payload)
 
         try:
             shards = res.json()
@@ -334,7 +386,8 @@ def register_jobs(self, db, jobs):
         Log.debug("registering job:\n ID=%s\n shard ID=%s\n num items=%d\n file-map=%r", 
                 job_id, shard_id, len(rows), hash_map)
         url = rows[0]['upload_url']
-        ret = requests.put(url, json=payload)
+        #ret = requests.put(url, json=payload)
+        ret = network_request('put', url, json=payload)
         if not ret.status_code in (200, 204):
             Log.error("error registering job: %s", job_id)
             Log.error("server returned: %d", ret.status_code)
