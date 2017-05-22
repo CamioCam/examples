@@ -4,7 +4,7 @@ Batch Import
 This README documents the usage of both the `import_video.py` script that will traverse and upload a directory of videos and the `camio_hooks.py` module
 that allows the `import_video.py` script to interface with the Camio service. 
 
-For a concrete, step-by-step example of how to use these programs, see the [EXAMPLE.md](batch_import/EXAMPLE.md) file. 
+For a concrete, step-by-step example of how to use these programs, see the [EXAMPLE.md](/batch_import/EXAMPLE.md) file. 
 
 ## Using the [Video Importer](https://github.com/tnc-ca-geo/video-importer) with Camio Box
 

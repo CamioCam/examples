@@ -104,8 +104,7 @@ class BatchDownloader(object):
         ret = requests.get(self.get_job_url(), headers=headers)
         if not ret.status_code in (200, 204):
             fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
-        jobs = ret.json()
-        logging.info("found job data:\n%r", jobs)
+        logging.info("found job data:\n%r", ret.text)
         sys.exit(0)
 
     def get_job_url(self):
@@ -114,8 +113,12 @@ class BatchDownloader(object):
         else:
             return "%s/%s" % (self.CAMIO_SERVER_URL, self.CAMIO_JOBS_EDNPOINT)
 
-    def get_search_url(self, text):
-        return "%s/%s?text=%s&num_results=100" % (self.CAMIO_SERVER_URL, self.CAMIO_SEARCH_ENDPOINT, text)
+    def get_search_url(self, text, date=None):
+        endpoint = self.CAMIO_SERVER_URL + "/" + self.CAMIO_SEARCH_ENDPOINT
+        if date:
+            return "%s?text=%s&num_results=100&date=%s" % (endpoint, text, date.isoformat())
+        else:
+            return "%s?text=%s&num_results=100" %(endpoint, text)
 
     def gather_job_data(self):
         headers = {"Authorization": "token %s" % self.get_access_token() }
@@ -135,9 +138,9 @@ class BatchDownloader(object):
         logging.info("\tcameras included in inquiry: %r", self.cameras)
         return self.job
 
-    def make_search_request(self, text):
+    def make_search_request(self, text, date=None):
         headers = {"Authorization": "token %s" % self.get_access_token() }
-        url = self.get_search_url(text)
+        url = self.get_search_url(text, date)
         ret = requests.get(url, headers=headers)
         if not ret.status_code in (200, 204):
             logging.error("unable to obtain search results with query (%s)", text)
@@ -145,18 +148,15 @@ class BatchDownloader(object):
         #logging.debug("results:\n%r", ret.text)
         return ret.json()
 
-    def get_results_for_epoch(self, start_time, end_time, camera_names):
-        """ 
-        use the Camio search API to return all of the search results for the given camera between the two unix-style timestamps
-        these search results can then be parsed and the meta-data about the labels added to each event can be extracted and assembled
-        into a dictionary of some sorts to be returned to the user
-        """
+    def get_results_from_epoch(self, start_time, end_time, camera_names):
+        print end_time.isoformat()
+        end_time = dateutil.parser.parse(end_time.isoformat() + "+00:00")
         more_results = True
-        labels = dict() 
+        labels = dict()
         while more_results:
             text = " ".join(camera_names)
-            text = "all " + text + " %s-0000 to %s-0000" % (start_time.isoformat(), end_time.isoformat())
-            ret = self.make_search_request(text)
+            text = "all " + text
+            ret = self.make_search_request(text, start_time)
             results = ret.get('result')
             if not results: return None
             logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
@@ -178,22 +178,17 @@ class BatchDownloader(object):
             more_results = results.get('more_results', False)
             if more_results and results.get('latest_date_considered'): 
                 start_time = dateutil.parser.parse(results.get('latest_date_considered'))
+                print start_time.isoformat()
+                print end_time.isoformat()
+                if start_time > end_time: more_results = False
         return labels
-    
-    def datetimeIterator(self, from_date=datetime.now(), to_date=None, delta = timedelta(minutes = 10)):
-        while to_date is None or from_date <= to_date:
-            from_date = from_date + delta
-            yield from_date
-        return
 
-    def gather_labels(self):
+    def gather_labels_batch(self):
         start, end = self.earliest_datetime, self.latest_datetime
         labels = dict(job_id=self.job_id, earliest_date=self.earliest_date, latest_date=self.latest_date, labels={})
-        for endtime in self.datetimeIterator(from_date=start, to_date=end):
-            logging.info("gathering over time slot: %r to %r", start.isoformat(), endtime.isoformat())
-            subset_labels = self.get_results_for_epoch(start, endtime, self.cameras)
-            start = endtime
-            labels['labels'].update(subset_labels)
+        logging.info("gathering over time slot: %r to %r", start.isoformat(), end.isoformat())
+        subset_labels = self.get_results_from_epoch(start, end, self.cameras)
+        labels['labels'].update(subset_labels)
         logging.debug("\nall found labels:\n%r", json.dumps(labels))
         logging.info("finished gathering labels")
         return labels
@@ -210,7 +205,7 @@ class BatchDownloader(object):
             if not self.job_id:
                 self.gather_all_job_data()
             self.job = self.gather_job_data()
-            self.labels = self.gather_labels()
+            self.labels = self.gather_labels_batch()
             self.dump_labels_to_file()
         except Exception, e:
             logging.error("exception during main program flow")
