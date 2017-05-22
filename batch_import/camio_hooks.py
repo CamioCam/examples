@@ -85,7 +85,7 @@ def get_account_info():
     address. This way the user doesn't have to supply those items to use manually
     """
     access_token = get_access_token()
-    device_id = get_device_id()
+    device_id = get_device_id(fail=False)
     ip_address = CAMIO_PARAMS.get('ip_address')
     if not device_id:
         url = CAMIO_SERVER_URL + CAMIO_DEVICES_ENDPOINT
@@ -137,13 +137,15 @@ def dateshift(timestamp, seconds, format = "%Y-%m-%dT%H:%M:%S.%f"):
     return date.strftime(format)
 
 def get_device_id(fail=True):
-    if not CAMIO_PARAMS.get('device_id'):
+    """ if fail we exit if the ID cannot be located """
+    if CAMIO_PARAMS.get('device_id') is None:
         device = os.environ.get(CAMIO_BOX_DEVICE_ID_ENVVAR)
-        if not device:
+        if not device and fail:
             fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
                   Please set or submit this value")
-        CAMIO_PARAMS['device_id'] = device 
-    return CAMIO_PARAMS['device_id']
+        else:
+            CAMIO_PARAMS['device_id'] = device 
+    return device
 
 def get_camera_param(camera_name, key):
     """
