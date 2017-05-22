@@ -225,7 +225,7 @@ def register_camera(camera_name, port=None, host=None):
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
     """
-    device_id, host = get_account_info()
+    ip_address, device_id = get_account_info()
     access_token = get_access_token()
     user_agent = "video-importer script"
     local_camera_id = hashlib.sha1(camera_name).hexdigest()
