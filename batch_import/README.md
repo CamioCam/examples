@@ -27,12 +27,11 @@ Follow all of the instructions listed in [this help article for setting up Camio
 #### Setting up the Environment
 
 To use the [`camio_hooks.py`](camio_hooks.py) module properly, you must define some information specific to your Camio account. This information is defined through
-the usage of environment variables. The required variables are:
+the usage of environment variables. The required variable is:
 
 | Variable | Description |
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
-| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get your  `device_id` from your [/boxes](https://camio.com/boxes) page. Until there's a more convenient way to copy and paste your `device_id`, please copy it from the URL hash parameter `device_id` that's shown in your browser's address bar on that page. | 
 
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as:
 
@@ -46,11 +45,11 @@ Then source the file by running:
 source ~/.bashrc
 ```
 
-If you don't want to set them permanently like this, you can also prepend the variable definitions to the command that runs the video importer script; for example, 
+If you don't want to set it permanently like this, you can also prepend the variable definition to the command that runs the video importer script; for example, 
 where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
 
 ```bash
-CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" CAMIO_BOX_DEVICE_ID="sdfsdfsdfsdfsdfsdfsdf" python import_video.py $args
+CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" python import_video.py $args
 ```
 
 Once these environment variables are set, there are three more steps before you can start the import:
