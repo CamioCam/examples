@@ -51,6 +51,7 @@ class BatchDownloader(object):
         self.access_token = None
         self.job_id = None
         self.job = None
+        self.white_labels = []
 
         self.parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -63,6 +64,8 @@ class BatchDownloader(object):
                                 be stored in json format (default = {job_id}_results.json)")
         # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
+        self.parser.add_argument('-w', '--label_white_list', type=str, help='a json list of labels that are whitelisted to be included in the response')
+        self.parser.add_argument('-f', '--label_white_list_file', type=str, help='a file containing a json list of labels that are whitelisted')
         self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
         self.parser.add_argument('-x', '--xml', action='store_true', help='set to export in XML format')
         self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
@@ -86,6 +89,20 @@ class BatchDownloader(object):
             logging.getLogger().setLevel(logging.DEBUG)
         elif self.args.quiet:
             logging.getLogger().setLevel(logging.ERROR)
+        if self.args.label_white_list:
+            try:
+                self.white_labels += json.loads(self.args.white_label_list)
+            except:
+                logging.error("unable to deserialize label white-list")
+                logging.error(traceback.format_exc())
+        if self.args.label_white_list_file:
+            try:
+                with open(self.args.label_white_list_file) as fh:
+                    self.white_labels += json.load(fh)
+            except:
+                logging.error("unable to deserialize label white-list from file: %s", self.args.label_white_list_file)
+                logging.error(traceback.format_exc())
+                
         return self.args
 
     def get_access_token(self):
@@ -168,8 +185,11 @@ class BatchDownloader(object):
                         logging.debug("WARN - duplicate timestamps found, possible bug in iteration")
                     if not image.get('labels') or len(image['labels']) == 0:
                         continue
+                    new_labels = image['labels']
+                    if self.white_labels:
+                        new_labels = [label for label in new_labels if label in self.white_labels]
                     labels[image['date_created']] = {
-                        'labels': image['labels'],
+                        'labels': new_labels,
                         'camera': {
                             'name': image['source']
                         },

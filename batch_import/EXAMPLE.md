@@ -76,71 +76,14 @@ variables must be defined. These are
 | Variable | Description |
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
-| `CAMIO_BOX_DEVICE_ID` | set this to the `device_id` of the [Camio Box](https://camio.com/box) that's processing your imported video files. You can get your  `device_id` from your [/boxes](https://camio.com/boxes) page by looking for the `#device_id=XXX` URL hash parameter. Camio is adding an easier means to obtain the device ID but as of right now this is the easiest way to get it. |
 
-You can set these by just entering the following in your shell
+You can set this by just entering the following in your shell
 
 ```sh
 $ export CAMIO_OAUTH_TOKEN="qdSxve9OtdpPlcsyqzhzN95cYAE7A_P" # insert your oauth token here
-$ export CAMIO_BOX_DEVICE_ID="Fgh5tmkbqAD6ba6CY7p2_dXRPIJsVFHASo4HrtY0-TELJPxb2B_7B2hBv3-zq98uh-sRoBVgaonxCMpi4CAmLkvmT0fz"
 $ echo $CAMIO_OAUTH_TOKEN
 qdSxve9OtdpPlcsyqzhzN95cYAE7A_P
-$ echo $CAMIO_BOX_DEVICE_ID
-Fgh5tmkbqAD6ba6CY7p2_dXRPIJsVFHASo4HrtY0-TELJPxb2B_7B2hBv3-zq98uh-sRoBVgaonxCMpi4CAmLkvmT0fz
 ```
-
-#### Get the Camio Box IP Address
-
-You need to know the local IP address of your Camio Box. You can do this in many ways but the two easiest are 
-by using either the [`arp-scan` shell program](#using-arp-scan) or the [Fing phone](#using-the-fing-application) application. 
-##### Using `arp-scan`
-
-Get the `arp-scan` tool:
-
-```sh
-# arp-scan on OSX
-brew install arp-scan
-
-# arp-scan on Linux (Ubuntu)
-sudo apt-get install arp-scan
-```
-
-Scan the network
-
-You need to figure out what your network interface is, on OSX it is often `en0`, on Linux it's often `eth0` or `enp0s3`. You can check this
-with the `route` tool:
-
-**route On OSX**
-```sh
-$ route get example.com | grep -Eo 'interface:\s*([^\s]*)' | cut -d\  -f2
-en0 # <-- this is your interface name
-```
-
-**route On Linux**
-```sh
-$ route | grep default | awk '{print $NF}'
-enp0s3
-``` 
-
-Then run the `arp-scan` tool (replace `eth0` with your interface name)
-```sh
-$ sudo arp-scan --interface=eth0 --localnet 
-Interface: en0, datalink type: EN10MB (Ethernet)
-Starting arp-scan 1.9 with 256 hosts (http://www.nta-monitor.com/tools/arp-scan/)
-192.168.1.1    20:e5:2a:02:f6:fc    NETGEAR INC.,
-192.168.1.10    28:10:7b:07:0c:51    D-Link International
-192.168.1.20    b8:27:eb:a0:25:bc    Raspberry Pi Foundation
-192.168.1.30    00:1e:06:33:d7:1a    WIBRAIN
-192.168.1.51    be:fe:11:27:02:88    (Unknown)
-# ....
-```
-
-Look for the entry with the MAC address of your Camio Box (for VMs this will start with `BE:FE:11`), and note down the IP address.
-
-##### Using The Fing Application
-
-Download the [Fing application](https://www.fing.io/) to your phone. Open the app and click the 'refresh' button on the top bar. This will kick off a scan
-of the network, displaying all of the devices that it has located. Look through the list for the MAC address of your Camio Box and note down the IP address listed.
 
 ##### Get the Testing Videos
 
