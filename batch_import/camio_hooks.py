@@ -162,7 +162,7 @@ def get_device_id(fail=True):
             fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
                   Please set or submit this value")
         elif not fail:
-            Log.warning("device_id not found in environment variables")
+            Log.debug("device_id not found in environment variables")
             return None
         else:
             CAMIO_PARAMS['device_id'] = device 
