@@ -91,7 +91,7 @@ CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" python import_video.py $args
 
 ##### Windows
 
-```sh
+```bat
 set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 C:\Users\users\examples\batch_import> set CAMIO_OAUTH_TOKEN
