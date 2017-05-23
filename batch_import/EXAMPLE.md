@@ -6,10 +6,9 @@ Batch Import Concrete Example
 1. A registered Camio account
 2. A [batch-import-enabled Camio Box Virtual Machine](https://help.camio.com/hc/en-us/articles/115002492123)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
-4. The Camio Box IP address (explained in the [get IP address section](#get-the-camio-box-ip-address))
-5. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
-6. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
-7. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
+4. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
+5. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
+6. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
 
 Once you have all of the items listed above, you can start to batch-import videos to Camio.
 
