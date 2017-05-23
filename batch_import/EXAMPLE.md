@@ -35,6 +35,7 @@ Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) 
 to install the package onto your system.
 
 ```sh
+# clone the repo to get the code
 $ git clone --recursive https://www.github.com/CamioCam/examples
 Cloning into 'examples'...
 remote: Counting objects: 764, done.
@@ -46,6 +47,21 @@ Checking connectivity... done.
 Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
 Cloning into '/private/tmp/examples/batch_import/video-importer'...
 Submodule path 'batch_import/video-importer': checked out '0b677c1d8c7f7cfca14896de8e1948080e942e17'
+
+# install the dependencies for camio_hooks.py
+$ cd examples/batch_import
+$ pip install -r requirements.txt # sudo required for OSX/Linux
+Collecting requests (from -r requirements.txt (line 1))
+  Downloading requests-2.14.2-py2.py3-none-any.whl (560kB)
+    100% |████████████████████████████████| 563kB 538kB/s
+Collecting python-dateutil (from -r requirements.txt (line 2))
+  Downloading python_dateutil-2.6.0-py2.py3-none-any.whl (194kB)
+    100% |████████████████████████████████| 194kB 1.4MB/s
+Requirement already satisfied: six>=1.5 in /usr/lib/python2.7/dist-packages (from python-dateutil->-r requirements.txt (line 2))
+Installing collected packages: requests, python-dateutil
+Successfully installed python-dateutil-2.6.0 requests-2.14.2
+
+# install the video importer onto the system
 $ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
@@ -106,7 +122,7 @@ CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
 Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip) 
 that you can use with the `import_video.py` program for testing purposes.  
 
-You can either download them through your browser by click [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
+You can either download them through your browser by clicking [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
 or you can do it with `curl` via a terminal by following the steps below.
 
 ```sh
