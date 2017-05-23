@@ -245,10 +245,10 @@ def register_camera(camera_name, port=None, host=None):
                  camera can be segmented then the logic for registering the camera should 
                  exist in this function.
                  For Camio, this function POSTs to /api/cameras/discovered with the new camera
-                 entry. It is required that the "acquisition_method": "batch" set in the camera 
+                 entry. It is required that "acquisition_method": "batch" be set in the camera 
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
-                 Note that the host and port are not used by Camio, this is because we don't register
+                 Note that the host and port are not used by Camio. This is because we don't register
                  cameras with the segmenter
     """
     ip_address, device_id = get_account_info()
