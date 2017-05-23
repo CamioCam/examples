@@ -73,28 +73,28 @@ You can set environment variables by putting them in a file like `/home/$user/.b
 
 ```bash
 # on OSX/Linux
-export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
+$ export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 ```
 
 Then source the file by running:
 
 ```bash
-source ~/.bashrc
+$ source ~/.bashrc
 ```
 
 If you don't want to set it permanently like this, you can also prepend the variable definition to the command that runs the video importer script; for example, 
 where `$args` is a placeholder for the actual arguments you'd supply to the script, you would enter:
 
 ```bash
-CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" python import_video.py $args
+$ CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" python import_video.py $args
 ```
 
 ##### Windows
 
 ```bat
-set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+C:\Users\user\examples\batch_import> set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-C:\Users\users\examples\batch_import> set CAMIO_OAUTH_TOKEN
+C:\Users\user\examples\batch_import> set CAMIO_OAUTH_TOKEN
 CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
 ```
 
