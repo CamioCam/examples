@@ -13,6 +13,7 @@ See the [overview of video importing](/README.md#overview-of-video-importing) fo
 4. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
 5. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 6. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
+7. PIP (the Python Package Manager) is needed to download the required dependencies
 
 Once you have all of the items listed above, you can start to batch-import videos to Camio.
 
@@ -80,6 +81,8 @@ variables must be defined. These are
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
 
+###### On OSX and Linux
+
 You can set this by just entering the following in your shell
 
 ```sh
@@ -87,6 +90,16 @@ $ export CAMIO_OAUTH_TOKEN="qdSxve9OtdpPlcsyqzhzN95cYAE7A_P" # insert your oauth
 $ echo $CAMIO_OAUTH_TOKEN
 qdSxve9OtdpPlcsyqzhzN95cYAE7A_P
 ```
+
+##### On Windows
+
+```sh
+set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+C:\Users\users\examples\batch_import> set CAMIO_OAUTH_TOKEN
+CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+```
+
 
 ##### Get the Testing Videos
 

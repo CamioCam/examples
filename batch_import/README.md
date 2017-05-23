@@ -65,10 +65,15 @@ the usage of environment variables. The required variable is:
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
 
+Environment variables are handled slightly differently on Windows systems than they are on OSX and Linux systems.
+
+##### OSX / Linux
+
 You can set environment variables by putting them in a file like `/home/$user/.bashrc` as:
 
 ```bash
-export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYX" 
+# on OSX/Linux
+export CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 ```
 
 Then source the file by running:
@@ -82,6 +87,15 @@ where `$args` is a placeholder for the actual arguments you'd supply to the scri
 
 ```bash
 CAMIO_OAUTH_TOKEN="ABCDEFGHIJKLMNOPQRSTUVWXYZ" python import_video.py $args
+```
+
+##### Windows
+
+```sh
+set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+C:\Users\users\examples\batch_import> set CAMIO_OAUTH_TOKEN
+CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
 ```
 
 Once these environment variables are set, there are three more steps before you can start the import:
