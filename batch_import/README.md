@@ -185,20 +185,20 @@ Where `{{job_id}}` is the value returned returned from a `PUT` request to the `h
 ### Getting Job Results
 
 After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a `job_id`. 
-You can use this value along with the [`batch_download.py`](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
+You can use this value along with the [`download_labels.py`](batch_import/download_labels.py) script to download a bookmark of all labels for all events that
 were processed through the batch-import job.
 
 To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
 
 ```bash
-python batch_download.py --help
+python download_labels.py --help
 ```
 
 Which will output the following:
 
 ```sh
-$ python batch_download.py --help
-usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
+$ python download_labels.py --help
+usage: download_labels.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
                          [job_id] [output_file]
 
 This script accepts a Camio `job_id`, finds the time-boundaries and cameras 
@@ -236,7 +236,7 @@ Example:
     Here is an example of how to run the script to download all labels for
     the `job_id` SjksdkjoowlkjlSDFifajoijerWE231dsdf:
 
-    python batch_download.py -v SjksdkjoowlkjlSDFifajoijerWE231dsdf /home/me/outputfile.json
+    python download_labels.py -v SjksdkjoowlkjlSDFifajoijerWE231dsdf /home/me/outputfile.json
 
 ```
 

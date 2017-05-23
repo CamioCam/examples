@@ -17,7 +17,7 @@ Example:
     Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
     submitted
 
-    python batch_download.py -v -t SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+    python download_labels.py SjksdkjoowlkjlSDFiwjoijerSDRdsdf
 
     timestamp: { user-Id, camera = { camera_id, camera_name, user_id}, labels, event_id }
 """
@@ -121,7 +121,9 @@ class BatchDownloader(object):
         ret = requests.get(self.get_job_url(), headers=headers)
         if not ret.status_code in (200, 204):
             fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
-        logging.info("found job data:\n%r", ret.text)
+        parsed = ret.json()
+        logging.info("collected data on: %d jobs", len(parsed))
+        logging.info(json.dumps(parsed, indent=2, sort_keys=True))
         sys.exit(0)
 
     def get_job_url(self):
@@ -166,7 +168,6 @@ class BatchDownloader(object):
         return ret.json()
 
     def get_results_from_epoch(self, start_time, end_time, camera_names):
-        print end_time.isoformat()
         end_time = dateutil.parser.parse(end_time.isoformat() + "+00:00")
         more_results = True
         labels = dict()
@@ -198,8 +199,6 @@ class BatchDownloader(object):
             more_results = results.get('more_results', False)
             if more_results and results.get('latest_date_considered'): 
                 start_time = dateutil.parser.parse(results.get('latest_date_considered'))
-                print start_time.isoformat()
-                print end_time.isoformat()
                 if start_time > end_time: more_results = False
         return labels
 

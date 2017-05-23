@@ -162,7 +162,7 @@ def get_device_id(fail=True):
             fail("unable to find Camio Box Device ID in either hook-params json or CAMIO_BOX_DEVICE_ID_ENVVAR envvar.\
                   Please set or submit this value")
         elif not fail:
-            Log.warning("device_id not found in environment variables")
+            Log.debug("device_id not found in environment variables")
             return None
         else:
             CAMIO_PARAMS['device_id'] = device 
@@ -234,6 +234,7 @@ def register_camera(camera_name, port=None, host=None):
     arguments:
         camera_name   - the name of the camera (as parsed from the filename) 
         port          - the port to access the webserver of the segmenter
+        host          - the IP-address/hostname of the segmentation service to post to
     returns: this function returns a dctionary describing the new camera, including the camera ID
              note - it is required that there is at least one property in this dictionary called
              'camera_id', that is the unique ID of the camera as determined by the service this
@@ -244,9 +245,11 @@ def register_camera(camera_name, port=None, host=None):
                  camera can be segmented then the logic for registering the camera should 
                  exist in this function.
                  For Camio, this function POSTs to /api/cameras/discovered with the new camera
-                 entry. It is required that the "acquisition_method": "batch" set in the camera 
+                 entry. It is required that "acquisition_method": "batch" be set in the camera 
                  config for it to be known as a batch-import source as opposed to a real-time 
                  input source.
+                 Note that the host and port are not used by Camio. This is because we don't register
+                 cameras with the segmenter
     """
     ip_address, device_id = get_account_info()
     access_token = get_access_token()
