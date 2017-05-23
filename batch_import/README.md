@@ -38,14 +38,14 @@ Python 2.7.13
 On Windows you will need to install it by downloading it from [the offical website](https://www.python.org/downloads/windows/).
 
 You will then need to install `PIP`, the official python package manager. To do this you would download
-the [get_pip.py](https://bootstrap.pypa.io/get-pip.py) script and run it using the following command
+the [`get-pip.py`](https://bootstrap.pypa.io/get-pip.py) script and run it using the following command
 
 ```sh
 $ python get-pip.py
 ```
 
-The ['camio_hooks.py'](camio_hooks.py) and ['download_labels.py'](download_labels.py) scripts require that certain python modules
-be installed on the system. All of these modules are listed in the ['requirements.txt`](requirements.txt) text file. You can install these using the `PIP` package manager by running the following from the `examples/batch_import` directory
+The [`camio_hooks.py`](camio_hooks.py) and [`download_labels.py`](download_labels.py) scripts require that certain python modules
+be installed on the system. All of these modules are listed in the [`requirements.txt`](requirements.txt) text file. You can install these using the `PIP` package manager by running the following from the `examples/batch_import` directory
 
 ```sh
 $ pip install -r requirements.txt
