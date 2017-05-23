@@ -23,6 +23,38 @@ segmentation and first-level analysis of the video content before submitting the
 
 Follow all of the instructions listed in [this help article for setting up Camio Box VM in VirtualBox](https://help.camio.com/hc/en-us/articles/115002492123)
 
+#### Installing the Dependencies
+
+The scripts in this repository are meant to be run by a Python 2.7 interpreter. Python2.7 comes installed by default
+on OSX and most Linux distributions, to check that it is installed on your machine, you can do the following:
+
+```sh
+$ which python
+/usr/bin/python
+$ python -V
+Python 2.7.13
+```
+
+On Windows you will need to install it by downloading it from [the offical website](https://www.python.org/downloads/windows/).
+
+You will then need to install `PIP`, the official python package manager. To do this you would download
+the [get_pip.py](https://bootstrap.pypa.io/get-pip.py) script and run it using the following command
+
+```sh
+$ python get-pip.py
+```
+
+The ['camio_hooks.py'](camio_hooks.py) and ['download_labels.py'](download_labels.py) scripts require that certain python modules
+be installed on the system. All of these modules are listed in the ['requirements.txt`](requirements.txt) text file. You can install these using the `PIP` package manager by running the following from the `examples/batch_import` directory
+
+```sh
+$ pip install -r requirements.txt
+Collecting requests (from -r requirements.txt (line 1))
+  Downloading requests-2.14.2-py2.py3-none-any.whl (560kB)
+    100% |████████████████████████████████| 563kB 539kB/s
+Installing collected packages: requests
+Successfully installed requests-2.14.2
+```
 
 #### Setting up the Environment
 
