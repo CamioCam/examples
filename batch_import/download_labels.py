@@ -17,7 +17,7 @@ Example:
     Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
     submitted
 
-    python batch_download.py -v -t SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+    python download_labels.py -v -t SjksdkjoowlkjlSDFiwjoijerSDRdsdf
 
     timestamp: { user-Id, camera = { camera_id, camera_name, user_id}, labels, event_id }
 """
