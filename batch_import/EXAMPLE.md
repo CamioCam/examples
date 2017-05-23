@@ -1,6 +1,10 @@
 Batch Import Concrete Example
 ========================
 
+### Overview
+
+See the [overview of video importing](/README.md#overview-of-video-importing) for a high level overview of the end-to-end video processing pipeline.
+
 ### What's Needed
 
 1. A registered Camio account
