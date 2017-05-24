@@ -13,6 +13,7 @@ See the [overview of video importing](/README.md#overview-of-video-importing) fo
 4. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
 5. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 6. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
+7. PIP (the Python Package Manager) is needed to download the required dependencies
 
 Once you have all of the items listed above, you can start to batch-import videos to Camio.
 
@@ -34,6 +35,7 @@ Start by cloning the [Camio examples](https://www.github.com/CamioCam/examples) 
 to install the package onto your system.
 
 ```sh
+# clone the repo to get the code
 $ git clone --recursive https://www.github.com/CamioCam/examples
 Cloning into 'examples'...
 remote: Counting objects: 764, done.
@@ -45,6 +47,21 @@ Checking connectivity... done.
 Submodule 'batch_import/video-importer' (https://www.github.com/tnc-ca-geo/video-importer) registered for path 'batch_import/video-importer'
 Cloning into '/private/tmp/examples/batch_import/video-importer'...
 Submodule path 'batch_import/video-importer': checked out '0b677c1d8c7f7cfca14896de8e1948080e942e17'
+
+# install the dependencies for camio_hooks.py
+$ cd examples/batch_import
+$ pip install -r requirements.txt # sudo required for OSX/Linux
+Collecting requests (from -r requirements.txt (line 1))
+  Downloading requests-2.14.2-py2.py3-none-any.whl (560kB)
+    100% |████████████████████████████████| 563kB 538kB/s
+Collecting python-dateutil (from -r requirements.txt (line 2))
+  Downloading python_dateutil-2.6.0-py2.py3-none-any.whl (194kB)
+    100% |████████████████████████████████| 194kB 1.4MB/s
+Requirement already satisfied: six>=1.5 in /usr/lib/python2.7/dist-packages (from python-dateutil->-r requirements.txt (line 2))
+Installing collected packages: requests, python-dateutil
+Successfully installed python-dateutil-2.6.0 requests-2.14.2
+
+# install the video importer onto the system
 $ cd examples/batch_import/video-importer
 $ pwd
 /home/user/examples/batch_import/video-importer
@@ -80,6 +97,8 @@ variables must be defined. These are
 | -------- | ------------|
 | `CAMIO_OAUTH_TOKEN` | set this to the Developer OAuth token that is generated from your [Camio settings](https://camio.com/settings/integrations#api) page. |
 
+###### On OSX and Linux
+
 You can set this by just entering the following in your shell
 
 ```sh
@@ -88,12 +107,22 @@ $ echo $CAMIO_OAUTH_TOKEN
 qdSxve9OtdpPlcsyqzhzN95cYAE7A_P
 ```
 
+##### On Windows
+
+```sh
+set CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+C:\Users\users\examples\batch_import> set CAMIO_OAUTH_TOKEN
+CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
+```
+
+
 ##### Get the Testing Videos
 
 Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip) 
 that you can use with the `import_video.py` program for testing purposes.  
 
-You can either download them through your browser by click [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
+You can either download them through your browser by clicking [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
 or you can do it with `curl` via a terminal by following the steps below.
 
 ```sh
@@ -139,7 +168,13 @@ office_street-1495069946.mp4
 
 Then you would use the following string as the regular expression passed to the video-import script.
 
+* On Linux and OSX *
+
 `.*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
+
+* On Windows *
+
+`.*[\\](?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
 
 This captures the `office_street` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
@@ -207,7 +242,7 @@ INFO:root:finishing up...
 INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
 ```
 
-*NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you will need to give it to the [`batch_download.py`](batch_import/batch_download.py)
+*NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you will need to give it to the [`download_labels.py`](batch_import/download_labels.py)
 script in order to recover the dictionary of labels for all events discovered in the batch-import run you just finished.
 
 If you get any errors about missing the [`device_id`](#set-the-necessary-environment-variables) of the Camio Box or an unauthenticated error, try to set the environment variables again. To check that the environment variables
@@ -226,28 +261,28 @@ that will allow you to check on the status of your video processing.
 #### Gathering the Labels
 
 After batch-importing videos with the [`import_video.py`](batch_import/video-importer/import_video.py) script, you were returned a job ID. 
-You can use this value along with the [`batch_download.py](batch_import/batch_download.py) script to download a bookmark of all labels for all events that
+You can use this value along with the [`download_labels.py](batch_import/download_labels.py) script to download a bookmark of all labels for all events that
 were processed through the batch-import job.
 
 
 To see how to use the script, you can enter the following into a shell from the `examples/batch_import/` directory.
 
 ```bash
-python batch_download.py --help
+python download_labels.py --help
 ```
 
 Which will output the following:
 
 ```sh
-$ python batch_download.py --help
-usage: batch_download.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
+$ python download_labels.py --help
+usage: download_labels.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
                          [job_id] [output_file]
 ```
 
 To gather your labels into the file `/home/user/mylabels.json`, you would run the following (assuming the `job_id` is `agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw` as returned from the example above).
 
 ```sh
-$ python batch_download.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
+$ python download_labels.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
 INFO:root:Job Definition:
 INFO:root:  earliest date: u'2017-05-17T13:07:36.000', latest date: u'2017-05-17T13:17:36.120000'
 INFO:root:  cameras included in inquiry: [u'office_street']

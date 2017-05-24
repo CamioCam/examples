@@ -2,7 +2,7 @@
 
 DESCRIPTION = \
 """
-This script will take a Camio job-ID, find the time-boundaries and cameras involved in that job, and iterate over that 
+This script will take a Camio job_id, find the time-boundaries and cameras involved in that job, and iterate over that 
 time range while downloading all of the labels that Camio has annotated the events with.
 
 This script is designed to be used after a batch-import job has been completed and you wish to retreive a
@@ -19,7 +19,7 @@ Example:
 
     python download_labels.py SjksdkjoowlkjlSDFiwjoijerSDRdsdf
 
-    timestamp: { user-Id, camera = { camera_id, camera_name, user_id}, labels, event_id }
+    timestamp: { user_id, camera = { camera_id, camera_name, user_id}, labels, event_id }
 """
 
 
