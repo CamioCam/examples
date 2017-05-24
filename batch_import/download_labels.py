@@ -2,21 +2,19 @@
 
 DESCRIPTION = \
 """
-This script will take a Camio job_id, find the time-boundaries and cameras involved in that job, and iterate over that 
-time range while downloading all of the labels that Camio has annotated the events with.
+This script accepts a Camio job_id, finds the time-boundaries and cameras associated with that job, 
+and iterates over that time range while downloading all of the labels that Camio has assigned to those events.
 
-This script is designed to be used after a batch-import job has been completed and you wish to retreive a
-compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
-video you submitted for the given job.
+If no `job_id` is submitted, this script will query all of the jobs you've created with your account, assemble them into
+a json structure, and write that json structure to the file given by the `--output_file` argument.
 """
 
 EXAMPLES = \
 """
 Example:
 
-    Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
-    submitted. This will obtain the bookmark of labels for the job with job_id "SjksdkjoowlkjlSDFiwjoijerSDRdsdf" and
-    will write this output to the file /tmp/job_labels.json
+    Here is an example of how to run the script to recover a dictionary of lables for the job with job_id=SjksdkjoowlkjlSDFiwjoijerSDRdsdf. 
+    This will obtain the bookmark of labels for the job and will write this output to the file /tmp/job_labels.json
 
     python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf 
 
@@ -68,7 +66,7 @@ class BatchDownloader(object):
         # optional arguments
         self.parser.add_argument('-o', '--output_file', type=str, default=None,
                                 help="full path to the output file where the resulting labels will \
-                                be stored in json format (default = {job_id}_results.json)")
+                                be stored in json format (default = {{job_id}}_results.json)")
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-w', '--label_white_list', type=str, help='a json list of labels that are whitelisted to be included in the response')
         self.parser.add_argument('-f', '--label_white_list_file', type=str, help='a file containing a json list of labels that are whitelisted')

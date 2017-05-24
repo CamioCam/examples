@@ -171,7 +171,7 @@ $ python import_video.py \
   ~/examples/batch_import/camio_hooks.py \
 ```
 
-In the example above, the Camio Box that's receives the videos:
+In the example above, the Camio Box receives the videos and:
 
 1. analyzes the motion in each video to segment the video files into smaller events
 2. creates metadata for each event that isolated real motion, color-blocking, direction of movement, etc...
@@ -248,12 +248,11 @@ usage: download_labels.py [-h] [-o OUTPUT_FILE] [-a ACCESS_TOKEN]
                           [-c] [-x] [-t] [-v] [-q]
                           [job_id]
 
-This script will take a Camio job_id, find the time-boundaries and cameras involved in that job, and iterate over that
-time range while downloading all of the labels that Camio has annotated the events with.
+This script accepts a Camio job_id, finds the time-boundaries and cameras associated with that job,
+and iterates over that time range while downloading all of the labels that Camio has assigned to those events.
 
-This script is designed to be used after a batch-import job has been completed and you wish to retreive a
-compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
-video you submitted for the given job.
+If no `job_id` is submitted, this script will query all of the jobs you've created with your account, assemble them into
+a json structure, and write that json structure to the file given by the `--output_file` argument.
 
 positional arguments:
   job_id                the ID of the job that you wish to download the labels
@@ -264,7 +263,7 @@ optional arguments:
   -o OUTPUT_FILE, --output_file OUTPUT_FILE
                         full path to the output file where the resulting
                         labels will be stored in json format (default =
-                        {job_id}_results.json)
+                        {{job_id}}_results.json)
   -a ACCESS_TOKEN, --access_token ACCESS_TOKEN
                         your Camio OAuth token (if not given we check the
                         CAMIO_OAUTH_TOKEN envvar)
@@ -283,9 +282,8 @@ optional arguments:
 
 Example:
 
-    Here is an example of how to run the script to recover a dictionary of lables for the last job that you
-    submitted. This will obtain the bookmark of labels for the job with job_id "SjksdkjoowlkjlSDFiwjoijerSDRdsdf" and
-    will write this output to the file /tmp/job_labels.json
+    Here is an example of how to run the script to recover a dictionary of lables for the job with job_id=SjksdkjoowlkjlSDFiwjoijerSDRdsdf.
+    This will obtain the bookmark of labels for the job and will write this output to the file /tmp/job_labels.json
 
     python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf
 
