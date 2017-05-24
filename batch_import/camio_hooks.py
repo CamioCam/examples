@@ -302,7 +302,7 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
     host, device_id = get_account_info()
     if not port:
         port = BATCH_IMPORT_DEFAULT_PORT
-    with open(filepath) as fh:
+    with open(filepath, 'rb') as fh:
         filehash = hash_file_in_chunks(fh)
     urlbase = "http://%s:%s" % (host, port)
     urlbase = urlbase + "/box/content"
