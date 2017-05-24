@@ -231,7 +231,7 @@ class BatchDownloader(object):
                 elif new_start_time >= end_time: more_results = False
                 else: start_time = new_start_time
             
-                logging.info("results gathered, new starting time: %r", start_time)
+                logging.info("results gathered, new starting time: %r", start_time.isoformat())
         return labels
 
     def gather_labels_batch(self):
