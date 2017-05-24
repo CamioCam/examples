@@ -139,11 +139,11 @@ $ curl https://storage.googleapis.com/camio_test_general/video_importer_test_fil
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
  13  236M   13 30.8M    0     0  3576k      0  0:01:07  0:00:08  0:00:59 3747k
-$ unzip batch_import_video_files.zip
-Archive:  batch_import_video_files.zip
-   creating: input_videos/
-  inflating: input_videos/office_street-camera-1495068758.mp4
-  inflating: input_videos/office_street-camera-1495069946.mp4
+$ unzip video_importer_test_files.zip
+Archive:  video_importer_test_files.zip
+   creating: video_importer_test_files/
+  inflating: video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4
+  inflating: video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4
 ```
 
 You will now have a directory `input_videos` that contians the two files:
@@ -227,6 +227,7 @@ Run the importer with all of the values we've assembled in the previous steps.
 ```bash
 $ python import_video.py  \
 > --hook_data_json_file ../samples/sample_hook_data.json \
+> --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
 > ~/video_importer_test_files/ ../camio_hooks.py
 
 import_video.py,  INFO:       init_args():108:   submitted hooks module: '../camio_hooks.py'
