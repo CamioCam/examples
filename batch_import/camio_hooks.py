@@ -19,6 +19,7 @@ Camio-specific hook examples for use with the video import script
 
 # TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
 CAMIO_SERVER_URL = "https://www.camio.com"
+CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 CAMIO_REGISTER_ENDPOINT = "/api/cameras/discovered"
 CAMIO_JOBS_ENDPOINT = "/api/jobs"
 CAMIO_DEVICES_ENDPOINT = "/api/devices"
@@ -75,7 +76,7 @@ def set_hook_data(data_dict):
         Log = logging.getLogger()
     if CAMIO_PARAMS.get('test'):
         Log.info("using test.camio.com instead of www.camio.com")
-        CAMIO_SERVER_URL = "https://test.camio.com"
+        CAMIO_SERVER_URL = CAMIO_TEST_SERVER_URL
     Log.debug("setting camio_hooks data as:\n%s", pprint.pformat(CAMIO_PARAMS, indent=2))
 
 def get_account_info():
@@ -212,7 +213,6 @@ def get_camera_config(local_camera_id):
     access_token = get_access_token()
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    #response = requests.get(url, headers=headers)
     response = network_request('get', url)
     response = response.json()
     Log.debug("cameras under account:\n%r", [response[camera].get('name') for camera in response])
@@ -273,7 +273,6 @@ def register_camera(camera_name, port=None, host=None):
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    #response = requests.post(url, headers=headers, json=payload)
     response = network_request('post', url, json=payload)
     try:
         config = get_camera_config(local_camera_id)
@@ -374,7 +373,6 @@ def assign_job_ids(self, db, unscheduled):
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
         url = CAMIO_SERVER_URL + CAMIO_JOBS_ENDPOINT
-        #res = requests.put(url, json=payload, headers=headers)         
         res = network_request('put', url, json=payload)
 
         try:
@@ -430,7 +428,6 @@ def register_jobs(self, db, jobs):
         Log.debug("registering job:\n ID=%s\n shard ID=%s\n num items=%d\n file-map=%r", 
                 job_id, shard_id, len(rows), hash_map)
         url = rows[0]['upload_url']
-        #ret = requests.put(url, json=payload)
         ret = network_request('put', url, json=payload)
         if not ret.status_code in (200, 204):
             Log.error("error registering job: %s", job_id)

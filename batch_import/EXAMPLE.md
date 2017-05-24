@@ -135,10 +135,10 @@ $ brew install curl
 ==> Caveats
 ==> Summary
 🍺  /usr/local/Cellar/curl/7.54.0: 392 files, 2.8MB
-$ curl https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip -o batch_import_video_files.zip
+$ curl https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip -o video_importer_test_files.zip
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100  303M  100  303M    0     0  2233k      0  0:02:19  0:02:19 --:--:-- 1647k
+ 13  236M   13 30.8M    0     0  3576k      0  0:01:07  0:00:08  0:00:59 3747k
 $ unzip batch_import_video_files.zip
 Archive:  batch_import_video_files.zip
    creating: input_videos/
@@ -149,8 +149,8 @@ Archive:  batch_import_video_files.zip
 You will now have a directory `input_videos` that contians the two files:
 
 ```
-office_street-1495068758.mp4
-office_street-1495069946.mp4
+C2_Hi20161009-120237-1476014557.mp4 
+C2_Hi20161009-131237-1476018757.mp4
 ```
 
 ##### Constructing the File-Parsing Regex
@@ -162,19 +162,19 @@ in the [last section](#get-the-testing-videos)
 As described in the previous section, you now have a directory `input_videos` that contians the two files:
 
 ```
-office_street-1495068758.mp4
-office_street-1495069946.mp4
+C2_Hi20161009-120237-1476014557.mp4 
+C2_Hi20161009-131237-1476018757.mp4
 ```
 
 Then you would use the following string as the regular expression passed to the video-import script.
 
 * On Linux and OSX *
 
-`.*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
+`.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
 
 * On Windows *
 
-`.*[\\](?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
+`.*[\\](?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
 
 This captures the `office_street` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
@@ -225,21 +225,32 @@ $ cd ~/examples/batch_import/video-importer
 Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
-$ python import_video.py \
-  --regex ".*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4" \
-  --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
-  ~/input_videos \
-  ~/examples/batch_import/camio_hooks.py \
-  "192.168.1.57"  
+$ python import_video.py  \
+> --hook_data_json_file ../samples/sample_hook_data.json \
+> ~/video_importer_test_files/ ../camio_hooks.py
 
-INFO:root:submitted hooks module: '/Users/user/examples/batch_import/camio_hooks.py'
-INFO:root:camera_name: office_street
-INFO:root:epoch: 1475973350
-INFO:root:/Users/user/batch_videos/office_street-1475973350.mp4 (scheduled for upload)
-INFO:root:1/1 uploading /Users/user/batch_videos/office_street-1475973350.mp4
-INFO:root:completed
-INFO:root:finishing up...
-INFO:root:Job ID: agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw
+import_video.py,  INFO:       init_args():108:   submitted hooks module: '../camio_hooks.py'
+import_video.py,  INFO:      get_params():139:   camera_name: C2_Hi20161009
+import_video.py,  INFO:      get_params():143:   epoch: 1476014557
+import_video.py,  INFO:   upload_folder():229:   /Users/john/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4 (scheduled for upload)
+import_video.py,  INFO:      get_params():139:   camera_name: C2_Hi20161009
+import_video.py,  INFO:      get_params():143:   epoch: 1476018757
+import_video.py,  INFO:   upload_folder():229:   /Users/john/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4 (scheduled for upload)
+
+Multiple Camio Box devices belong to your account. Please select the one you wish to use
+1. homevmware2.0
+2. BoxVM-Office-Windows-20170413.0
+3. CamioBox_VBOX_Office.20170518.0
+
+3
+ camio_hooks.py,  INFO:get_account_info():116:   You have selected Camio Box: CamioBox_VBOX_Office.20170518.0
+ camio_hooks.py,  INFO: register_camera():272:   registering camera: name=C2_Hi20161009, local_camera_id=81219708c6fe2a5eb9cb35896b8ed78610ce9c6f
+import_video.py,  INFO:   upload_folder():278:   1/2 uploading /Users/john/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4
+import_video.py,  INFO:   upload_folder():285:   completed
+import_video.py,  INFO:   upload_folder():278:   2/2 uploading /Users/john/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4
+import_video.py,  INFO:   upload_folder():285:   completed
+import_video.py,  INFO:            main():358:   finishing up...
+import_video.py,  INFO:            main():360:   Job ID: ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt8y1rQgM
 ```
 
 *NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you will need to give it to the [`download_labels.py`](batch_import/download_labels.py)
@@ -275,8 +286,10 @@ Which will output the following:
 
 ```sh
 $ python download_labels.py --help
-usage: download_labels.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
-                         [job_id] [output_file]
+usage: download_labels.py [-h] [-o OUTPUT_FILE] [-a ACCESS_TOKEN]
+                          [-w LABEL_WHITE_LIST] [-f LABEL_WHITE_LIST_FILE]
+                          [-c] [-x] [-t] [-v] [-q]
+                          [job_id]
 ```
 
 To gather your labels into the file `/home/user/mylabels.json`, you would run the following (assuming the `job_id` is `agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw` as returned from the example above).

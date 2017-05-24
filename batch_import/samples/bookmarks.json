@@ -1,0 +1,3522 @@
+{
+  "labels": {
+    "2016-10-09T05:10:11.627-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "profession", 
+        "bluefin", 
+        "salmon", 
+        "human", 
+        "_color_gray", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "person", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:13.788-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "pc game", 
+        "bass", 
+        "_ml_departing", 
+        "ahink", 
+        "24028", 
+        "mecha", 
+        "016-10-09", 
+        "136", 
+        "human", 
+        "r", 
+        "aurunei", 
+        "palau aurunei 016-10-09 12 6.0226", 
+        "yellowfin", 
+        "machine", 
+        "12", 
+        "palau", 
+        "screenshot", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "r ahink", 
+        "12:08:", 
+        "_color_cyan", 
+        "136 24028", 
+        "_color_green", 
+        "1", 
+        "_ml_mail", 
+        "6.0226", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:05:11.327-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:11.867-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:25.773-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:14:40.732-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:04.103-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "09", 
+        "12:01", 
+        "_ml_departing", 
+        "bluefin", 
+        "salmon", 
+        "al", 
+        "human", 
+        "e", 
+        "tuna", 
+        "al auf uns i 20 e 1", 
+        "_color_gray", 
+        "09 12:01", 
+        "1", 
+        "uns", 
+        "20", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "i", 
+        "ecosystem", 
+        "auf", 
+        "_color_cyan", 
+        "algae", 
+        "_color_green", 
+        "_ml_human", 
+        "octopus", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:13:09.842-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "salmon", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:17:48.335-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_black", 
+        "bluefin", 
+        "salmon", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:17:47.168-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_black", 
+        "bluefin", 
+        "salmon", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:05:55.166-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_red", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bluefin", 
+        "_color_magenta", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:07:32.374-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:14:54.917-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:59.551-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:16:16.740-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_color_white", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:55.356-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "pc game", 
+        "bass", 
+        "_ml_departing", 
+        "ahink", 
+        "24028", 
+        "mecha", 
+        "016-10-09", 
+        "136", 
+        "human", 
+        "r", 
+        "aurunei", 
+        "palau aurunei 016-10-09 12 6.0226", 
+        "yellowfin", 
+        "machine", 
+        "12", 
+        "palau", 
+        "screenshot", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "r ahink", 
+        "12:08:", 
+        "_color_cyan", 
+        "136 24028", 
+        "_color_green", 
+        "1", 
+        "_ml_mail", 
+        "6.0226", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:11:55.520-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_color_white", 
+        "bluefin", 
+        "salmon", 
+        "tuna", 
+        "_color_gray", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "\u30af", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:04:56.125-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "bluefin", 
+        "paintball", 
+        "human", 
+        "tuna", 
+        "shooting", 
+        "_color_gray", 
+        "recreation", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "l", 
+        "outdoor recreation", 
+        "shooting sport", 
+        "_color_green", 
+        "games", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:34.652-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:06:48.284-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "human", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "welding"
+      ]
+    }, 
+    "2016-10-09T06:17:48.001-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_black", 
+        "bluefin", 
+        "salmon", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:13:47.912-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:06:48.869-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "human", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "welding"
+      ]
+    }, 
+    "2016-10-09T06:13:31.085-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_color_white", 
+        "_ml_departing", 
+        "_color_black", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:19:25.911-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:03.270-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "09", 
+        "12:01", 
+        "_ml_departing", 
+        "bluefin", 
+        "salmon", 
+        "al", 
+        "human", 
+        "e", 
+        "tuna", 
+        "al auf uns i 20 e 1", 
+        "_color_gray", 
+        "09 12:01", 
+        "1", 
+        "uns", 
+        "20", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "i", 
+        "ecosystem", 
+        "auf", 
+        "_color_cyan", 
+        "algae", 
+        "_color_green", 
+        "_ml_human", 
+        "octopus", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:16:16.074-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_color_white", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:56.889-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:16:06.601-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:15:43.088-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_black", 
+        "bluefin", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:14:45.646-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:08.283-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "bass", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:13.183-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "bass", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:24.670-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "human", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "fish", 
+        "salmon", 
+        "machine tool", 
+        "_color_green", 
+        "bird", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:08:28.912-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "human", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "fish", 
+        "salmon", 
+        "machine tool", 
+        "_color_green", 
+        "bird", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:10:12.378-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "profession", 
+        "bluefin", 
+        "salmon", 
+        "human", 
+        "_color_gray", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "person", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:04:53.533-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "bluefin", 
+        "paintball", 
+        "human", 
+        "tuna", 
+        "shooting", 
+        "_color_gray", 
+        "recreation", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "l", 
+        "outdoor recreation", 
+        "shooting sport", 
+        "_color_green", 
+        "games", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:10:14.961-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "profession", 
+        "bluefin", 
+        "salmon", 
+        "human", 
+        "_color_gray", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "person", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:06.101-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "salmon", 
+        "_color_cyan", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:32.651-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_black", 
+        "bluefin", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:14:09.427-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:32.123-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:14:39.173-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:10:13.961-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "profession", 
+        "bluefin", 
+        "salmon", 
+        "human", 
+        "_color_gray", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "person", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:31.508-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_blue", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:12:54.477-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "salmon", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:00.068-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "salmon", 
+        "bluefin", 
+        "alau", 
+        "human", 
+        "tuna", 
+        "_color_gray", 
+        "06", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "una", 
+        "alau una 2016-10-09 06", 
+        "2016-10-09", 
+        "_ml_human", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:52.956-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "tool", 
+        "bluefin", 
+        "tuna", 
+        "_color_gray", 
+        "yellowfin", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "machine tool", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:56.545-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "bluefin", 
+        "_color_cyan", 
+        "invertebrate", 
+        "_color_green", 
+        "bird", 
+        "insect", 
+        "amphibian", 
+        "yellowfin", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:18:41.362-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "human", 
+        "bluefin", 
+        "salmon", 
+        "_color_blue", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:21.279-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:57.714-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "bluefin", 
+        "_color_cyan", 
+        "invertebrate", 
+        "_color_green", 
+        "bird", 
+        "insect", 
+        "amphibian", 
+        "yellowfin", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:13:20.370-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_color_white", 
+        "_ml_departing", 
+        "_color_black", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:14:19.907-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:09:43.527-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "screenshot", 
+        "salmon", 
+        "6.", 
+        "09 12:09:3 09 12 09", 
+        "12:09:3", 
+        "link", 
+        "human", 
+        "_color_gray", 
+        "yellowfin", 
+        "12", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_black", 
+        "09", 
+        "_color_cyan", 
+        "_color_green", 
+        "green", 
+        "6.0228", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:08:36.379-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "human", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "fish", 
+        "salmon", 
+        "machine tool", 
+        "_color_green", 
+        "bird", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:07:00.484-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "salmon", 
+        "bluefin", 
+        "alau", 
+        "human", 
+        "tuna", 
+        "_color_gray", 
+        "06", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "una", 
+        "alau una 2016-10-09 06", 
+        "2016-10-09", 
+        "_ml_human", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:17:47.585-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_black", 
+        "bluefin", 
+        "salmon", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:09:42.861-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "screenshot", 
+        "salmon", 
+        "6.", 
+        "09 12:09:3 09 12 09", 
+        "12:09:3", 
+        "link", 
+        "human", 
+        "_color_gray", 
+        "yellowfin", 
+        "12", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_black", 
+        "09", 
+        "_color_cyan", 
+        "_color_green", 
+        "green", 
+        "6.0228", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:20:15.606-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "_color_cyan", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:44.754-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_black", 
+        "bluefin", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:16:14.825-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_color_white", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:41.846-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "_color_cyan", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:14.269-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "_color_cyan", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:16:19.764-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_color_white", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:00.332-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:00.353-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "salmon", 
+        "_color_cyan", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:25.087-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_color_white", 
+        "_ml_departing", 
+        "_color_black", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:07:52.206-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "tool", 
+        "bluefin", 
+        "tuna", 
+        "_color_gray", 
+        "yellowfin", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "machine tool", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:48.336-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:09:43.194-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "screenshot", 
+        "salmon", 
+        "6.", 
+        "09 12:09:3 09 12 09", 
+        "12:09:3", 
+        "link", 
+        "human", 
+        "_color_gray", 
+        "yellowfin", 
+        "12", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_black", 
+        "09", 
+        "_color_cyan", 
+        "_color_green", 
+        "green", 
+        "6.0228", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:20:03.602-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "salmon", 
+        "_color_cyan", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:42.861-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "human", 
+        "bluefin", 
+        "salmon", 
+        "_color_blue", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:06:47.950-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "human", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "welding"
+      ]
+    }, 
+    "2016-10-09T05:09:57.296-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "bluefin", 
+        "_color_cyan", 
+        "invertebrate", 
+        "_color_green", 
+        "bird", 
+        "insect", 
+        "amphibian", 
+        "yellowfin", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:05:25.274-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:06:49.120-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "human", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "welding"
+      ]
+    }, 
+    "2016-10-09T06:13:14.962-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_color_white", 
+        "_ml_departing", 
+        "_color_black", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:19:27.910-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:06:03.286-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_red", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bluefin", 
+        "_color_magenta", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:11:39.787-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_color_white", 
+        "bluefin", 
+        "salmon", 
+        "tuna", 
+        "_color_gray", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "\u30af", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:01.187-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "09", 
+        "12:01", 
+        "_ml_departing", 
+        "bluefin", 
+        "salmon", 
+        "al", 
+        "human", 
+        "e", 
+        "tuna", 
+        "al auf uns i 20 e 1", 
+        "_color_gray", 
+        "09 12:01", 
+        "1", 
+        "uns", 
+        "20", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "i", 
+        "ecosystem", 
+        "auf", 
+        "_color_cyan", 
+        "algae", 
+        "_color_green", 
+        "_ml_human", 
+        "octopus", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T05:05:10.161-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:10.660-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:01.233-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "salmon", 
+        "bluefin", 
+        "alau", 
+        "human", 
+        "tuna", 
+        "_color_gray", 
+        "06", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "una", 
+        "alau una 2016-10-09 06", 
+        "2016-10-09", 
+        "_ml_human", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:58.205-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_red", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bluefin", 
+        "_color_magenta", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:07:40.747-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:13:53.764-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:07:22.179-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "bass", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:00.650-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "salmon", 
+        "bluefin", 
+        "alau", 
+        "human", 
+        "tuna", 
+        "_color_gray", 
+        "06", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "una", 
+        "alau una 2016-10-09 06", 
+        "2016-10-09", 
+        "_ml_human", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:08.279-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "pc game", 
+        "bass", 
+        "_ml_departing", 
+        "ahink", 
+        "24028", 
+        "mecha", 
+        "016-10-09", 
+        "136", 
+        "human", 
+        "r", 
+        "aurunei", 
+        "palau aurunei 016-10-09 12 6.0226", 
+        "yellowfin", 
+        "machine", 
+        "12", 
+        "palau", 
+        "screenshot", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "r ahink", 
+        "12:08:", 
+        "_color_cyan", 
+        "136 24028", 
+        "_color_green", 
+        "1", 
+        "_ml_mail", 
+        "6.0226", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:11:52.521-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_color_white", 
+        "bluefin", 
+        "salmon", 
+        "tuna", 
+        "_color_gray", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "\u30af", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:14:33.246-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:16:03.346-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:19:26.578-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:12:45.662-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "salmon", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:14:25.655-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:19:27.411-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:04.853-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "09", 
+        "12:01", 
+        "_ml_departing", 
+        "bluefin", 
+        "salmon", 
+        "al", 
+        "human", 
+        "e", 
+        "tuna", 
+        "al auf uns i 20 e 1", 
+        "_color_gray", 
+        "09 12:01", 
+        "1", 
+        "uns", 
+        "20", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "i", 
+        "ecosystem", 
+        "auf", 
+        "_color_cyan", 
+        "algae", 
+        "_color_green", 
+        "_ml_human", 
+        "octopus", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T05:07:50.790-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "tool", 
+        "bluefin", 
+        "tuna", 
+        "_color_gray", 
+        "yellowfin", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "machine tool", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:40.506-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_black", 
+        "bluefin", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:14:15.091-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:04:58.215-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "bluefin", 
+        "paintball", 
+        "human", 
+        "tuna", 
+        "shooting", 
+        "_color_gray", 
+        "recreation", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "l", 
+        "outdoor recreation", 
+        "shooting sport", 
+        "_color_green", 
+        "games", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:14:28.572-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:04:52.948-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "bluefin", 
+        "paintball", 
+        "human", 
+        "tuna", 
+        "shooting", 
+        "_color_gray", 
+        "recreation", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "l", 
+        "outdoor recreation", 
+        "shooting sport", 
+        "_color_green", 
+        "games", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:05.578-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "salmon", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:08.700-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "bass", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:26.106-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:28.864-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_blue", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:14:48.562-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "human", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:04.106-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "pc game", 
+        "bass", 
+        "_ml_departing", 
+        "ahink", 
+        "24028", 
+        "mecha", 
+        "016-10-09", 
+        "136", 
+        "human", 
+        "r", 
+        "aurunei", 
+        "palau aurunei 016-10-09 12 6.0226", 
+        "yellowfin", 
+        "machine", 
+        "12", 
+        "palau", 
+        "screenshot", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "r ahink", 
+        "12:08:", 
+        "_color_cyan", 
+        "136 24028", 
+        "_color_green", 
+        "1", 
+        "_ml_mail", 
+        "6.0226", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:08:50.191-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "human", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "fish", 
+        "salmon", 
+        "machine tool", 
+        "_color_green", 
+        "bird", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:14:04.875-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:24.911-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "_color_cyan", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:58.131-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "bluefin", 
+        "_color_cyan", 
+        "invertebrate", 
+        "_color_green", 
+        "bird", 
+        "insect", 
+        "amphibian", 
+        "yellowfin", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:06:48.619-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "human", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "welding"
+      ]
+    }, 
+    "2016-10-09T06:17:47.418-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_black", 
+        "bluefin", 
+        "salmon", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:07:53.706-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "tool", 
+        "bluefin", 
+        "tuna", 
+        "_color_gray", 
+        "yellowfin", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "machine tool", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:12.633-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_color_white", 
+        "_ml_departing", 
+        "_color_black", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:20:05.268-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "salmon", 
+        "_color_cyan", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:13:36.401-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:18:43.528-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "human", 
+        "bluefin", 
+        "salmon", 
+        "_color_blue", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:20:32.528-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "_color_cyan", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:32.757-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_blue", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:18:41.862-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "human", 
+        "bluefin", 
+        "salmon", 
+        "_color_blue", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:42.694-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "screenshot", 
+        "salmon", 
+        "6.", 
+        "09 12:09:3 09 12 09", 
+        "12:09:3", 
+        "link", 
+        "human", 
+        "_color_gray", 
+        "yellowfin", 
+        "12", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_black", 
+        "09", 
+        "_color_cyan", 
+        "_color_green", 
+        "green", 
+        "6.0228", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:07:35.006-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:13:41.815-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "bass", 
+        "_ml_departing", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:06:09.862-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_red", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bluefin", 
+        "_color_magenta", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:13:01.815-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "salmon", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:05:24.608-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:29.949-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_blue", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T05:05:10.910-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "product", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:18:30.283-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_blue", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T06:18:42.195-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "human", 
+        "bluefin", 
+        "salmon", 
+        "_color_blue", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:06:04.702-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_color_red", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "human", 
+        "bluefin", 
+        "_color_magenta", 
+        "bird", 
+        "_color_green", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T06:20:04.685-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "salmon", 
+        "_color_cyan", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:42.278-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "screenshot", 
+        "salmon", 
+        "6.", 
+        "09 12:09:3 09 12 09", 
+        "12:09:3", 
+        "link", 
+        "human", 
+        "_color_gray", 
+        "yellowfin", 
+        "12", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_black", 
+        "09", 
+        "_color_cyan", 
+        "_color_green", 
+        "green", 
+        "6.0228", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:16:20.347-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_color_white", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:00.900-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "salmon", 
+        "bluefin", 
+        "alau", 
+        "human", 
+        "tuna", 
+        "_color_gray", 
+        "06", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "una", 
+        "alau una 2016-10-09 06", 
+        "2016-10-09", 
+        "_ml_human", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:55.877-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "bluefin", 
+        "_color_cyan", 
+        "invertebrate", 
+        "_color_green", 
+        "bird", 
+        "insect", 
+        "amphibian", 
+        "yellowfin", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:19:27.077-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "bluefin", 
+        "_color_cyan", 
+        "bird", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "human", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:05.769-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "09", 
+        "12:01", 
+        "_ml_departing", 
+        "bluefin", 
+        "salmon", 
+        "al", 
+        "human", 
+        "e", 
+        "tuna", 
+        "al auf uns i 20 e 1", 
+        "_color_gray", 
+        "09 12:01", 
+        "1", 
+        "uns", 
+        "20", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "i", 
+        "ecosystem", 
+        "auf", 
+        "_color_cyan", 
+        "algae", 
+        "_color_green", 
+        "_ml_human", 
+        "octopus", 
+        "bird"
+      ]
+    }, 
+    "2016-10-09T05:07:37.835-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "salmon", 
+        "human", 
+        "bluefin", 
+        "bird", 
+        "_color_green", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:15:26.737-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_car", 
+        "_ml_departing", 
+        "_color_black", 
+        "bluefin", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "_color_gray", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T05:07:18.764-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "bass", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "bluefin", 
+        "salmon", 
+        "bird", 
+        "_color_green", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "yellowfin", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:07:46.792-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "tool", 
+        "bluefin", 
+        "tuna", 
+        "_color_gray", 
+        "yellowfin", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "machine tool", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T06:15:54.750-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:11:53.771-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_color_white", 
+        "bluefin", 
+        "salmon", 
+        "tuna", 
+        "_color_gray", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "\u30af", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:08:44.860-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "machine", 
+        "human", 
+        "_color_white", 
+        "_ml_departing", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "fish", 
+        "salmon", 
+        "machine tool", 
+        "_color_green", 
+        "bird", 
+        "trout", 
+        "yellowfin", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }, 
+    "2016-10-09T05:10:10.461-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "bass", 
+        "_ml_departing", 
+        "profession", 
+        "bluefin", 
+        "salmon", 
+        "human", 
+        "_color_gray", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "_color_green", 
+        "person", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:11:47.061-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_color_white", 
+        "bluefin", 
+        "salmon", 
+        "tuna", 
+        "_color_gray", 
+        "machine", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "\u30af", 
+        "_color_green", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "_ml_approaching", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:04:57.212-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "bass", 
+        "_ml_departing", 
+        "salmon", 
+        "bluefin", 
+        "paintball", 
+        "human", 
+        "tuna", 
+        "shooting", 
+        "_color_gray", 
+        "recreation", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "l", 
+        "outdoor recreation", 
+        "shooting sport", 
+        "_color_green", 
+        "games", 
+        "_ml_mail", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "trout"
+      ]
+    }, 
+    "2016-10-09T05:09:00.854-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "", 
+        "pc game", 
+        "bass", 
+        "_ml_departing", 
+        "ahink", 
+        "24028", 
+        "mecha", 
+        "016-10-09", 
+        "136", 
+        "human", 
+        "r", 
+        "aurunei", 
+        "palau aurunei 016-10-09 12 6.0226", 
+        "yellowfin", 
+        "machine", 
+        "12", 
+        "palau", 
+        "screenshot", 
+        "47390561bf685356557fc083c410914dc4b6fde6", 
+        "r ahink", 
+        "12:08:", 
+        "_color_cyan", 
+        "136 24028", 
+        "_color_green", 
+        "1", 
+        "_ml_mail", 
+        "6.0226", 
+        "_ml_human", 
+        "octopus", 
+        "bird", 
+        "_ml_approaching"
+      ]
+    }, 
+    "2016-10-09T06:16:07.519-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      }, 
+      "labels": [
+        "_ml_departing", 
+        "_color_white", 
+        "_color_black", 
+        "human", 
+        "bluefin", 
+        "_color_green", 
+        "646c65289f24f26577912ea1deac8f6b26a847be", 
+        "yellowfin", 
+        "_ml_mail", 
+        "tuna", 
+        "_ml_human", 
+        "octopus", 
+        "_color_gray", 
+        "_ml_approaching", 
+        "bass"
+      ]
+    }
+  }, 
+  "job_id": "ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt8y1rQgM", 
+  "latest_date": "2016-10-09T06:22:36.993000", 
+  "earliest_date": "2016-10-09T05:02:37.000"
+}

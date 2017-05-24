@@ -24,7 +24,7 @@ Example:
 
     python download_labels.py --output_file /tmp/job_list.json
 
-    which will print a list of jobs under your accout to stdout
+    which will write the list of jobs that belong to the user to the file '/tmp/job_list.json'
 
 """
 
@@ -176,7 +176,7 @@ class BatchDownloader(object):
         self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
         logging.info("Job Definition:")
         logging.info("\tearliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
-        logging.info("\tcameras included in inquiry: %r", self.cameras)
+        logging.info("\tcameras included in inquiry: %s", " ".join(self.cameras))
         return self.job
 
     def make_search_request(self, text, date=None):
@@ -186,19 +186,28 @@ class BatchDownloader(object):
         if not ret.status_code in (200, 204):
             logging.error("unable to obtain search results with query (%s)", text)
         logging.debug("got search results for query (%s)", text)
-        #logging.debug("results:\n%r", ret.text)
-        return ret.json()
+        logging.debug("results:\n%r", ret.text)
+        try:
+            return ret.json()
+        except Exception, e:
+            logging.error("error while decoding json response from the server")
+            logging.debug("actual response: %r", ret.text)
+            return None
 
     def get_results_from_epoch(self, start_time, end_time, camera_names):
         end_time = dateutil.parser.parse(end_time.isoformat() + "+00:00")
+        start_time = dateutil.parser.parse(start_time.isoformat() + "+00:00") 
         more_results = True
         labels = dict()
         while more_results:
             text = " ".join(camera_names)
             text = "all " + text
+            text = text + " " + " ".join(self.white_labels)
             ret = self.make_search_request(text, start_time)
+            if not ret or not ret.get('result'):
+                logging.error("invalid search response from the server")
+                break
             results = ret.get('result')
-            if not results: return None
             logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
             for index, bucket in enumerate(results.get('buckets')):
                 logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
@@ -209,8 +218,7 @@ class BatchDownloader(object):
                     if not image.get('labels') or len(image['labels']) == 0:
                         continue
                     new_labels = image['labels']
-                    if self.white_labels:
-                        new_labels = [label for label in new_labels if label in self.white_labels]
+                    #if self.white_labels: new_labels = [label for label in new_labels if label in self.white_labels]
                     labels[image['date_created']] = {
                         'labels': new_labels,
                         'camera': {
@@ -220,8 +228,12 @@ class BatchDownloader(object):
             # see if there are more results and if so shift the start time of the query to reflect the new range
             more_results = results.get('more_results', False)
             if more_results and results.get('latest_date_considered'): 
-                start_time = dateutil.parser.parse(results.get('latest_date_considered'))
-                if start_time > end_time: more_results = False
+                new_start_time = dateutil.parser.parse(results.get('latest_date_considered'))
+                if new_start_time == start_time: more_results = False
+                elif new_start_time >= end_time: more_results = False
+                else: start_time = new_start_time
+            
+                logging.info("results gathered, new starting time: %r", start_time)
         return labels
 
     def gather_labels_batch(self):
@@ -237,7 +249,7 @@ class BatchDownloader(object):
     def dump_labels_to_file(self):
         logging.info("writing label info to file: %s", self.results_file)
         with open(self.results_file, 'w') as fh:
-            fh.write(json.dumps(self.labels))
+            fh.write(json.dumps(self.labels, indent=2))
         logging.info("labels are now available in: %s", self.results_file)
 
     def run(self):

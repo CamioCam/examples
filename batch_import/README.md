@@ -244,34 +244,39 @@ Which will output the following:
 
 ```sh
 $ python download_labels.py --help
-usage: download_labels.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
-                         [job_id] [output_file]
+usage: download_labels.py [-h] [-o OUTPUT_FILE] [-a ACCESS_TOKEN]
+                          [-w LABEL_WHITE_LIST] [-f LABEL_WHITE_LIST_FILE]
+                          [-c] [-x] [-t] [-v] [-q]
+                          [job_id]
 
-This script accepts a Camio `job_id`, finds the time-boundaries and cameras 
-associated with that job, and iterates over that time range while downloading all 
-of the labels that Camio has assigned to those events.
+This script will take a Camio job_id, find the time-boundaries and cameras involved in that job, and iterate over that
+time range while downloading all of the labels that Camio has annotated the events with.
 
-This script is designed to be used after a batch-import job has completed 
-to retreive a compilation of all of the labels assigned to all of 
-the video events that were imported by the given job.
-
-If no `job_id` is submitted, this script will query all of the jobs you've created
-with your account and display them to you before exiting.
+This script is designed to be used after a batch-import job has been completed and you wish to retreive a
+compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
+video you submitted for the given job.
 
 positional arguments:
   job_id                the ID of the job that you wish to download the labels
                         for
-  output_file           full path to the output file where the resulting
-                        labels will be stored in json format (default =
-                        {{job_id}}_results.json)
 
 optional arguments:
   -h, --help            show this help message and exit
+  -o OUTPUT_FILE, --output_file OUTPUT_FILE
+                        full path to the output file where the resulting
+                        labels will be stored in json format (default =
+                        {job_id}_results.json)
   -a ACCESS_TOKEN, --access_token ACCESS_TOKEN
                         your Camio OAuth token (if not given we check the
                         CAMIO_OAUTH_TOKEN envvar)
-  -c, --csv             set to export in CSV format
-  -x, --xml             set to export in XML format
+  -w LABEL_WHITE_LIST, --label_white_list LABEL_WHITE_LIST
+                        a json list of labels that are whitelisted to be
+                        included in the response
+  -f LABEL_WHITE_LIST_FILE, --label_white_list_file LABEL_WHITE_LIST_FILE
+                        a file containing a json list of labels that are
+                        whitelisted
+  -c, --csv             (not implemented yet) set to export in CSV format
+  -x, --xml             (not implemented yet) set to export in XML format
   -t, --testing         use Camio testing servers instead of production (for
                         dev use only!)
   -v, --verbose         set logging level to debug
@@ -279,14 +284,21 @@ optional arguments:
 
 Example:
 
-    Here is an example of how to run the script to download all labels for
-    the `job_id` SjksdkjoowlkjlSDFifajoijerWE231dsdf:
+    Here is an example of how to run the script to recover a dictionary of lables for the last job that you
+    submitted. This will obtain the bookmark of labels for the job with job_id "SjksdkjoowlkjlSDFiwjoijerSDRdsdf" and
+    will write this output to the file /tmp/job_labels.json
 
-    python download_labels.py -v SjksdkjoowlkjlSDFifajoijerWE231dsdf /home/me/outputfile.json
+    python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+
+    If you just want to list all jobs that belong to your account, you can do the followng
+
+    python download_labels.py --output_file /tmp/job_list.json
+
+    which will write the list of jobs that belong to the user to the file '/tmp/job_list.json'
 
 ```
 
-This script accepts a job_id, queries the [Camio API](https://api.camio.com/#jobs) to get the job definition, then uses 
+This script accepts a `job_id`, queries the [Camio API](https://api.camio.com/#jobs) to get the job definition, then uses 
 the job definition and the [Camio search API](https://api.camio.com/#search) to go through all events that belong to that job. While
 going through all of these events, it assembles the labels into a json object and writes this object to the output file (which can be specified 
 by you or simply defaults to `{{job_id}}_results.json`). This json object has the following structure
