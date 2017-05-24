@@ -168,7 +168,13 @@ office_street-1495069946.mp4
 
 Then you would use the following string as the regular expression passed to the video-import script.
 
+* On Linux and OSX *
+
 `.*/(?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
+
+* On Windows *
+
+`.*[\\](?P<camera>\w+?)\-(?P<epoch>\d+)\.mp4`
 
 This captures the `office_street` part as the camera name (used for registering the camera with Camio), and parses the `1495068758` part as the Unix-timestamp
 of the video.
