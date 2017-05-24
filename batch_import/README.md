@@ -169,10 +169,9 @@ $ python import_video.py \
   --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
   ~/input_videos \
   ~/examples/batch_import/camio_hooks.py \
-  "192.168.1.57"  
 ```
 
-In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:
+In the example above, the Camio Box that's receives the videos:
 
 1. analyzes the motion in each video to segment the video files into smaller events
 2. creates metadata for each event that isolated real motion, color-blocking, direction of movement, etc...
