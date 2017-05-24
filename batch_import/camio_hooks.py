@@ -76,7 +76,7 @@ def set_hook_data(data_dict):
     if CAMIO_PARAMS.get('test'):
         Log.info("using test.camio.com instead of www.camio.com")
         CAMIO_SERVER_URL = "https://test.camio.com"
-    Log.debug("setting camio_hooks data as:\n%r", CAMIO_PARAMS)
+    Log.debug("setting camio_hooks data as:\n%s", pprint.pformat(CAMIO_PARAMS, indent=2))
 
 def get_account_info():
     """
@@ -99,8 +99,8 @@ def get_account_info():
             device_id = devices[0]['device_id']
         else: # multiple devices, prompt for which one they want
             lines = ["%d. %s" % (index+1, device.get('name', 'unknown')) for (index, device) in enumerate(devices)]
-            prompt = "Multiple Camio Box devices belong to your account. Please select the one you wish to use\n"
-            prompt = prompt + '\n'.join(lines) + '\n'
+            prompt = "\nMultiple Camio Box devices belong to your account. Please select the one you wish to use\n"
+            prompt = prompt + '\n'.join(lines) + '\n\n'
             selection = None
             while not selection:
                 selection = raw_input(prompt)
@@ -112,6 +112,7 @@ def get_account_info():
                 except:
                     Log.error("invalid input choice: %r", selection)
                     selection = None
+            Log.info("You have selected Camio Box: %s", devices[selection-1].get('name'))
             device_id = devices[selection-1]['device_id']
         CAMIO_PARAMS['device_id'] = device_id
     if not ip_address:
