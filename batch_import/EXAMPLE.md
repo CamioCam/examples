@@ -10,7 +10,7 @@ See the [overview of video importing](/README.md#overview-of-video-importing) fo
 1. A registered Camio account
 2. A [batch-import-enabled Camio Box Virtual Machine](https://help.camio.com/hc/en-us/articles/115002492123)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
-4. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip)
+4. [The testing directory of videos](https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip)
 5. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
 6. Python Version 2.7 (installed by default on OSX and Linux, can be obtained from the [python website](https://www.python.org/downloads/windows/) for Windows)
 7. PIP (the Python Package Manager) is needed to download the required dependencies
@@ -119,10 +119,10 @@ CAMIO_OAUTH_TOKEN=ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
 ##### Get the Testing Videos
 
-Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip) 
+Camio supplies a [small directory of video files](https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip) 
 that you can use with the `import_video.py` program for testing purposes.  
 
-You can either download them through your browser by clicking [this link](https://storage.googleapis.com/camio_firmware_images/batch_import_video_files.zip),
+You can either download them through your browser by clicking [this link](https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip),
 or you can do it with `curl` via a terminal by following the steps below.
 
 ```sh
@@ -156,7 +156,7 @@ C2_Hi20161009-131237-1476018757.mp4
 ##### Constructing the File-Parsing Regex
 
 You will be running the video-import script over a directory of video files. For this example we will assume you are using the example video files
-[supplied by Camio](https://storage.googleapis.com/camio_test_general/batch_import_video_files.zip). Downloading and unzipping these files was described
+[supplied by Camio](https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip). Downloading and unzipping these files was described
 in the [last section](#get-the-testing-videos)
 
 As described in the previous section, you now have a directory `input_videos` that contians the two files:
