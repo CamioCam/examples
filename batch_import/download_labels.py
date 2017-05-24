@@ -15,11 +15,17 @@ EXAMPLES = \
 Example:
 
     Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
-    submitted
+    submitted. This will obtain the bookmark of labels for the job with job_id "SjksdkjoowlkjlSDFiwjoijerSDRdsdf" and
+    will write this output to the file /tmp/job_labels.json
 
-    python download_labels.py SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+    python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf 
 
-    timestamp: { user_id, camera = { camera_id, camera_name, user_id}, labels, event_id }
+    If you just want to list all jobs that belong to your account, you can do the followng
+
+    python download_labels.py --output_file /tmp/job_list.json
+
+    which will print a list of jobs under your accout to stdout
+
 """
 
 
@@ -59,15 +65,15 @@ class BatchDownloader(object):
         )
         # positional args
         self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
-        self.parser.add_argument('output_file', nargs='?', type=str, default=None,
+        # optional arguments
+        self.parser.add_argument('-o', '--output_file', type=str, default=None,
                                 help="full path to the output file where the resulting labels will \
                                 be stored in json format (default = {job_id}_results.json)")
-        # optional arguments
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-w', '--label_white_list', type=str, help='a json list of labels that are whitelisted to be included in the response')
         self.parser.add_argument('-f', '--label_white_list_file', type=str, help='a file containing a json list of labels that are whitelisted')
-        self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
-        self.parser.add_argument('-x', '--xml', action='store_true', help='set to export in XML format')
+        self.parser.add_argument('-c', '--csv', action='store_true', help='(not implemented yet) set to export in CSV format')
+        self.parser.add_argument('-x', '--xml', action='store_true', help='(not implemented yet) set to export in XML format')
         self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
         self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
         self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
@@ -79,6 +85,8 @@ class BatchDownloader(object):
         self.job_id = self.args.job_id
         if not self.args.output_file and self.job_id:
             self.results_file = "%s_results.json" % self.job_id
+        elif not self.args.output_file:
+            self.results_file = "job_list.json"
         else:
             self.results_file = self.args.output_file
         if self.args.access_token:
@@ -122,8 +130,22 @@ class BatchDownloader(object):
         if not ret.status_code in (200, 204):
             fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
         parsed = ret.json()
-        logging.info("collected data on: %d jobs", len(parsed))
-        logging.info(json.dumps(parsed, indent=2, sort_keys=True))
+        jobs = { job['job_id']: {
+                    "start_time": job['request'].get('earliest_date'), 
+                    "end_time": job['request'].get('latest_date'),
+                    "item_count": job['request'].get('item_count'),
+                    "status": job['status'],
+                    "shard_count": len(job['shard_map']),
+                    #"progress": len(job['shard_map']) / len([shard for shard in job['shard_map'] if shard['status'] == 'complete']),
+                } for job in parsed
+        }
+
+
+        logging.info("total of %d jobs associated with your account", len(parsed))
+        logging.debug(json.dumps(jobs, indent=2, sort_keys=True))
+        logging.info("writing list of jobs to file: %s", self.results_file)
+        with open(self.results_file, 'w') as fh:
+            fh.write(json.dumps(jobs, indent=2, sort_keys=True))
         sys.exit(0)
 
     def get_job_url(self):
