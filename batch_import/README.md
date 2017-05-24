@@ -302,39 +302,54 @@ by you or simply defaults to `{{job_id}}_results.json`). This json object has th
 
 ```json
 {
-    "earliest_date": "1970-01-01T12:00:00.0000-0000",
-    "latest_date": "1970-01-01T12:30:00.0000-0000",
-    "job_id": "sdfslkjfjowejoijsldkjflksjdf",
-    "labels": {
-         "1970-01-01T12:00:01.0345-0000": {
-              "cameras": {
-                  "camera_name_1": {
-                      "name": "camera_name_1",
-                      "camera_id": "wer9ikjsodfj09j34rojiosj"
-                   }
-                },
-                "labels": [
-                    "dog",
-                    "car",
-                    "human"
-                ]
-            }
-         },
-         "1970-01-01T12:00:03.02089-0000": {
-              "cameras": {
-                  "camera_name_1": {
-                      "name": "camera_name_1",
-                      "camera_id": "wer9ikjsodfj09j34rojiosj"
-                   }
-                },
-                "labels": [
-                    "human",
-                    "suv",
-                    "tree"
-                ]
-            }
-        }
+  "labels": {
+    "2016-10-09T05:04:57.212-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "",
+        "bass",
+        "bluefin",
+        "tuna"
+      ]
+    },
+    "2016-10-09T05:09:00.854-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "",
+        "bass",
+        "human",
+        "aurunei",
+        "yellowfin",
+        "machine",
+        "12",
+        "palau",
+        "_color_cyan",
+        "_color_green",
+        "octopus",
+        "bird"
+      ]
+    },
+    "2016-10-09T06:16:07.519-0000": {
+      "camera": {
+        "name": "C2_Hi20161009"
+      },
+      "labels": [
+        "human",
+        "bluefin",
+        "yellowfin",
+        "tuna",
+        "octopus",
+        "bass"
+      ]
     }
+  },
+  "job_id": "ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt8y1rQgM",
+  "latest_date": "2016-10-09T06:22:36.993000",
+  "earliest_date": "2016-10-09T05:02:37.000"
 }
 ```
 
