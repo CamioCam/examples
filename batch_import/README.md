@@ -169,10 +169,9 @@ $ python import_video.py \
   --hook_data_json_file ~/examples/batch_import/samples/sample_hook_data.json \
   ~/input_videos \
   ~/examples/batch_import/camio_hooks.py \
-  "192.168.1.57"  
 ```
 
-In the example above, the Camio Box that's running on port `8080` of the ip address `192.168.1.57`:
+In the example above, the Camio Box receives the videos and:
 
 1. analyzes the motion in each video to segment the video files into smaller events
 2. creates metadata for each event that isolated real motion, color-blocking, direction of movement, etc...
@@ -244,34 +243,38 @@ Which will output the following:
 
 ```sh
 $ python download_labels.py --help
-usage: download_labels.py [-h] [-a ACCESS_TOKEN] [-c] [-x] [-t] [-v] [-q]
-                         [job_id] [output_file]
+usage: download_labels.py [-h] [-o OUTPUT_FILE] [-a ACCESS_TOKEN]
+                          [-w LABEL_WHITE_LIST] [-f LABEL_WHITE_LIST_FILE]
+                          [-c] [-x] [-t] [-v] [-q]
+                          [job_id]
 
-This script accepts a Camio `job_id`, finds the time-boundaries and cameras 
-associated with that job, and iterates over that time range while downloading all 
-of the labels that Camio has assigned to those events.
+This script accepts a Camio job_id, finds the time-boundaries and cameras associated with that job,
+and iterates over that time range while downloading all of the labels that Camio has assigned to those events.
 
-This script is designed to be used after a batch-import job has completed 
-to retreive a compilation of all of the labels assigned to all of 
-the video events that were imported by the given job.
-
-If no `job_id` is submitted, this script will query all of the jobs you've created
-with your account and display them to you before exiting.
+If no `job_id` is submitted, this script will query all of the jobs you've created with your account, assemble them into
+a json structure, and write that json structure to the file given by the `--output_file` argument.
 
 positional arguments:
   job_id                the ID of the job that you wish to download the labels
                         for
-  output_file           full path to the output file where the resulting
-                        labels will be stored in json format (default =
-                        {{job_id}}_results.json)
 
 optional arguments:
   -h, --help            show this help message and exit
+  -o OUTPUT_FILE, --output_file OUTPUT_FILE
+                        full path to the output file where the resulting
+                        labels will be stored in json format (default =
+                        {{job_id}}_results.json)
   -a ACCESS_TOKEN, --access_token ACCESS_TOKEN
                         your Camio OAuth token (if not given we check the
                         CAMIO_OAUTH_TOKEN envvar)
-  -c, --csv             set to export in CSV format
-  -x, --xml             set to export in XML format
+  -w LABEL_WHITE_LIST, --label_white_list LABEL_WHITE_LIST
+                        a json list of labels that are whitelisted to be
+                        included in the response
+  -f LABEL_WHITE_LIST_FILE, --label_white_list_file LABEL_WHITE_LIST_FILE
+                        a file containing a json list of labels that are
+                        whitelisted
+  -c, --csv             (not implemented yet) set to export in CSV format
+  -x, --xml             (not implemented yet) set to export in XML format
   -t, --testing         use Camio testing servers instead of production (for
                         dev use only!)
   -v, --verbose         set logging level to debug
@@ -279,53 +282,95 @@ optional arguments:
 
 Example:
 
-    Here is an example of how to run the script to download all labels for
-    the `job_id` SjksdkjoowlkjlSDFifajoijerWE231dsdf:
+    Here is an example of how to run the script to recover a dictionary of lables for the job with job_id=SjksdkjoowlkjlSDFiwjoijerSDRdsdf.
+    This will obtain the bookmark of labels for the job and will write this output to the file /tmp/job_labels.json
 
-    python download_labels.py -v SjksdkjoowlkjlSDFifajoijerWE231dsdf /home/me/outputfile.json
+    python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+
+    If you just want to list all jobs that belong to your account, you can do the followng
+
+    python download_labels.py --output_file /tmp/job_list.json
+
+    which will write the list of jobs that belong to the user to the file '/tmp/job_list.json'
 
 ```
 
-This script accepts a job_id, queries the [Camio API](https://api.camio.com/#jobs) to get the job definition, then uses 
+This script accepts a `job_id`, queries the [Camio API](https://api.camio.com/#jobs) to get the job definition, then uses 
 the job definition and the [Camio search API](https://api.camio.com/#search) to go through all events that belong to that job. While
 going through all of these events, it assembles the labels into a json object and writes this object to the output file (which can be specified 
 by you or simply defaults to `{{job_id}}_results.json`). This json object has the following structure
 
 ```json
 {
-    "earliest_date": "1970-01-01T12:00:00.0000-0000",
-    "latest_date": "1970-01-01T12:30:00.0000-0000",
-    "job_id": "sdfslkjfjowejoijsldkjflksjdf",
-    "labels": {
-         "1970-01-01T12:00:01.0345-0000": {
-              "cameras": {
-                  "camera_name_1": {
-                      "name": "camera_name_1",
-                      "camera_id": "wer9ikjsodfj09j34rojiosj"
-                   }
-                },
-                "labels": [
-                    "dog",
-                    "car",
-                    "human"
-                ]
-            }
-         },
-         "1970-01-01T12:00:03.02089-0000": {
-              "cameras": {
-                  "camera_name_1": {
-                      "name": "camera_name_1",
-                      "camera_id": "wer9ikjsodfj09j34rojiosj"
-                   }
-                },
-                "labels": [
-                    "human",
-                    "suv",
-                    "tree"
-                ]
-            }
-        }
+  "job_id": "ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDI15PVuwgM",
+  "latest_date": "2016-10-09T06:22:36.993000",
+  "earliest_date": "2016-10-09T05:02:37.000"
+  "labels": {
+    "2016-10-09T05:10:31.456-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": [
+        "bass",
+        "_color_white",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "bluefin",
+        "human",
+        "salmon",
+        "_color_green",
+        "yellowfin",
+        "_ml_mail",
+        "tuna",
+        "_ml_human",
+        "octopus",
+        "_color_gray",
+        "_ml_approaching",
+        "trout"
+      ]
+    },
+    "2016-10-09T05:11:47.061-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": [
+        "bass",
+        "_color_white",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "salmon",
+        "human",
+        "bluefin",
+        "bird",
+        "_color_green",
+        "yellowfin",
+        "_ml_mail",
+        "_ml_human",
+        "octopus",
+        "_color_gray",
+        "_ml_approaching",
+        "trout"
+      ]
+    },
+    "2016-10-09T05:09:13.788-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": [
+        "bass",
+        "_ml_departing",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "human",
+        "salmon",
+        "_color_cyan",
+        "_color_green",
+        "yellowfin",
+        "_ml_mail",
+        "_ml_human",
+        "bird",
+        "_ml_approaching",
+        "trout"
+      ]
     }
+  },
 }
 ```
 

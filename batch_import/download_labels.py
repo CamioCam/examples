@@ -2,24 +2,28 @@
 
 DESCRIPTION = \
 """
-This script will take a Camio job_id, find the time-boundaries and cameras involved in that job, and iterate over that 
-time range while downloading all of the labels that Camio has annotated the events with.
+This script accepts a Camio job_id, finds the time-boundaries and cameras associated with that job, 
+and iterates over that time range while downloading all of the labels that Camio has assigned to those events.
 
-This script is designed to be used after a batch-import job has been completed and you wish to retreive a
-compilation of all of the labels assigned to all of the events that were parsed from the grouping of batch import
-video you submitted for the given job.
+If no `job_id` is submitted, this script will query all of the jobs you've created with your account, assemble them into
+a json structure, and write that json structure to the file given by the `--output_file` argument.
 """
 
 EXAMPLES = \
 """
 Example:
 
-    Here is an example of how to run the script to recover a dictionary of lables for the last job that you 
-    submitted
+    Here is an example of how to run the script to recover a dictionary of lables for the job with job_id=SjksdkjoowlkjlSDFiwjoijerSDRdsdf. 
+    This will obtain the bookmark of labels for the job and will write this output to the file /tmp/job_labels.json
 
-    python download_labels.py SjksdkjoowlkjlSDFiwjoijerSDRdsdf
+    python download_labels.py --output_file /tmp/job_labels.json SjksdkjoowlkjlSDFiwjoijerSDRdsdf 
 
-    timestamp: { user_id, camera = { camera_id, camera_name, user_id}, labels, event_id }
+    If you just want to list all jobs that belong to your account, you can do the followng
+
+    python download_labels.py --output_file /tmp/job_list.json
+
+    which will write the list of jobs that belong to the user to the file '/tmp/job_list.json'
+
 """
 
 
@@ -59,15 +63,15 @@ class BatchDownloader(object):
         )
         # positional args
         self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
-        self.parser.add_argument('output_file', nargs='?', type=str, default=None,
-                                help="full path to the output file where the resulting labels will \
-                                be stored in json format (default = {job_id}_results.json)")
         # optional arguments
+        self.parser.add_argument('-o', '--output_file', type=str, default=None,
+                                help="full path to the output file where the resulting labels will \
+                                be stored in json format (default = {{job_id}}_results.json)")
         self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
         self.parser.add_argument('-w', '--label_white_list', type=str, help='a json list of labels that are whitelisted to be included in the response')
         self.parser.add_argument('-f', '--label_white_list_file', type=str, help='a file containing a json list of labels that are whitelisted')
-        self.parser.add_argument('-c', '--csv', action='store_true', help='set to export in CSV format')
-        self.parser.add_argument('-x', '--xml', action='store_true', help='set to export in XML format')
+        self.parser.add_argument('-c', '--csv', action='store_true', help='(not implemented yet) set to export in CSV format')
+        self.parser.add_argument('-x', '--xml', action='store_true', help='(not implemented yet) set to export in XML format')
         self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
         self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
         self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
@@ -79,6 +83,8 @@ class BatchDownloader(object):
         self.job_id = self.args.job_id
         if not self.args.output_file and self.job_id:
             self.results_file = "%s_results.json" % self.job_id
+        elif not self.args.output_file:
+            self.results_file = "job_list.json"
         else:
             self.results_file = self.args.output_file
         if self.args.access_token:
@@ -122,8 +128,22 @@ class BatchDownloader(object):
         if not ret.status_code in (200, 204):
             fail("unable to obtain job resource with id: %s from %s endpoint. return code: %r", self.job_id, self.get_job_url(), ret.status_code)
         parsed = ret.json()
-        logging.info("collected data on: %d jobs", len(parsed))
-        logging.info(json.dumps(parsed, indent=2, sort_keys=True))
+        jobs = { job['job_id']: {
+                    "start_time": job['request'].get('earliest_date'), 
+                    "end_time": job['request'].get('latest_date'),
+                    "item_count": job['request'].get('item_count'),
+                    "status": job['status'],
+                    "shard_count": len(job['shard_map']),
+                    #"progress": len(job['shard_map']) / len([shard for shard in job['shard_map'] if shard['status'] == 'complete']),
+                } for job in parsed
+        }
+
+
+        logging.info("total of %d jobs associated with your account", len(parsed))
+        logging.debug(json.dumps(jobs, indent=2, sort_keys=True))
+        logging.info("writing list of jobs to file: %s", self.results_file)
+        with open(self.results_file, 'w') as fh:
+            fh.write(json.dumps(jobs, indent=2, sort_keys=True))
         sys.exit(0)
 
     def get_job_url(self):
@@ -154,7 +174,7 @@ class BatchDownloader(object):
         self.cameras = [camera['name'] for camera in self.job['request']['cameras']]
         logging.info("Job Definition:")
         logging.info("\tearliest date: %r, latest date: %r", self.earliest_date, self.latest_date)
-        logging.info("\tcameras included in inquiry: %r", self.cameras)
+        logging.info("\tcameras included in inquiry: %s", " ".join(self.cameras))
         return self.job
 
     def make_search_request(self, text, date=None):
@@ -164,19 +184,28 @@ class BatchDownloader(object):
         if not ret.status_code in (200, 204):
             logging.error("unable to obtain search results with query (%s)", text)
         logging.debug("got search results for query (%s)", text)
-        #logging.debug("results:\n%r", ret.text)
-        return ret.json()
+        logging.debug("results:\n%r", ret.text)
+        try:
+            return ret.json()
+        except Exception, e:
+            logging.error("error while decoding json response from the server")
+            logging.debug("actual response: %r", ret.text)
+            return None
 
     def get_results_from_epoch(self, start_time, end_time, camera_names):
         end_time = dateutil.parser.parse(end_time.isoformat() + "+00:00")
+        start_time = dateutil.parser.parse(start_time.isoformat() + "+00:00") 
         more_results = True
         labels = dict()
         while more_results:
             text = " ".join(camera_names)
             text = "all " + text
+            text = text + " " + " ".join(self.white_labels)
             ret = self.make_search_request(text, start_time)
+            if not ret or not ret.get('result'):
+                logging.error("invalid search response from the server")
+                break
             results = ret.get('result')
-            if not results: return None
             logging.debug("gathering labels from %d buckets", len(results.get('buckets', [])))
             for index, bucket in enumerate(results.get('buckets')):
                 logging.debug("bucket #%d - for date (%s) found labels: %r", index, bucket['earliest_date'], bucket.get('labels'))
@@ -187,8 +216,7 @@ class BatchDownloader(object):
                     if not image.get('labels') or len(image['labels']) == 0:
                         continue
                     new_labels = image['labels']
-                    if self.white_labels:
-                        new_labels = [label for label in new_labels if label in self.white_labels]
+                    #if self.white_labels: new_labels = [label for label in new_labels if label in self.white_labels]
                     labels[image['date_created']] = {
                         'labels': new_labels,
                         'camera': {
@@ -198,8 +226,12 @@ class BatchDownloader(object):
             # see if there are more results and if so shift the start time of the query to reflect the new range
             more_results = results.get('more_results', False)
             if more_results and results.get('latest_date_considered'): 
-                start_time = dateutil.parser.parse(results.get('latest_date_considered'))
-                if start_time > end_time: more_results = False
+                new_start_time = dateutil.parser.parse(results.get('latest_date_considered'))
+                if new_start_time == start_time: more_results = False
+                elif new_start_time >= end_time: more_results = False
+                else: start_time = new_start_time
+            
+                logging.info("results gathered, new starting time: %r", start_time.isoformat())
         return labels
 
     def gather_labels_batch(self):
@@ -215,7 +247,7 @@ class BatchDownloader(object):
     def dump_labels_to_file(self):
         logging.info("writing label info to file: %s", self.results_file)
         with open(self.results_file, 'w') as fh:
-            fh.write(json.dumps(self.labels))
+            fh.write(json.dumps(self.labels, indent=2))
         logging.info("labels are now available in: %s", self.results_file)
 
     def run(self):

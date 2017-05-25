@@ -19,6 +19,7 @@ Camio-specific hook examples for use with the video import script
 
 # TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
 CAMIO_SERVER_URL = "https://www.camio.com"
+CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 CAMIO_REGISTER_ENDPOINT = "/api/cameras/discovered"
 CAMIO_JOBS_ENDPOINT = "/api/jobs"
 CAMIO_DEVICES_ENDPOINT = "/api/devices"
@@ -75,8 +76,8 @@ def set_hook_data(data_dict):
         Log = logging.getLogger()
     if CAMIO_PARAMS.get('test'):
         Log.info("using test.camio.com instead of www.camio.com")
-        CAMIO_SERVER_URL = "https://test.camio.com"
-    Log.debug("setting camio_hooks data as:\n%r", CAMIO_PARAMS)
+        CAMIO_SERVER_URL = CAMIO_TEST_SERVER_URL
+    Log.debug("setting camio_hooks data as:\n%s", pprint.pformat(CAMIO_PARAMS, indent=2))
 
 def get_account_info():
     """
@@ -99,8 +100,8 @@ def get_account_info():
             device_id = devices[0]['device_id']
         else: # multiple devices, prompt for which one they want
             lines = ["%d. %s" % (index+1, device.get('name', 'unknown')) for (index, device) in enumerate(devices)]
-            prompt = "Multiple Camio Box devices belong to your account. Please select the one you wish to use\n"
-            prompt = prompt + '\n'.join(lines) + '\n'
+            prompt = "\nMultiple Camio Box devices belong to your account. Please select the one you wish to use\n"
+            prompt = prompt + '\n'.join(lines) + '\n\n'
             selection = None
             while not selection:
                 selection = raw_input(prompt)
@@ -112,6 +113,7 @@ def get_account_info():
                 except:
                     Log.error("invalid input choice: %r", selection)
                     selection = None
+            Log.info("You have selected Camio Box: %s", devices[selection-1].get('name'))
             device_id = devices[selection-1]['device_id']
         CAMIO_PARAMS['device_id'] = device_id
     if not ip_address:
@@ -211,7 +213,6 @@ def get_camera_config(local_camera_id):
     access_token = get_access_token()
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    #response = requests.get(url, headers=headers)
     response = network_request('get', url)
     response = response.json()
     Log.debug("cameras under account:\n%r", [response[camera].get('name') for camera in response])
@@ -272,7 +273,6 @@ def register_camera(camera_name, port=None, host=None):
     payload = {local_camera_id: payload}
     headers = {"Authorization": "token %s" % access_token}
     url = CAMIO_SERVER_URL + CAMIO_REGISTER_ENDPOINT
-    #response = requests.post(url, headers=headers, json=payload)
     response = network_request('post', url, json=payload)
     try:
         config = get_camera_config(local_camera_id)
@@ -325,6 +325,11 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
                 response = requests.post(url, data=fh)
             if response.status_code in (200, 204):
                 return True
+            elif reponse.status_code == 400:
+                # bad arguments or bad hash
+                logging.error("error returned from Box when posting video")
+                logging.error("%r: %r", response, response.text) 
+                return False
             elif response.status_code == 429:
                 # hit the rate-limiter, sleep for a while then try again. This
                 # isn't an error, we just need to slow down.
@@ -373,7 +378,6 @@ def assign_job_ids(self, db, unscheduled):
         headers = {'Authorization': 'token %s' % camio_account_token}
         Log.debug("registering job with parameters:\n%r\nheaders:\n%r", payload, headers)
         url = CAMIO_SERVER_URL + CAMIO_JOBS_ENDPOINT
-        #res = requests.put(url, json=payload, headers=headers)         
         res = network_request('put', url, json=payload)
 
         try:
@@ -382,6 +386,10 @@ def assign_job_ids(self, db, unscheduled):
         except:
             fail("server response error:\n%r", res)
         job_id = shards['job_id']
+        if not job_id:
+            Log.error("no job_id returned from registration call to server")
+            Log.error("server returned: %r")
+            fail("exiting as no means to track job status")
         n = 0
         upload_urls = []
         for shard_id in sorted(shards['shard_map']):
@@ -429,7 +437,6 @@ def register_jobs(self, db, jobs):
         Log.debug("registering job:\n ID=%s\n shard ID=%s\n num items=%d\n file-map=%r", 
                 job_id, shard_id, len(rows), hash_map)
         url = rows[0]['upload_url']
-        #ret = requests.put(url, json=payload)
         ret = network_request('put', url, json=payload)
         if not ret.status_code in (200, 204):
             Log.error("error registering job: %s", job_id)
