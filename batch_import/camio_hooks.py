@@ -325,6 +325,11 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
                 response = requests.post(url, data=fh)
             if response.status_code in (200, 204):
                 return True
+            elif reponse.status_code == 400:
+                # bad arguments or bad hash
+                logging.error("error returned from Box when posting video")
+                logging.error("%r: %r", response, response.text) 
+                return False
             elif response.status_code == 429:
                 # hit the rate-limiter, sleep for a while then try again. This
                 # isn't an error, we just need to slow down.
@@ -381,6 +386,10 @@ def assign_job_ids(self, db, unscheduled):
         except:
             fail("server response error:\n%r", res)
         job_id = shards['job_id']
+        if not job_id:
+            Log.error("no job_id returned from registration call to server")
+            Log.error("server returned: %r")
+            fail("exiting as no means to track job status")
         n = 0
         upload_urls = []
         for shard_id in sorted(shards['shard_map']):

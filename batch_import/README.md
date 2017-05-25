@@ -302,54 +302,68 @@ by you or simply defaults to `{{job_id}}_results.json`). This json object has th
 
 ```json
 {
+  "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw",
+  "latest_date": "2016-10-08T17:42:26.771000",
+  "earliest_date": "2016-10-08T17:02:27.000",
   "labels": {
-    "2016-10-09T05:04:57.212-0000": {
+    "2016-10-08T17:30:56.715-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
-        "",
-        "bass",
-        "bluefin",
-        "tuna"
+        "b60d4781f4a42649c9734d77af71d5aa4f047ff9",
+        "_color_orange",
+        "_color_gray",
+        "_color_red"
       ]
     },
-    "2016-10-09T05:09:00.854-0000": {
+    "2016-10-08T17:22:07.674-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
-        "",
-        "bass",
-        "human",
-        "aurunei",
-        "yellowfin",
-        "machine",
-        "12",
-        "palau",
-        "_color_cyan",
-        "_color_green",
-        "octopus",
-        "bird"
+        "_color_black",
+        "window",
+        "tire",
+        "_color_gray",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
       ]
     },
-    "2016-10-09T06:16:07.519-0000": {
+    "2016-10-08T17:41:49.294-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
-        "human",
-        "bluefin",
-        "yellowfin",
-        "tuna",
-        "octopus",
-        "bass"
+        "806f3186880404b7d37a75802e59fae18c677671",
+        "_ml_mail",
+        "_color_black",
+        "_ml_human",
+        "_color_blue",
+        "_color_gray",
+        "_ml_approaching"
       ]
-    }
-  },
-  "job_id": "ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt8y1rQgM",
-  "latest_date": "2016-10-09T06:22:36.993000",
-  "earliest_date": "2016-10-09T05:02:37.000"
+    },
+    "2016-10-08T17:20:48.254-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": [
+        "_color_black",
+        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+      ]
+    },
+    "2016-10-08T17:39:36.374-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": []
+    },
+    "2016-10-08T17:37:59.741-0000": {
+      "camera": {
+        "name": "C2_Hi"
+      },
+      "labels": []
+    },
 }
 ```
 
