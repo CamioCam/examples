@@ -311,21 +311,17 @@ by you or simply defaults to `{{job_id}}_results.json`). This json object has th
         "name": "C2_Hi"
       },
       "labels": [
-        "bass",
         "_color_white",
         "47390561bf685356557fc083c410914dc4b6fde6",
-        "bluefin",
+        "bluefin tuna",
         "human",
-        "salmon",
         "_color_green",
-        "yellowfin",
+        "yellowfin tuna",
         "_ml_mail",
-        "tuna",
+        "marlin",
         "_ml_human",
         "octopus",
         "_color_gray",
-        "_ml_approaching",
-        "trout"
       ]
     },
     "2016-10-09T05:11:47.061-0000": {
@@ -333,21 +329,18 @@ by you or simply defaults to `{{job_id}}_results.json`). This json object has th
         "name": "C2_Hi"
       },
       "labels": [
-        "bass",
         "_color_white",
         "47390561bf685356557fc083c410914dc4b6fde6",
-        "salmon",
         "human",
-        "bluefin",
+        "bluefin tuna",
         "bird",
         "_color_green",
-        "yellowfin",
+        "yellowfin tuna",
         "_ml_mail",
         "_ml_human",
         "octopus",
         "_color_gray",
-        "_ml_approaching",
-        "trout"
+        "_ml_approaching"
       ]
     },
     "2016-10-09T05:09:13.788-0000": {
@@ -355,19 +348,16 @@ by you or simply defaults to `{{job_id}}_results.json`). This json object has th
         "name": "C2_Hi"
       },
       "labels": [
-        "bass",
         "_ml_departing",
         "47390561bf685356557fc083c410914dc4b6fde6",
         "human",
-        "salmon",
         "_color_cyan",
         "_color_green",
-        "yellowfin",
+        "yellowfin tuna",
         "_ml_mail",
         "_ml_human",
         "bird",
-        "_ml_approaching",
-        "trout"
+        "_ml_approaching"
       ]
     }
   },
