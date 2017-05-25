@@ -170,13 +170,13 @@ Then you would use the following string as the regular expression passed to the 
 
 * On Linux and OSX *
 
-`.*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
+`".*/(?P<camera>.*_\D+)\d+\-.*\-(?P<epoch>\d+)\.mp4"`
 
 * On Windows *
 
-`.*[\\](?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4`
+`".*[\\](?P<camera>.*_\D+)\d+\-.*\-(?P<epoch>\d+)\.mp4"`
 
-This captures the `C2_Hi20161009` part as the camera name (used for registering the camera with Camio), and parses the `1476014557` part as the Unix-timestamp
+This captures the `C2_Hi` part as the camera name (used for registering the camera with Camio), and parses the `1476014557` part as the Unix-timestamp
 of the video.
 
 
@@ -229,16 +229,15 @@ Run the importer with all of the values we've assembled in the previous steps.
 ```bash
 $ python import_video.py  \
 > --hook_data_json_file ../samples/sample_hook_data.json \
-> --regex ".*/(?P<camera>\w+?)\-.*\-(?P<epoch>\d+)\.mp4" \
+> --regex ".*/(?P<camera>.*_\D+)\d+\-.*\-(?P<epoch>\d+)\.mp4"
 > ~/video_importer_test_files/ ../camio_hooks.py
-
-import_video.py,  INFO:       init_args():108:   submitted hooks module: '../camio_hooks.py'
-import_video.py,  INFO:      get_params():139:   camera_name: C2_Hi20161009
-import_video.py,  INFO:      get_params():143:   epoch: 1476014557
-import_video.py,  INFO:   upload_folder():229:   /Users/user/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4 (scheduled for upload)
-import_video.py,  INFO:      get_params():139:   camera_name: C2_Hi20161009
-import_video.py,  INFO:      get_params():143:   epoch: 1476018757
-import_video.py,  INFO:   upload_folder():229:   /Users/user/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4 (scheduled for upload)
+   INFO - import_video.py:       init_args:108:   submitted hooks module: '../camio_hooks.py'
+   INFO - import_video.py:      get_params:139:   camera_name: C2_Hi
+   INFO - import_video.py:      get_params:143:   epoch: 1476014557
+   INFO - import_video.py:   upload_folder:229:   /Users/john/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4 (scheduled for upload)
+   INFO - import_video.py:      get_params:139:   camera_name: C2_Hi
+   INFO - import_video.py:      get_params:143:   epoch: 1476018757
+   INFO - import_video.py:   upload_folder:229:   /Users/john/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4 (scheduled for upload)
 
 Multiple Camio Box devices belong to your account. Please select the one you wish to use
 1. homevmware2.0
@@ -246,14 +245,14 @@ Multiple Camio Box devices belong to your account. Please select the one you wis
 3. CamioBox_VBOX_Office.20170518.0
 
 3
- camio_hooks.py,  INFO:get_account_info():116:   You have selected Camio Box: CamioBox_VBOX_Office.20170518.0
- camio_hooks.py,  INFO: register_camera():272:   registering camera: name=C2_Hi20161009, local_camera_id=81219708c6fe2a5eb9cb35896b8ed78610ce9c6f
-import_video.py,  INFO:   upload_folder():278:   1/2 uploading /Users/user/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4
-import_video.py,  INFO:   upload_folder():285:   completed
-import_video.py,  INFO:   upload_folder():278:   2/2 uploading /Users/user/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4
-import_video.py,  INFO:   upload_folder():285:   completed
-import_video.py,  INFO:            main():358:   finishing up...
-import_video.py,  INFO:            main():360:   Job ID: ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt8y1rQgM
+   INFO -  camio_hooks.py:get_account_info:116:   You have selected Camio Box: CamioBox_VBOX_Office.20170518.0
+   INFO -  camio_hooks.py: register_camera:272:   registering camera: name=C2_Hi, local_camera_id=5f72bf2d11034854c0ff34ff54b8b0b74b138e50
+   INFO - import_video.py:   upload_folder:278:   1/2 uploading /Users/john/video_importer_test_files/C2_Hi20161009-120237-1476014557.mp4
+   INFO - import_video.py:   upload_folder:285:   completed
+   INFO - import_video.py:   upload_folder:278:   2/2 uploading /Users/john/video_importer_test_files/C2_Hi20161009-131237-1476018757.mp4
+   INFO - import_video.py:   upload_folder:285:   completed
+   INFO - import_video.py:            main:358:   finishing up...
+   INFO - import_video.py:            main:360:   Job ID: ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDIt9LVyQoM
 ```
 
 *NOTE* - The `job_id` is returned in the last output line of the script ran above. Note down this value, you need to give it to the [`download_labels.py`](batch_import/download_labels.py)
@@ -293,13 +292,13 @@ To gather your labels into the file `/home/user/mylabels.json`, you would run th
 $ python download_labels.py agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw /home/user/mylabels.json
 INFO:root:Job Definition:
 INFO:root:  earliest date: u'2016-10-09T05:02:37.000', latest date: u'2016-10-09T06:22:36.993000'
-INFO:root:  cameras included in inquiry: C2_Hi20161009
+INFO:root:  cameras included in inquiry: C2_Hi
 INFO:root:gathering over time slot: '2016-10-09T05:02:37' to '2016-10-09T06:22:36.993000'
-INFO:root:results gathered, new starting time: '2016-10-09T06:20:13.098000+00:00'
-INFO:root:results gathered, new starting time: '2016-10-09T06:20:13.098000+00:00'
+INFO:root:results gathered, new starting time: '2016-10-09T06:22:35.930000+00:00'
+INFO:root:results gathered, new starting time: '2016-10-09T06:22:35.930000+00:00'
 INFO:root:finished gathering labels
-INFO:root:writing label info to file: samples/bookmarks.json
-INFO:root:labels are now available in: samples/bookmarks.json
+INFO:root:writing label info to file: samples/sample_hook_data.json
+INFO:root:labels are now available in: samples/sample_hook_data.json
 ```
 
 Now if you go and look at the output file (`/home/user/mylabels.json`), it will look something like this.
@@ -312,7 +311,7 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
   "labels": {
     "2016-10-08T17:30:56.715-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
         "b60d4781f4a42649c9734d77af71d5aa4f047ff9",
@@ -323,7 +322,7 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
     },
     "2016-10-08T17:22:07.674-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
         "_color_black",
@@ -335,7 +334,7 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
     },
     "2016-10-08T17:41:49.294-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
         "806f3186880404b7d37a75802e59fae18c677671",
@@ -349,7 +348,7 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
     },
     "2016-10-08T17:20:48.254-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": [
         "_color_black",
@@ -358,13 +357,13 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
     },
     "2016-10-08T17:39:36.374-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": []
     },
     "2016-10-08T17:37:59.741-0000": {
       "camera": {
-        "name": "C2_Hi20161009"
+        "name": "C2_Hi"
       },
       "labels": []
     },
