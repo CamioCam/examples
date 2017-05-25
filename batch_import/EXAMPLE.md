@@ -305,67 +305,74 @@ Now if you go and look at the output file (`/home/user/mylabels.json`), it will 
 
 ```json
 {
-  "job_id": "agxzfmNhbWlvLXRlc3RyEAsSA0pvYhiAgKDIhYD4CQw",
-  "latest_date": "2016-10-08T17:42:26.771000",
-  "earliest_date": "2016-10-08T17:02:27.000",
+  "job_id": "ag1zfmNhbWlvbG9nZ2VychALEgNKb2IYgIDI15PVuwgM",
+  "latest_date": "2016-10-09T06:22:36.993000",
+  "earliest_date": "2016-10-09T05:02:37.000"
   "labels": {
-    "2016-10-08T17:30:56.715-0000": {
+    "2016-10-09T05:10:31.456-0000": {
       "camera": {
         "name": "C2_Hi"
       },
       "labels": [
-        "b60d4781f4a42649c9734d77af71d5aa4f047ff9",
-        "_color_orange",
-        "_color_gray",
-        "_color_red"
-      ]
-    },
-    "2016-10-08T17:22:07.674-0000": {
-      "camera": {
-        "name": "C2_Hi"
-      },
-      "labels": [
-        "_color_black",
-        "window",
-        "tire",
-        "_color_gray",
-        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
-      ]
-    },
-    "2016-10-08T17:41:49.294-0000": {
-      "camera": {
-        "name": "C2_Hi"
-      },
-      "labels": [
-        "806f3186880404b7d37a75802e59fae18c677671",
+        "bass",
+        "_color_white",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "bluefin",
+        "human",
+        "salmon",
+        "_color_green",
+        "yellowfin",
         "_ml_mail",
-        "_color_black",
+        "tuna",
         "_ml_human",
-        "_color_blue",
+        "octopus",
         "_color_gray",
-        "_ml_approaching"
+        "_ml_approaching",
+        "trout"
       ]
     },
-    "2016-10-08T17:20:48.254-0000": {
+    "2016-10-09T05:11:47.061-0000": {
       "camera": {
         "name": "C2_Hi"
       },
       "labels": [
-        "_color_black",
-        "00973fb80d5205ccaf76182ee2cc0bc44f057bf5"
+        "bass",
+        "_color_white",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "salmon",
+        "human",
+        "bluefin",
+        "bird",
+        "_color_green",
+        "yellowfin",
+        "_ml_mail",
+        "_ml_human",
+        "octopus",
+        "_color_gray",
+        "_ml_approaching",
+        "trout"
       ]
     },
-    "2016-10-08T17:39:36.374-0000": {
+    "2016-10-09T05:09:13.788-0000": {
       "camera": {
         "name": "C2_Hi"
       },
-      "labels": []
-    },
-    "2016-10-08T17:37:59.741-0000": {
-      "camera": {
-        "name": "C2_Hi"
-      },
-      "labels": []
-    },
+      "labels": [
+        "bass",
+        "_ml_departing",
+        "47390561bf685356557fc083c410914dc4b6fde6",
+        "human",
+        "salmon",
+        "_color_cyan",
+        "_color_green",
+        "yellowfin",
+        "_ml_mail",
+        "_ml_human",
+        "bird",
+        "_ml_approaching",
+        "trout"
+      ]
+    }
+  },
 }
 ```
