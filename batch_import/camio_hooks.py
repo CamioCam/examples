@@ -325,7 +325,7 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
                 response = requests.post(url, data=fh)
             if response.status_code in (200, 204):
                 return True
-            elif reponse.status_code == 400:
+            elif response.status_code == 400:
                 # bad arguments or bad hash
                 logging.error("error returned from Box when posting video")
                 logging.error("%r: %r", response, response.text) 

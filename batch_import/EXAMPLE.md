@@ -8,7 +8,7 @@ See the [overview of video importing](/README.md#overview-of-video-importing) fo
 ### What's Needed
 
 1. A registered Camio account
-2. A [batch-import-enabled Camio Box Virtual Machine](https://help.camio.com/hc/en-us/articles/115002492123)
+2. A [batch-import-enabled Camio Box Virtual Machine](https://help.camio.com/hc/en-us/articles/115000667046)
 3. An OAuth token for your Camio account (gotten from [the integrations page](https://www.camio.com/settings/integrations/#api))
 4. [The testing directory of videos provided by Camio](https://storage.googleapis.com/camio_test_general/video_importer_test_files.zip)
 5. A regular-expression describing how to parse your input filenames ([described here](#constructing-the-file-parsing-regex))
