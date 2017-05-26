@@ -228,9 +228,9 @@ Run the importer with all of the values we've assembled in the previous steps.
 
 ```bash
 $ python import_video.py  \
-> --hook_data_json_file ../samples/sample_hook_data.json \
-> --regex ".*/(?P<camera>.*_\D+)\d+\-.*\-(?P<epoch>\d+)\.mp4" \
-> ~/video_importer_test_files/ ../camio_hooks.py
+ --hook_data_json_file ../samples/sample_hook_data.json \
+ --regex ".*/(?P<camera>.*_\D+)\d+\-.*\-(?P<epoch>\d+)\.mp4" \
+ ~/video_importer_test_files/ ../camio_hooks.py
    INFO - import_video.py:       init_args:108:   submitted hooks module: '../camio_hooks.py'
    INFO - import_video.py:      get_params:139:   camera_name: C2_Hi
    INFO - import_video.py:      get_params:143:   epoch: 1476014557
