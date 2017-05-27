@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 
-usage="bash $0 auth_token callback_url parsed_query"
+usage="bash $0 callback_url parsed_query"
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 2 ]; then
   echo "Usage: $usage"
   exit 1
 fi
 
-auth_token="$1"
-callback_url="$2"
-query="$3"
+auth_token="$CAMIO_OAUTH_TOKEN"
+callback_url="$1"
+query="$2"
 
 curl -v \
     -H "Content-Type: application/json" \

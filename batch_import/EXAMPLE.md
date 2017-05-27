@@ -213,6 +213,55 @@ to be high-definition.
 
 This file we will pass to the video-import script in a later step.
 
+#### Using the Example Hook Service
+
+Camio has set up a demo hook service that you can use as a proof-of-concept for other labeling services. This hook service simply returns a random list
+of labels from the set [cat, dog, mouse, pasta, tortilla, monkey, cheeto, hippo, leviathan]. 
+
+The example hook server is sitting at http://104.198.98.243 on port 8080, and the path to the hook endpoint is `/tasks/batch-import-test`. You must also submit a query
+for the hook to be applied over, in this case the easiest query to give is  `"1==1"`, which means the hook will run on all events uploaded.
+
+Note that this script also depends on the `CAMIO_OAUTH_TOKEN` environment variable being set in order to authenticate it as your account.
+
+To register this hook to your account run the following in your shell
+
+```bash
+$ cd ~/examples/hooks # go to your examples directory, then to the hooks directory
+$ bash hook-register.sh "http://104.198.98.243:8080/tasks/batch-import-test" "1==1"
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 216.239.38.21...
+* Connected to camio.com (216.239.38.21) port 443 (#0)
+* TLS 1.2 connection using TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+* Server certificate: *.camio.com
+* Server certificate: DigiCert SHA2 Secure Server CA
+* Server certificate: DigiCert Global Root CA
+> POST /api/users/me/hooks HTTP/1.1
+> Host: camio.com
+> User-Agent: curl/7.49.1
+> Accept: */*
+> Content-Type: application/json
+> Authorization: token zTiruJf-zL6dPQSb-mzHrgzGuiY40d7G
+> Content-Length: 117
+>
+* upload completely sent off: 117 out of 117 bytes
+< HTTP/1.1 200 OK
+< Expires: Thu, 01 Jan 1970 00:00:00 GMT
+< Set-Cookie: JSESSIONID=ozJ7lu-l3KOxlcgOCKsvzA;Path=/
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH
+< Content-Type: application/json; charset=UTF-8
+< X-Cloud-Trace-Context: 5fe0397617bfac498481b45a111fcfbb
+< Date: Sat, 27 May 2017 00:47:36 GMT
+< Server: Google Frontend
+< Content-Length: 176
+< Cache-Control: private
+<
+* Connection #0 to host camio.com left intact
+{"id":"ag1zfmNhbWlvbG9nZ2VychELEgRIb29rGICAyLf_1ZcLDA","type":"query_match","parsed_query":"1\u003d\u003d1","callback_url":"http://104.198.98.243:8080/tasks/batch-import-test"}
+```
+
+The output returned from this call will include the hook ID and some other information about the hook. If you see the output listed above it means the hook registered succesfully,
+and you should see random subsets of the labels listed above showing up in your bookmark of labels that is downloaded after a job is complete.
+
 
 ####  Running the video-importer Script
 
