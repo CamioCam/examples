@@ -213,6 +213,35 @@ to be high-definition.
 
 This file we will pass to the video-import script in a later step.
 
+#### Using the Example Hook Service
+
+Camio has set up a demo hook service that you can use as a proof-of-concept for other labeling services. This hook service simply returns a random list
+of labels from the set [cat, dog, mouse, pasta, tortilla, monkey, hippo, leviathan]. 
+
+The example hook server is sitting at http://104.198.98.243 on port 8080, and the path to the hook endpoint is `/tasks/batch-import-test`. You must also submit a `parsed_query` 
+for the hook to be applied over, in this case the easiest `parsed_query` to give is  `"1==1"`, which means the hook will run on all events uploaded.
+
+Note that this script also depends on the `CAMIO_OAUTH_TOKEN` environment variable being set in order to authenticate it as your account.
+
+To register this hook to your account run the following in your shell
+
+```bash
+$ cd ~/examples/hooks # go to your examples directory, then to the hooks directory
+$ bash hook-register.sh http://104.198.98.243:8080/tasks/batch-import-test "1==1"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   293  100   176  100   117    410    272 --:--:-- --:--:-- --:--:--   411
+{
+  "id": "ag1zfmNhbWlvbG9nZ2VychELEgRIb29rGICAyPfHoJsIDA",
+  "type": "query_match",
+  "parsed_query": "1==1",
+  "callback_url": "http://104.198.98.243:8080/tasks/batch-import-test"
+}
+```
+
+The output returned from this call will include the hook ID and some other information about the hook. If you see the output listed above it means the hook registered succesfully,
+and you should see random subsets of the labels listed above showing up in your bookmark of labels that is downloaded after a job is complete.
+
 
 ####  Running the video-importer Script
 
