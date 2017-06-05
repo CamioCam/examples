@@ -65,16 +65,24 @@ class BatchDownloader(object):
         self.parser.add_argument('job_id', nargs='?', type=str, help='the ID of the job that you wish to download the labels for')
         # optional arguments
         self.parser.add_argument('-o', '--output_file', type=str, default=None,
-                                help="full path to the output file where the resulting labels will \
-                                be stored in json format (default = {{job_id}}_results.json)")
-        self.parser.add_argument('-a', '--access_token', type=str, help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
-        self.parser.add_argument('-w', '--label_white_list', type=str, help='a json list of labels that are whitelisted to be included in the response')
-        self.parser.add_argument('-f', '--label_white_list_file', type=str, help='a file containing a json list of labels that are whitelisted')
-        self.parser.add_argument('-c', '--csv', action='store_true', help='(not implemented yet) set to export in CSV format')
-        self.parser.add_argument('-x', '--xml', action='store_true', help='(not implemented yet) set to export in XML format')
-        self.parser.add_argument('-t', '--testing', action='store_true', help="use Camio testing servers instead of production (for dev use only!)")
-        self.parser.add_argument('-v', '--verbose', action='store_true', default=False, help='set logging level to debug')
-        self.parser.add_argument('-q', '--quiet', action='store_true', default=False, help='set logging level to errors only')
+	      help="full path to the output file where the resulting labels will \
+	      be stored in json format (default = {{job_id}}_results.json)")
+        self.parser.add_argument('-a', '--access_token', type=str,
+              help='your Camio OAuth token (if not given we check the CAMIO_OAUTH_TOKEN envvar)')
+        self.parser.add_argument('-w', '--label_white_list', type=str,
+              help='a json list of labels that are whitelisted to be included in the response')
+        self.parser.add_argument('-f', '--label_white_list_file', type=str,
+              help='a file containing a json list of labels that are whitelisted')
+        self.parser.add_argument('-c', '--csv', action='store_true',
+              help='(not implemented yet) set to export in CSV format')
+        self.parser.add_argument('-x', '--xml', action='store_true',
+              help='(not implemented yet) set to export in XML format')
+        self.parser.add_argument('-t', '--testing', action='store_true',
+              help="use Camio testing servers instead of production (for dev use only!)")
+        self.parser.add_argument('-v', '--verbose', action='store_true', default=False,
+              help='set logging level to debug')
+        self.parser.add_argument('-q', '--quiet', action='store_true', default=False,
+              help='set logging level to errors only')
 
     def parse_argv_or_exit(self):
         self.args = self.parser.parse_args()

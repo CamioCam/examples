@@ -17,7 +17,6 @@ import requests
 Camio-specific hook examples for use with the video import script
 """
 
-# TODO - change the URLs to test.camio.com instead of test.camio.com after deployed to prod
 CAMIO_SERVER_URL = "https://www.camio.com"
 CAMIO_TEST_SERVER_URL = "https://test.camio.com"
 CAMIO_REGISTER_ENDPOINT = "/api/cameras/discovered"
@@ -27,7 +26,6 @@ CAMIO_STATE_ENDPOINT = "/api/devices/state/"
 CAMIO_PARAMS = {}
 BATCH_IMPORT_DEFAULT_PORT = 8080
 
-# TODO - change to CAMIO_TEST_PROD when on production
 CAMIO_OAUTH_TOKEN_ENVVAR = "CAMIO_OAUTH_TOKEN"
 CAMIO_BOX_DEVICE_ID_ENVVAR = "CAMIO_BOX_DEVICE_ID"
 
@@ -62,8 +60,8 @@ def set_hook_data(data_dict):
     """
     let the importer pass in arbitrary key-value pairs for use by the hooks program
     (we tend to use this to accept plan data or user-account information)
-    data_dict: a python list/dictionary of values passed in from the video importer script, passed in by the
-                user under the --hook_data_json argument. 
+    data_dict: a python list/dictionary of values passed in from the video importer script,
+    passed in by the user under the --hook_data_json argument. 
     """
     global CAMIO_PARAMS
     global CAMIO_SERVER_URL
