@@ -317,6 +317,7 @@ def post_video_content(camera_name, camera_id, filepath, timestamp, host=None, p
     max_rate_limits_reached = 5 # 5 max back-off for space to open on Box
     rate_limit_reached_counter = 0
     sleep_time = 15 # seconds to sleep when rate-limit hit
+    response = None
     while failed_attempts_left > 0:
         try:
             with open(filepath, 'rb') as fh:
