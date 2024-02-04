@@ -24,8 +24,8 @@ where the rows without `is_requested` value `TRUE` are skipped:
 
 ```csv
 user_email,camera,is_requested
-hqcams@acme.com,Front Entrance,TRUE
-hqcams@acme.com,Back Exit,TRUE
+sanmateo@camiolog.com,Front Entrance,TRUE
+sanmateo@camiolog.com,Back Exit,TRUE
 ```
 
 `time_range_filename` is a csv with a header row and two required columns like this,
