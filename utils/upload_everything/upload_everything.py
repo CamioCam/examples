@@ -68,14 +68,14 @@ import sys
 import argparse
 import time
 
-def make_api_request(concatenated_string, token):
-    base_url = "https://camio.com/api/search"
+def make_api_request(concatenated_string, token, hostname):
+    base_url = f"https://{hostname}/api/search"
     headers = {'Authorization': f'token {token}'}
     params = {'text': concatenated_string}
     response = requests.get(base_url, params=params, headers=headers)
     return response
 
-def process_files(cameras_filename, time_range_filename, token, wait_seconds, dry_run=False):
+def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, dry_run=False):
     time_ranges = []
     with open(time_range_filename, 'r') as file:
         reader = csv.DictReader(file)
@@ -100,7 +100,7 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, dr
                     end_time = time_range[1]
                     concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
                     if not dry_run:
-                        response = make_api_request(concatenated_string, token)
+                        response = make_api_request(concatenated_string, token, hostname)
                         search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
                         upload_commands_count = 0
                         uploading_devices = ''
@@ -124,9 +124,10 @@ if __name__ == "__main__":
     parser.add_argument('--time_range_filename', required=True, help='Path to the time range filename with CSV start_time,end_time.')
     parser.add_argument('--token', required=True, help='Access token for API (obtain from https://camio.com/settings/integrations/#api).')
     parser.add_argument('--wait_seconds', required=False, default=60, help='Wait time between each request in seconds (default 60).')
+    parser.add_argument('--hostname', required=False, default='camio.com', help='The hostname of the API endpoint (default is camio.com).')
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
-    process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.dry_run)
+    process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.hostname, args.dry_run)
 
