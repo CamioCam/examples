@@ -44,22 +44,20 @@ uploads are completed:
 
 python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN | tee output.csv
 
-api_request_url,status,upload_commands_count,uploading_devices,search_url
-https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all
-https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all
-
+timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
+2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
+2024-02-05T14:56:40.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all
+2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all
+2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all
 
 Only the tag:box upload request query text is shown when using the --dry_run argument like this:
 
 python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --dry_run
-api_request_url,status,upload_commands_count,uploading_devices,search_url
-sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
-sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
-sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
-sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
-
+timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
+2024-02-05T14:59:09.749413,sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
+2024-02-05T14:59:09.749448,sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
+2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
+2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
 """
 
 import requests
@@ -67,6 +65,7 @@ import csv
 import sys
 import argparse
 import time
+from datetime import datetime
 
 def make_api_request(concatenated_string, token, hostname):
     base_url = f"https://{hostname}/api/search"
@@ -86,7 +85,7 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
                 time_ranges.append((start_time, end_time))
     row_count = 0
     row_count_skipped = 0
-    print(f"api_request_url,status,upload_commands_count,uploading_devices,search_url")    # header row
+    print(f"timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url")    # header row
     with open(cameras_filename, 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -99,6 +98,7 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
                     start_time = time_range[0]
                     end_time = time_range[1]
                     concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
+                    call_time = datetime.now()
                     if not dry_run:
                         response = make_api_request(concatenated_string, token, hostname)
                         search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
@@ -111,9 +111,9 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
                                 upload_commands_count = len(upload_commands)
                                 uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
                             time.sleep(wait_seconds)
-                        print(f"{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
+                        print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
                     else:
-                        print(f"{concatenated_string},N/A,0,N/A")
+                        print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
                     sys.stdout.flush()  # just so we see stdout even if redirected to file with tee or >.
             else:
                 row_count_skipped += 1
