@@ -59,13 +59,13 @@ timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_
 2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
 2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
 """
-
 import requests
 import csv
 import sys
 import argparse
 import time
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 def make_api_request(concatenated_string, token, hostname):
     base_url = f"https://{hostname}/api/search"
@@ -73,6 +73,29 @@ def make_api_request(concatenated_string, token, hostname):
     params = {'text': concatenated_string}
     response = requests.get(base_url, params=params, headers=headers)
     return response
+
+def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, dry_run=False):
+    for camera_name in cameras:
+        for time_range in time_ranges:
+            start_time, end_time = time_range
+            concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
+            call_time = datetime.now()
+            if not dry_run:
+                response = make_api_request(concatenated_string, token, hostname)
+                search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
+                upload_commands_count = 0
+                uploading_devices = ''
+                if response.status_code // 100 == 2:  # in the 2xx range
+                    response_data = response.json()
+                    if 'operations' in response_data and 'upload_commands' in response_data['operations'] and isinstance(response_data['operations']['upload_commands'], list):
+                        upload_commands = response_data['operations']['upload_commands']
+                        upload_commands_count = len(upload_commands)
+                        uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
+                        time.sleep(wait_seconds)
+                print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
+            else:
+                print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
+            sys.stdout.flush()
 
 def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, dry_run=False):
     time_ranges = []
@@ -83,9 +106,8 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
             end_time = row.get('end_time', '')
             if start_time and end_time:
                 time_ranges.append((start_time, end_time))
-    row_count = 0
-    row_count_skipped = 0
-    print(f"timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url")    # header row
+
+    users_cameras = {}
     with open(cameras_filename, 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
@@ -93,41 +115,27 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
             camera_name = row.get('camera', '')
             is_requested = row.get('is_requested', '')
             if user and camera_name and is_requested == 'TRUE':
-                row_count += 1
-                for time_range in time_ranges:
-                    start_time = time_range[0]
-                    end_time = time_range[1]
-                    concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
-                    call_time = datetime.now()
-                    if not dry_run:
-                        response = make_api_request(concatenated_string, token, hostname)
-                        search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
-                        upload_commands_count = 0
-                        uploading_devices = ''
-                        if response.status_code // 100 == 2:  # in the 2xx range
-                            response_data = response.json()
-                            if 'operations' in response_data and 'upload_commands' in response_data['operations'] and isinstance(response_data['operations']['upload_commands'], list):
-                                upload_commands = response_data['operations']['upload_commands']
-                                upload_commands_count = len(upload_commands)
-                                uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
-                            time.sleep(wait_seconds)
-                        print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
-                    else:
-                        print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
-                    sys.stdout.flush()  # just so we see stdout even if redirected to file with tee or >.
-            else:
-                row_count_skipped += 1
+                if user not in users_cameras:
+                    users_cameras[user] = []
+                users_cameras[user].append(camera_name)
+
+    row_count = 0
+    print(f"timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url")    # header row
+
+    with ThreadPoolExecutor() as executor: # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
+        for user, cameras in users_cameras.items():
+            row_count += len(cameras)
+            executor.submit(process_user, user, cameras, time_ranges, token, wait_seconds, hostname, dry_run)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Request upload of all video events regardless of motion from a list of cameras and a list of time ranges.')
     parser.add_argument('--cameras_filename', required=True, help='Path to the cameras filename with CSV user_email,camera,is_requested.')
     parser.add_argument('--time_range_filename', required=True, help='Path to the time range filename with CSV start_time,end_time.')
     parser.add_argument('--token', required=True, help='Access token for API (obtain from https://camio.com/settings/integrations/#api).')
-    parser.add_argument('--wait_seconds', required=False, default=60, help='Wait time between each request in seconds (default 60).')
+    parser.add_argument('--wait_seconds', required=False, default=500, help='Wait time between each request in seconds (default 500 for 1 hour of 89-stream 1775R).')
     parser.add_argument('--hostname', required=False, default='camio.com', help='The hostname of the API endpoint (default is camio.com).')
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
     process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.hostname, args.dry_run)
-
