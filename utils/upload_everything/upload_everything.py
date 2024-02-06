@@ -85,14 +85,17 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, dry_
                 search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
                 upload_commands_count = 0
                 uploading_devices = ''
+                is_working = False
                 if response.status_code // 100 == 2:  # in the 2xx range
                     response_data = response.json()
                     if 'operations' in response_data and 'upload_commands' in response_data['operations'] and isinstance(response_data['operations']['upload_commands'], list):
                         upload_commands = response_data['operations']['upload_commands']
                         upload_commands_count = len(upload_commands)
                         uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
-                        time.sleep(wait_seconds)
+                        is_working = True
                 print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
+                if is_working:
+                    time.sleep(wait_seconds)
             else:
                 print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
             sys.stdout.flush()
