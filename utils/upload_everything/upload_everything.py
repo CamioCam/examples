@@ -94,11 +94,12 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, dry_
                         uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
                         is_working = True
                 print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
+                sys.stdout.flush()
                 if is_working:
                     time.sleep(wait_seconds)
             else:
                 print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
-            sys.stdout.flush()
+                sys.stdout.flush()
 
 def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, dry_run=False):
     time_ranges = []
