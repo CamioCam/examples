@@ -91,3 +91,5 @@ ENV/
 .process*
 
 .processes.shelve
+
+.idea/*

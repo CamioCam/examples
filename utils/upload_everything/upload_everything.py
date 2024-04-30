@@ -67,6 +67,7 @@ import time
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
+
 def make_api_request(concatenated_string, token, hostname):
     base_url = f"https://{hostname}/api/search"
     headers = {'Authorization': f'token {token}'}
@@ -74,13 +75,40 @@ def make_api_request(concatenated_string, token, hostname):
     response = requests.get(base_url, params=params, headers=headers)
     return response
 
-def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, dry_run=False):
+
+def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run=False):
+    if dry_run or not device_ids_to_check:
+        return []
+
+    devices_url = f"https://{hostname}/api/devices"
+    headers = {'Authorization': f'token {token}'}
+    params = {'user': user}
+    device_response = requests.get(devices_url, params=params, headers=headers)
+    queue_lengths = []
+
+    if device_response.status_code == 200:
+        devices_data = device_response.json()
+        for device in devices_data:
+            if device['device_id'] and device['device_id'].strip() in device_ids_to_check and device['state'] and \
+                    device['state']['queue_stats']:
+                queue_lengths.append(device['state']['queue_stats']['upload_queue_length'])
+    else:
+        sys.stderr.write(f"Error retrieving device info: {device_response.status_code} ({device_response.reason})\n")
+
+    return queue_lengths
+
+
+def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, device_ids_to_check, dry_run=False):
+    # Proceeding with the search API request
     for camera_name in cameras:
         for time_range in time_ranges:
             start_time, end_time = time_range
             concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
             call_time = datetime.now()
-            if not dry_run:
+            queue_lengths = get_upload_queue_lengths(user=user, token=token, hostname=hostname,
+                                                     device_ids_to_check=device_ids_to_check, dry_run=dry_run)
+            queue_lengths_string = ' '.join(str(length) for length in queue_lengths)
+            if not dry_run and all(value < 500 for value in queue_lengths):
                 response = make_api_request(concatenated_string, token, hostname)
                 search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
                 upload_commands_count = 0
@@ -88,20 +116,34 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, dry_
                 is_working = False
                 if response.status_code // 100 == 2:  # in the 2xx range
                     response_data = response.json()
-                    if 'operations' in response_data and 'upload_commands' in response_data['operations'] and isinstance(response_data['operations']['upload_commands'], list):
+                    if 'operations' in response_data and 'upload_commands' in response_data[
+                        'operations'] and isinstance(response_data['operations']['upload_commands'], list):
                         upload_commands = response_data['operations']['upload_commands']
                         upload_commands_count = len(upload_commands)
-                        uploading_devices = ' '.join(upload_command["device_id_internal"] for upload_command in upload_commands)
+                        uploading_devices = ' '.join(
+                            upload_command["device_id_internal"] for upload_command in upload_commands)
                         is_working = True
-                print(f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{uploading_devices},{search_url}")
+                else:
+                    sys.stderr.write(f"Error making upload request: {response.status_code} ({response.reason})\n")
+
+                print(
+                    f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{queue_lengths_string},{uploading_devices},{search_url}")
                 sys.stdout.flush()
                 if is_working:
                     time.sleep(wait_seconds)
+
+            elif not dry_run and not all(value < 500 for value in queue_lengths):
+                # If the queue is full, wait for it to drain
+                sys.stderr.write(f"Queue is full, sleeping. Queue lengths: {queue_lengths}")
+                time.sleep(wait_seconds)
+
             else:
-                print(f"{call_time.isoformat()},{concatenated_string},N/A,0,N/A")
+                print(f"{call_time.isoformat()},{concatenated_string},N/A,{queue_lengths_string},0,N/A")
                 sys.stdout.flush()
 
-def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, dry_run=False):
+
+def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, device_ids_to_check,
+                  dry_run=False):
     time_ranges = []
     with open(time_range_filename, 'r') as file:
         reader = csv.DictReader(file)
@@ -124,22 +166,34 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
                 users_cameras[user].append(camera_name)
 
     row_count = 0
-    print(f"timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url")    # header row
+    print(
+        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lenths,uploading_devices,search_url")  # header row
 
-    with ThreadPoolExecutor() as executor: # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
+    with ThreadPoolExecutor() as executor:  # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
         for user, cameras in users_cameras.items():
             row_count += len(cameras)
-            executor.submit(process_user, user, cameras, time_ranges, token, wait_seconds, hostname, dry_run)
+            executor.submit(process_user, user, cameras, time_ranges, token, wait_seconds, hostname,
+                            device_ids_to_check, dry_run)
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Request upload of all video events regardless of motion from a list of cameras and a list of time ranges.')
-    parser.add_argument('--cameras_filename', required=True, help='Path to the cameras filename with CSV user_email,camera,is_requested.')
-    parser.add_argument('--time_range_filename', required=True, help='Path to the time range filename with CSV start_time,end_time.')
-    parser.add_argument('--token', required=True, help='Access token for API (obtain from https://camio.com/settings/integrations/#api).')
-    parser.add_argument('--wait_seconds', required=False, default=500, help='Wait time between each request in seconds (default 500 for 1 hour of 89-stream 1775R).')
-    parser.add_argument('--hostname', required=False, default='camio.com', help='The hostname of the API endpoint (default is camio.com).')
+    parser = argparse.ArgumentParser(
+        description='Request upload of all video events regardless of motion from a list of cameras and a list of time ranges.')
+    parser.add_argument('--cameras_filename', required=True,
+                        help='Path to the cameras filename with CSV user_email,camera,is_requested.')
+    parser.add_argument('--time_range_filename', required=True,
+                        help='Path to the time range filename with CSV start_time,end_time.')
+    parser.add_argument('--token', required=True,
+                        help='Access token for API (obtain from https://camio.com/settings/integrations/#api).')
+    parser.add_argument('--wait_seconds', required=False, default=500,
+                        help='Wait time between each request in seconds (default 500 for 1 hour of 89-stream 1775R).')
+    parser.add_argument('--hostname', required=False, default='camio.com',
+                        help='The hostname of the API endpoint (default is camio.com).')
+    parser.add_argument('--device_ids', nargs='+', required=False, default=[],
+                        help='List of device IDs to check the upload queue for.')
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
-    process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.hostname, args.dry_run)
+    process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.hostname,
+                  args.device_ids, args.dry_run)
