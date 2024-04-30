@@ -15,7 +15,7 @@ limitations under the License.
 
 
 Execute with:
-python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids camio_box_device_id_1 camio_box_device_id_1 --max_wait_time 600
+python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_time 600
 
 See help with:
 python upload_everything.py --help
@@ -42,7 +42,7 @@ https://camio.com/settings/integrations/#api
 The stdout is a CSV with five columns like this example, where the search_url can be used to view the results the requested
 uploads are completed:
 
-python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --device_ids camio_box_device_id_1 camio_box_device_id_1 --max_wait_time 600 | tee output.csv
+python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_time 600 | tee output.csv
 
 timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
 2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,0,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
@@ -217,19 +217,19 @@ if __name__ == "__main__":
                         help='Path to the time range filename with CSV start_time,end_time.')
     parser.add_argument('--token', required=True,
                         help='Access token for API (obtain from https://camio.com/settings/integrations/#api).')
-    parser.add_argument('--wait_seconds', required=False, default=500,
+    parser.add_argument('--wait_seconds', required=False, default=500, type=int,
                         help='Wait time between each request in seconds (default 500 for 1 hour of 89-stream 1775R).')
     parser.add_argument('--hostname', required=False, default='camio.com',
                         help='The hostname of the API endpoint (default is camio.com).')
     parser.add_argument('--device_ids', nargs='+', required=False, default=[],
                         help='List of device IDs to check the upload queue length of.')
-    parser.add_argument('--upload_queue_threshold', required=False, default=500,
+    parser.add_argument('--upload_queue_threshold', required=False, default=500, type=int,
                         help='Only perform the upload requests when the upload queue is below this threshold of pending tasks.')
-    parser.add_argument('--max_wait_time', required=False, default=3600,
+    parser.add_argument('--max_wait_time', required=False, default=3600, type=int,
                         help='How long to continue waiting if the upload queue is full, before breaking iteration, in seconds.')  # Default of 1 hour
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
-    process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds),
-                  int(args.max_wait_time), args.hostname, args.device_ids, int(args.upload_queue_threshold), args.dry_run)
+    process_files(args.cameras_filename, args.time_range_filename, args.token, args.wait_seconds,
+                  args.max_wait_time, args.hostname, args.device_ids, args.upload_queue_threshold, args.dry_run)
