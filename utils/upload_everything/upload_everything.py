@@ -15,7 +15,7 @@ limitations under the License.
 
 
 Execute with:
-python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids camio_box_device_id_1 camio_box_device_id_1
+python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids camio_box_device_id_1 camio_box_device_id_1 --max_wait_time 600
 
 See help with:
 python upload_everything.py --help
@@ -150,7 +150,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_time,
                     break
 
                 elif not dry_run and queue_is_full:
-                    # One or more of the queues is full
+                    # One or more of the queues are full
                     current_time = datetime.now()
                     elapsed_time = current_time - iteration_start_time
                     elapsed_total_seconds = elapsed_time.total_seconds()
@@ -165,7 +165,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_time,
 
                     # Sleep to give queues time to drain
                     else:
-                        sys.stderr.write(f"Queue is full, sleeping for {wait_seconds}s. Queue lengths: {queue_lengths}\n")
+                        sys.stderr.write(f"One or more queues are full, sleeping for {wait_seconds}s. Queue lengths: {queue_lengths}\n")
                         time.sleep(wait_seconds)
 
                 else:
