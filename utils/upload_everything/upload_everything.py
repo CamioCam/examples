@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
-Excecute with:
-python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token
+Execute with:
+python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids camio_box_device_id_1 camio_box_device_id_1
 
 See help with:
 python upload_everything.py --help
@@ -39,16 +39,16 @@ start_time,end_time
 You can obtain your_access_token from:
 https://camio.com/settings/integrations/#api
 
-The stdout is a CSV with four columns like this example, where the search_url can be used to view the results the requested
+The stdout is a CSV with five columns like this example, where the search_url can be used to view the results the requested
 uploads are completed:
 
-python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN | tee output.csv
+python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --device_ids camio_box_device_id_1 camio_box_device_id_1 | tee output.csv
 
 timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
-2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-2024-02-05T14:56:40.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all
-2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all
+2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,0,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
+2024-02-05T14:56:40.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,1,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all
+2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all
+2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,3,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all
 
 Only the tag:box upload request query text is shown when using the --dry_run argument like this:
 
@@ -76,7 +76,14 @@ def make_api_request(concatenated_string, token, hostname):
     return response
 
 
-def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run=False):
+def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run=False) -> list:
+    """
+    Requests /api/devices and extracts the upload_queue_length for specified device_ids_to_check. If dry_run or no
+    device_ids_to_check, returns an empty list. If the specified device ids are not found in the devices payload, returns
+    an empty list.
+
+    Ex: [0, 100, 20]
+    """
     if dry_run or not device_ids_to_check:
         return []
 
@@ -98,17 +105,23 @@ def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run
     return queue_lengths
 
 
-def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, device_ids_to_check, dry_run=False):
+def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, device_ids_to_check,
+                 upload_queue_threshold, dry_run=False):
     # Proceeding with the search API request
     for camera_name in cameras:
         for time_range in time_ranges:
             start_time, end_time = time_range
             concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all tag:box"
             call_time = datetime.now()
+
+            # Get the queue lengths for the specified boxes, will be [] if none specified
             queue_lengths = get_upload_queue_lengths(user=user, token=token, hostname=hostname,
                                                      device_ids_to_check=device_ids_to_check, dry_run=dry_run)
             queue_lengths_string = ' '.join(str(length) for length in queue_lengths)
-            if not dry_run and all(value < 500 for value in queue_lengths):
+            queue_is_full = not all(value < upload_queue_threshold for value in queue_lengths)
+
+            # Don't request tag:box upload for dry runs or if the queue is filling up
+            if not dry_run and not queue_is_full:
                 response = make_api_request(concatenated_string, token, hostname)
                 search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
                 upload_commands_count = 0
@@ -132,9 +145,9 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, devi
                 if is_working:
                     time.sleep(wait_seconds)
 
-            elif not dry_run and not all(value < 500 for value in queue_lengths):
+            elif not dry_run and queue_is_full:
                 # If the queue is full, wait for it to drain
-                sys.stderr.write(f"Queue is full, sleeping. Queue lengths: {queue_lengths}")
+                sys.stderr.write(f"Queue is full, sleeping for {wait_seconds}s. Queue lengths: {queue_lengths}\n")
                 time.sleep(wait_seconds)
 
             else:
@@ -143,7 +156,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, hostname, devi
 
 
 def process_files(cameras_filename, time_range_filename, token, wait_seconds, hostname, device_ids_to_check,
-                  dry_run=False):
+                  upload_queue_threshold, dry_run=False):
     time_ranges = []
     with open(time_range_filename, 'r') as file:
         reader = csv.DictReader(file)
@@ -167,13 +180,13 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ho
 
     row_count = 0
     print(
-        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lenths,uploading_devices,search_url")  # header row
+        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lengths,uploading_devices,search_url")  # header row
 
     with ThreadPoolExecutor() as executor:  # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
         for user, cameras in users_cameras.items():
             row_count += len(cameras)
             executor.submit(process_user, user, cameras, time_ranges, token, wait_seconds, hostname,
-                            device_ids_to_check, dry_run)
+                            device_ids_to_check, upload_queue_threshold, dry_run)
 
 
 if __name__ == "__main__":
@@ -190,10 +203,12 @@ if __name__ == "__main__":
     parser.add_argument('--hostname', required=False, default='camio.com',
                         help='The hostname of the API endpoint (default is camio.com).')
     parser.add_argument('--device_ids', nargs='+', required=False, default=[],
-                        help='List of device IDs to check the upload queue for.')
+                        help='List of device IDs to check the upload queue length of.')
+    parser.add_argument('--upload_queue_threshold', required=False, default=500,
+                        help='Only perform the upload requests when the upload queue is below this threshold of pending tasks.')
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
     process_files(args.cameras_filename, args.time_range_filename, args.token, int(args.wait_seconds), args.hostname,
-                  args.device_ids, args.dry_run)
+                  args.device_ids, int(args.upload_queue_threshold), args.dry_run)
