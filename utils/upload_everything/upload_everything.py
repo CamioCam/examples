@@ -160,6 +160,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_time,
                         sys.stderr.write(f"Waited for max {max_wait_time}s for user {user}, camera {camera_name}\n")
                         print(
                             f"{call_time.isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A")
+                        sys.stdout.flush()
                         break
 
                     # Sleep to give queues time to drain
