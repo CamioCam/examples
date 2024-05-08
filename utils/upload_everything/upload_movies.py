@@ -13,12 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+This script is similar to upload_everything.py. The main difference is that upload_everything.py will request uploads
+of any events (and their movies) that are not already uploaded. However, upload_everything.py will not upload movies for
+events that have already been uploaded (i.e. can see the event in the search results on the /app page but the videos do
+not play). This script is intended to be ran after upload_everything.py, to force upload of videos for events that were
+already uploaded.
 
 Execute with:
-python upload_everything.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_seconds 600
+python upload_movies.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_seconds 600
 
 See help with:
-python upload_everything.py --help
+python upload_movies.py --help
 
 cameras_filename is a csv with a header row and three required columns like this,
 where the rows without is_requested value TRUE are skipped:
@@ -42,22 +47,22 @@ https://camio.com/settings/integrations/#api
 The stdout is a CSV with five columns like this example, where the search_url can be used to view the results the requested
 uploads are completed:
 
-python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_seconds 600 | tee output.csv
+python upload_movies.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_seconds 600 | tee output_upload_movies.csv
 
-timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
-2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,0,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-2024-02-05T14:56:40.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,1,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all
-2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,2,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all
-2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,3,gd:00vx12273wf6fvd:000C29EF1F22 gd:00vx12273wf6fvd:B0416F040AF6,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all
+timestamp,api_request_url,status,upload_commands_count,search_url,message
+2024-02-05T14:56:39.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,0,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+7pm+PT+January+31st+to+8pm+PT+January+31st+all,success requesting uploads
+2024-02-05T14:56:40.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,1,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+East+8pm+PT+January+31st+to+9pm+PT+January+31st+all,success requesting uploads
+2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,2,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all,success requesting uploads
+2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,3,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all,success requesting uploads
 
 Only the tag:box upload request query text is shown when using the --dry_run argument like this:
 
-python upload_everything.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --dry_run
-timestamp,api_request_url,status,upload_commands_count,uploading_devices,search_url
-2024-02-05T14:59:09.749413,sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
-2024-02-05T14:59:09.749448,sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
-2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,N/A,0,N/A
-2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,N/A,0,N/A
+python upload_movies.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --dry_run
+timestamp,api_request_url,status,upload_commands_count,search_url
+2024-02-05T14:59:09.749413,sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all tag:box,0,N/A
+2024-02-05T14:59:09.749448,sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all tag:box,0,N/A
+2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,0,N/A
+2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,0,N/A
 """
 from urllib.parse import quote
 
@@ -76,7 +81,7 @@ def make_api_request(endpoint, params, token, hostname, data=None, method=reques
     headers = {'Authorization': f'token {token}'}
     if data is not None and isinstance(data, dict):
         payload = json.dumps(data)
-        sys.stderr.write(f"Payload is: {payload}\n")
+        # sys.stderr.write(f"Payload is: {payload}\n")
     else:
         payload = data
     response = method(base_url, params=params, headers=headers, data=payload)
@@ -138,8 +143,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                 queue_lengths = get_upload_queue_lengths(user=user, token=token, hostname=hostname,
                                                          device_ids_to_check=device_ids_to_check, dry_run=dry_run)
                 queue_lengths_string = ' '.join(str(length) for length in queue_lengths)
-                # queue_is_full = not all(value < upload_queue_threshold for value in queue_lengths)
-                queue_is_full = False  # TODO: @gabriella Switch back before prod
+                queue_is_full = not all(value < upload_queue_threshold for value in queue_lengths)
 
                 # Don't request uploads for dry runs or if the queue is filling up
                 if not dry_run and not queue_is_full:
@@ -150,8 +154,8 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                     results = search_response_obj.get("result", {})
                     buckets = results.get("buckets", [])
                     more_results = results.get("more_results",
-                                               False)  # I don't think this is an accurate value, might want to use len(buckets)==100 instead
-                    sys.stderr.write(f"Search returned {len(buckets)} events to upload, with more_results: {more_results}\n")
+                                               False)  # This value is not accurate, returns True even when no more results
+                    sys.stderr.write(f"Search returned {len(buckets)} events to upload\n")
                     actions = []
                     for bucket in buckets:
                         # sys.stderr.write(f"Handling upload request for {bucket.get('bucket_id')}\n")
@@ -184,21 +188,21 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         # Request uploads
                         call_time = datetime.now()
                         response = make_interaction_request(token, hostname, data=interaction_payload)
-                        sys.stderr.write(f"Interaction request {response.status_code} ({response.reason}): {response.text}\n")
+                        # sys.stderr.write(f"Interaction request {response.status_code} ({response.reason}): {response.text}\n")
 
                         if response.ok:
                             print(
                                 f"{call_time.isoformat()},{response.url},{response.status_code},{num_upload_requests},"
-                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},success requesting uploads")
+                                f"{queue_lengths_string},https://{hostname}/app#search;q={quote(concatenated_string)},success requesting uploads")
                             time.sleep(wait_seconds)
                         else:
                             print(
                                 f"{call_time.isoformat()},{response.url},{response.status_code},N/A,"
-                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},error requesting uploads")
+                                f"{queue_lengths_string},https://{hostname}/app#search;q={quote(concatenated_string)},error requesting uploads")
                     else:
                         print(
-                            f"{datetime.utcnow().isoformat()},{response.url},{response.status_code},N/A,"
-                            f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},no events found")
+                            f"{datetime.utcnow().isoformat()},N/A,N/A,N/A,"
+                            f"{queue_lengths_string},https://{hostname}/app#search;q={quote(concatenated_string)},no events found")
 
                     sys.stdout.flush()
                     break
@@ -214,7 +218,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         message = f"Waited for max {max_wait_seconds}s for upload request: {concatenated_string}\n"
                         sys.stderr.write(message)
                         print(
-                            f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A,{message}")
+                            f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,{message}")
                         sys.stdout.flush()
                         break
 
@@ -225,7 +229,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         time.sleep(wait_seconds)
 
                 else:
-                    print(f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,0,{queue_lengths_string},N/A,dry run")
+                    print(f"{datetime.utcnow().isoformat()},{concatenated_string},0,{queue_lengths_string},N/A,dry run")
                     sys.stdout.flush()
                     break
 
@@ -255,7 +259,7 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ma
 
     row_count = 0
     print(
-        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lengths,uploading_devices,search_url,message")  # header row
+        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lengths,search_url,message")  # header row
 
     with ThreadPoolExecutor() as executor:  # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
         for user, cameras in users_cameras.items():
