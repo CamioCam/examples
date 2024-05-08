@@ -63,10 +63,10 @@ Only the search query text is shown when using the --dry_run argument like this:
 
 python upload_movies.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --dry_run
 timestamp,api_request_url,status,upload_commands_count,search_url
-2024-02-05T14:59:09.749413,sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all tag:box,0,N/A
-2024-02-05T14:59:09.749448,sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all tag:box,0,N/A
-2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all tag:box,0,N/A
-2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all tag:box,0,N/A
+2024-02-05T14:59:09.749413,sanmateo@camiolog.com Front East 7pm PT January 31st to 8pm PT January 31st all,0,N/A
+2024-02-05T14:59:09.749448,sanmateo@camiolog.com Front East 8pm PT January 31st to 9pm PT January 31st all,0,N/A
+2024-02-05T14:59:09.749481,sanmateo@camiolog.com Front West 7pm PT January 31st to 8pm PT January 31st all,0,N/A
+2024-02-05T14:59:09.749490,sanmateo@camiolog.com Front West 8pm PT January 31st to 9pm PT January 31st all,0,N/A
 """
 from urllib.parse import quote
 
