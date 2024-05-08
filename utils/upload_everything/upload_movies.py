@@ -90,6 +90,7 @@ def make_interaction_request(token, hostname, data, method=requests.post):
 
 def make_search_request(params, token, hostname, method=requests.get):
     endpoint = "/api/search"
+    params["num_results"] = 100
     return make_api_request(endpoint, params, token, hostname, method=method)
 
 
@@ -163,10 +164,11 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                             "camera": bucket.get("source"),
                             "action_type": "play",  # Can use different action type?
                             "action_date": datetime.utcnow().isoformat(sep='T', timespec='auto'),
-                            # "particular_context": bucketsInViewport,  TODO: Confirm don't need
+                            # "particular_context": [],
                             "total_frames_in_event": len(bucket.get("images", [])),
                             "priority": 82  # TODO: Make a command line arg
                         }
+
                         actions.append(action)
 
                     if len(actions) > 0:
