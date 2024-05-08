@@ -124,7 +124,7 @@ def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run
 
 
 def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_seconds, hostname, device_ids_to_check,
-                 upload_queue_threshold, dry_run=False):
+                 upload_queue_threshold, dry_run=False, upload_priority=80):
     # Proceeding with the search API request
     for camera_name in cameras:
         for time_range in time_ranges:
@@ -141,7 +141,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                 # queue_is_full = not all(value < upload_queue_threshold for value in queue_lengths)
                 queue_is_full = False  # TODO: @gabriella Switch back before prod
 
-                # Don't request tag:box upload for dry runs or if the queue is filling up
+                # Don't request uploads for dry runs or if the queue is filling up
                 if not dry_run and not queue_is_full:
                     search_params = {'text': concatenated_string}
                     response = make_search_request(search_params, token, hostname)
@@ -151,7 +151,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                     buckets = results.get("buckets", [])
                     more_results = results.get("more_results",
                                                False)  # I don't think this is an accurate value, might want to use len(buckets)==100 instead
-                    sys.stderr.write(f"Search returned {len(buckets)} events to upload\n")
+                    sys.stderr.write(f"Search returned {len(buckets)} events to upload, with more_results: {more_results}\n")
                     actions = []
                     for bucket in buckets:
                         # sys.stderr.write(f"Handling upload request for {bucket.get('bucket_id')}\n")
@@ -162,16 +162,16 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                             "earliest_date": bucket.get("earliest_date"),
                             "latest_date": bucket.get("latest_date"),
                             "camera": bucket.get("source"),
-                            "action_type": "play",  # Can use different action type?
+                            "action_type": "play",
                             "action_date": datetime.utcnow().isoformat(sep='T', timespec='auto'),
-                            # "particular_context": [],
                             "total_frames_in_event": len(bucket.get("images", [])),
-                            "priority": 82  # TODO: Make a command line arg
+                            "priority": upload_priority
                         }
 
                         actions.append(action)
 
                     if len(actions) > 0:
+                        # for action in actions:
                         interaction_payload = {
                             "hash": f"#search;q={quote(concatenated_string)};r=z",
                             "sxs": None,
@@ -180,44 +180,28 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                             "actions": actions
                         }
                         num_upload_requests = len(interaction_payload.get('actions', []))
-                        sys.stderr.write(
-                            f"Payload contains {num_upload_requests} upload requests\n")
+
                         # Request uploads
                         call_time = datetime.now()
                         response = make_interaction_request(token, hostname, data=interaction_payload)
                         sys.stderr.write(f"Interaction request {response.status_code} ({response.reason}): {response.text}\n")
+
                         if response.ok:
                             print(
                                 f"{call_time.isoformat()},{response.url},{response.status_code},{num_upload_requests},"
-                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)}")
+                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},success requesting uploads")
+                            time.sleep(wait_seconds)
                         else:
                             print(
                                 f"{call_time.isoformat()},{response.url},{response.status_code},N/A,"
-                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)}")
-                    break
+                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},error requesting uploads")
+                    else:
+                        print(
+                            f"{datetime.utcnow().isoformat()},{response.url},{response.status_code},N/A,"
+                            f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)},no events found")
 
-                    # search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
-                    # upload_commands_count = 0
-                    # uploading_devices = ''
-                    # is_working = False
-                    # if response.status_code // 100 == 2:  # in the 2xx range
-                    #     response_data = response.json()
-                    #     if 'operations' in response_data and 'upload_commands' in response_data[
-                    #         'operations'] and isinstance(response_data['operations']['upload_commands'], list):
-                    #         upload_commands = response_data['operations']['upload_commands']
-                    #         upload_commands_count = len(upload_commands)
-                    #         uploading_devices = ' '.join(
-                    #             upload_command["device_id_internal"] for upload_command in upload_commands)
-                    #         is_working = True
-                    # else:
-                    #     sys.stderr.write(f"Error making upload request: {response.status_code} ({response.reason})\n")
-                    #
-                    # print(
-                    #     f"{call_time.isoformat()},{response.url},{response.status_code},{upload_commands_count},{queue_lengths_string},{uploading_devices},{search_url}")
-                    # sys.stdout.flush()
-                    # if is_working:
-                    #     time.sleep(wait_seconds)
-                    # break
+                    sys.stdout.flush()
+                    break
 
                 elif not dry_run and queue_is_full:
                     # One or more of the queues are full
@@ -227,10 +211,10 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
 
                     # Break iteration if reached max wait time
                     if elapsed_total_seconds > max_wait_seconds:
-                        sys.stderr.write(
-                            f"Waited for max {max_wait_seconds}s for upload request: {concatenated_string}\n")
+                        message = f"Waited for max {max_wait_seconds}s for upload request: {concatenated_string}\n"
+                        sys.stderr.write(message)
                         print(
-                            f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A")
+                            f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A,{message}")
                         sys.stdout.flush()
                         break
 
@@ -241,13 +225,13 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         time.sleep(wait_seconds)
 
                 else:
-                    print(f"{call_time.isoformat()},{concatenated_string},N/A,0,{queue_lengths_string},N/A")
+                    print(f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,0,{queue_lengths_string},N/A,dry run")
                     sys.stdout.flush()
                     break
 
 
 def process_files(cameras_filename, time_range_filename, token, wait_seconds, max_wait_seconds, hostname,
-                  device_ids_to_check, upload_queue_threshold, dry_run=False):
+                  device_ids_to_check, upload_queue_threshold, dry_run=False, upload_priority=80):
     time_ranges = []
     with open(time_range_filename, 'r') as file:
         reader = csv.DictReader(file)
@@ -271,13 +255,13 @@ def process_files(cameras_filename, time_range_filename, token, wait_seconds, ma
 
     row_count = 0
     print(
-        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lengths,uploading_devices,search_url")  # header row
+        f"timestamp,api_request_url,status,upload_commands_count,upload_queue_lengths,uploading_devices,search_url,message")  # header row
 
     with ThreadPoolExecutor() as executor:  # Python version 3.8: Default value of max_workers is changed to min(32, os.cpu_count() + 4)
         for user, cameras in users_cameras.items():
             row_count += len(cameras)
             executor.submit(process_user, user, cameras, time_ranges, token, wait_seconds, max_wait_seconds, hostname,
-                            device_ids_to_check, upload_queue_threshold, dry_run)
+                            device_ids_to_check, upload_queue_threshold, dry_run, upload_priority)
 
 
 if __name__ == "__main__":
@@ -299,9 +283,14 @@ if __name__ == "__main__":
                         help='Only perform the upload requests when the upload queue is below this threshold of pending tasks.')
     parser.add_argument('--max_wait_seconds', required=False, default=3600, type=int,
                         help='How long to continue waiting if the upload queue is full, before breaking iteration, in seconds.')  # Default of 1 hour
+    parser.add_argument('--upload_priority', required=False, default=80, type=int,
+                        help='The priority for the requested uploads. The first movie in the event will be this priority '
+                             'and the subsequent movies will be in decreasing priority. If higher than 81 will compete'
+                             'with any ongoing event and video uploads.')
     parser.add_argument('--dry_run', action='store_true', help='Perform a dry run (skip actual API requests).')
 
     args = parser.parse_args()
 
     process_files(args.cameras_filename, args.time_range_filename, args.token, args.wait_seconds,
-                  args.max_wait_seconds, args.hostname, args.device_ids, args.upload_queue_threshold, args.dry_run)
+                  args.max_wait_seconds, args.hostname, args.device_ids, args.upload_queue_threshold, args.dry_run,
+                  args.upload_priority)
