@@ -59,7 +59,7 @@ timestamp,api_request_url,status,upload_commands_count,search_url,message
 2024-02-05T14:56:41.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all+tag%3Abox,200,2,2,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+7pm+PT+January+31st+to+8pm+PT+January+31st+all,success requesting uploads
 2024-02-05T14:56:42.197221,https://camio.com/api/search?text=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all+tag%3Abox,200,2,3,https://camio.com/app/#search;q=sanmateo%40camiolog.com+Front+West+8pm+PT+January+31st+to+9pm+PT+January+31st+all,success requesting uploads
 
-Only the tag:box upload request query text is shown when using the --dry_run argument like this:
+Only the search query text is shown when using the --dry_run argument like this:
 
 python upload_movies.py --cameras_filename cameras.csv --time_range_filename time-ranges.csv --token YOURTOKEN --dry_run
 timestamp,api_request_url,status,upload_commands_count,search_url
