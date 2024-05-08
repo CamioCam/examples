@@ -19,6 +19,10 @@ events that have already been uploaded (i.e. can see the event in the search res
 not play). This script is intended to be ran after upload_everything.py, to force upload of videos for events that were
 already uploaded.
 
+NOTE: It is recommended to use time range chunks of 30 minutes (max 60 minutes) with this script. If the number of search
+results in the time range exceeds 100, only the first 100 events will have their movies requested. Setting the time range
+chunks to 30 minutes prevents exceeding 100 events.
+
 Execute with:
 python upload_movies.py --cameras_filename your_cameras_filename.csv --time_range_filename your_time_range_filename.csv --token your_access_token --device_ids "camio_box_device_id_1" "camio_box_device_id_2" --max_wait_seconds 600
 
