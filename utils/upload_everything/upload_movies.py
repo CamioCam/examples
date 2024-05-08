@@ -71,11 +71,26 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 
 
-def make_api_request(params, token, hostname, method=requests.get):
-    base_url = f"https://{hostname}/api/search"
+def make_api_request(endpoint, params, token, hostname, data=None, method=requests.get):
+    base_url = f"https://{hostname}{endpoint}"
     headers = {'Authorization': f'token {token}'}
-    response = method(base_url, params=params, headers=headers)
+    if data is not None and isinstance(data, dict):
+        payload = json.dumps(data)
+        sys.stderr.write(f"Payload is: {payload}\n")
+    else:
+        payload = data
+    response = method(base_url, params=params, headers=headers, data=payload)
     return response
+
+
+def make_interaction_request(token, hostname, data, method=requests.post):
+    endpoint = "/api/users/me/interactions"
+    return make_api_request(endpoint, None, token, hostname, data=data, method=method)
+
+
+def make_search_request(params, token, hostname, method=requests.get):
+    endpoint = "/api/search"
+    return make_api_request(endpoint, params, token, hostname, method=method)
 
 
 def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run=False) -> list:
@@ -117,7 +132,6 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
             while True:
                 start_time, end_time = time_range
                 concatenated_string = f"{user} {camera_name} {start_time} to {end_time} all"
-                call_time = datetime.now()
 
                 # Get the queue lengths for the specified boxes, will be [] if none specified
                 queue_lengths = get_upload_queue_lengths(user=user, token=token, hostname=hostname,
@@ -129,43 +143,55 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                 # Don't request tag:box upload for dry runs or if the queue is filling up
                 if not dry_run and not queue_is_full:
                     search_params = {'text': concatenated_string}
-                    response = make_api_request(search_params, token, hostname)
+                    response = make_search_request(search_params, token, hostname)
                     sys.stderr.write(f"Search response: {response.status_code} ({response.reason})\n")
                     search_response_obj = json.loads(response.text)
                     results = search_response_obj.get("result", {})
                     buckets = results.get("buckets", [])
-                    more_results = results.get("more_results", False)  # I don't think this is an accurate value, might want to use len(buckets)==100 instead
+                    more_results = results.get("more_results",
+                                               False)  # I don't think this is an accurate value, might want to use len(buckets)==100 instead
                     sys.stderr.write(f"Search returned {len(buckets)} events to upload\n")
                     actions = []
                     for bucket in buckets:
                         # sys.stderr.write(f"Handling upload request for {bucket.get('bucket_id')}\n")
                         action = {
-                                "event_id": bucket.get("bucket_id"),
-                                "user_id": bucket.get("user_id"),
-                                "groups": bucket.get("groups"),
-                                "earliest_date": bucket.get("earliest_date"),
-                                "latest_date": bucket.get("latest_date"),
-                                "camera": bucket.get("source"),
-                                "action_type": "play",  # Can use different action type?
-                                "action_date": datetime.utcnow().isoformat(sep='T', timespec='auto'),
-                                # "particular_context": bucketsInViewport,  TODO: Confirm don't need
-                                "total_frames_in_event": len(bucket.get("images", [])),
-                                "priority": 82  # TODO: Make a command line arg
-                            }
+                            "event_id": bucket.get("bucket_id"),
+                            "user_id": bucket.get("user_id"),
+                            "groups": bucket.get("groups"),
+                            "earliest_date": bucket.get("earliest_date"),
+                            "latest_date": bucket.get("latest_date"),
+                            "camera": bucket.get("source"),
+                            "action_type": "play",  # Can use different action type?
+                            "action_date": datetime.utcnow().isoformat(sep='T', timespec='auto'),
+                            # "particular_context": bucketsInViewport,  TODO: Confirm don't need
+                            "total_frames_in_event": len(bucket.get("images", [])),
+                            "priority": 82  # TODO: Make a command line arg
+                        }
                         actions.append(action)
 
                     if len(actions) > 0:
                         interaction_payload = {
-                            "sxs": None,
                             "hash": f"#search;q={quote(concatenated_string)};r=z",
+                            "sxs": None,
                             "device_type": "pc",
                             "first_event_date": actions[0].get("earliest_date"),
                             "actions": actions
                         }
-                        sys.stderr.write(f"Payload would contain {len(interaction_payload.get('actions', []))} upload requests\n")
-                        sys.stderr.write(f"Payload would be: {interaction_payload}\n")
+                        num_upload_requests = len(interaction_payload.get('actions', []))
+                        sys.stderr.write(
+                            f"Payload contains {num_upload_requests} upload requests\n")
                         # Request uploads
-
+                        call_time = datetime.now()
+                        response = make_interaction_request(token, hostname, data=interaction_payload)
+                        sys.stderr.write(f"Interaction request {response.status_code} ({response.reason}): {response.text}\n")
+                        if response.ok:
+                            print(
+                                f"{call_time.isoformat()},{response.url},{response.status_code},{num_upload_requests},"
+                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)}")
+                        else:
+                            print(
+                                f"{call_time.isoformat()},{response.url},{response.status_code},N/A,"
+                                f"{queue_lengths_string},N/A,/app#search;q={quote(concatenated_string)}")
                     break
 
                     # search_url = response.url.replace("/api/search?text=", "/app/#search;q=").replace("+tag%3Abox", "")
@@ -202,7 +228,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         sys.stderr.write(
                             f"Waited for max {max_wait_seconds}s for upload request: {concatenated_string}\n")
                         print(
-                            f"{call_time.isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A")
+                            f"{datetime.utcnow().isoformat()},{concatenated_string},N/A,N/A,{queue_lengths_string},N/A,N/A")
                         sys.stdout.flush()
                         break
 
