@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  abc_fitness_config.yaml: |
+    ---
+    log_level: {{ .Values.log_level }}
+
+    credentials:
+      app_key: {{ .Values.credentials.app_key | quote }}
+      app_id: {{ .Values.credentials.app_id | quote }}
+      club_id: {{ .Values.credentials.club_id | quote }}
+      camio_api_token: {{ .Values.credentials.camio_api_token | quote }}
+
+    urls:
+      devices: "https://api.abcfinancial.com/rest/{club_id}/clubs/stations"
+      events: "https://api.abcfinancial.com/rest/{club_id}/clubs/checkins/details"
+      members: "https://api.abcfinancial.com/rest/{club_id}/members"
+      pacs_server: {{ if .Values.urls.pacs_server }}{{ .Values.urls.pacs_server | quote }}{{ else }}"https://{{ .Values.urls.camio_domain }}/pacs"{{ end }}
+      skip_ssl_verification: {{ .Values.urls.skip_ssl_verification }}
+
+    requests:
+      devices:
+        polling_interval: {{ .Values.requests.devices.polling_interval }}
+      pacs:
+        backoff_multiplier:  {{ .Values.requests.pacs.backoff_multiplier }}
+        backoff_start: {{ .Values.requests.pacs.backoff_start }}
+        backoff_limit: {{ .Values.requests.pacs.backoff_limit }}
+      events:
+        streaming: false  # MUST be false
+        polling_interval: {{ .Values.requests.events.polling_interval | default 900 }}
+        count_reset_interval: {{ .Values.requests.events.count_reset_interval }}
+        timezone_offset: {{ .Values.requests.events.timezone_offset }}
+        timezone_name: {{ .Values.requests.events.timezone_name }}
+        get_member_info: {{ .Values.requests.events.get_member_info }}
+        page_size: {{ .Values.requests.events.page_size }}
+      members:
+        page_size: {{ .Values.requests.members.page_size }}
+
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: driver
+  name: driver-cm0
