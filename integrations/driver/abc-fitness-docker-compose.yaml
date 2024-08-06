@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+
+  driver:
+    image: camio-integration-driver-abc-fitness:latest
+    restart: on-failure
+    entrypoint: "python3 /app/abc_fitness.py --config /opt/configs/abc_fitness_config.yaml"
+    volumes:
+      - ./configs/production:/opt/configs

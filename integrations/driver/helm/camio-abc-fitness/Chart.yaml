@@ -1,0 +1,8 @@
+name: camio-abc-fitness
+description: A generated Helm Chart for helm/camio-abc-fitness from Skippbox Kompose
+version: 1.0.0
+apiVersion: v1
+keywords:
+  - camio-abc-fitness
+sources:
+home:

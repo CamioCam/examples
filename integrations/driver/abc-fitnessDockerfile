@@ -1,0 +1,20 @@
+FROM ubuntu:focal
+
+WORKDIR /
+
+COPY apt_requirements.txt .
+
+ENV DEBIAN_FRONTEND noninteractive apt-get
+
+RUN apt-get update
+RUN cat apt_requirements.txt | xargs apt-get install -y
+
+RUN apt-get upgrade -y
+
+# Python requirements can be listed in the requirements.txt file
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+RUN mkdir app
+COPY app app/.
+WORKDIR /app
