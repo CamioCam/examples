@@ -484,6 +484,7 @@ class BaseIntegrationDriver:
                     if self.is_time_to_reset_event_count():
                         self.reset_event_count()
 
+                self.logger.info(f"Sleeping for {self.events_polling_interval}s")
                 sleep(self.events_polling_interval)
 
             except Exception as e:  # Continue for best effort, if event streaming fails this also ensures a re-try
@@ -818,7 +819,7 @@ class TestBaseIntegrationDriver(unittest.IsolatedAsyncioTestCase):
 
     async def test_run(self):
         """
-        Tests the continuous event and devices fetching that occurs in run(). If event streaming is enabled this test
+        Tests the periodic event and devices fetching that occurs in run(). If event streaming is enabled this test
         can take a while, since it will start event streaming, send events, and wait for the events to come into the
         streaming response. Relies on the yields in the BaseIntegrationDriver to function properly.
 
