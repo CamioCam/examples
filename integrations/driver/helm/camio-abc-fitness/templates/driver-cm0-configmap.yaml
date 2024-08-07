@@ -19,14 +19,14 @@ data:
 
     requests:
       devices:
-        polling_interval: {{ .Values.requests.devices.polling_interval }}
+        polling_interval: {{ .Values.requests.devices.polling_interval | default 43200 }}
       pacs:
         backoff_multiplier:  {{ .Values.requests.pacs.backoff_multiplier }}
         backoff_start: {{ .Values.requests.pacs.backoff_start }}
         backoff_limit: {{ .Values.requests.pacs.backoff_limit }}
       events:
         streaming: false  # MUST be false
-        polling_interval: {{ .Values.requests.events.polling_interval | default 900 }}
+        polling_interval: {{ .Values.requests.events.polling_interval | default 43200 }}
         count_reset_interval: {{ .Values.requests.events.count_reset_interval }}
         timezone_offset: {{ .Values.requests.events.timezone_offset }}
         timezone_name: {{ .Values.requests.events.timezone_name }}

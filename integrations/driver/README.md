@@ -1,6 +1,6 @@
 # Camio Integration Drivers
 
-Camio Integration drivers continuously poll an external integration's API for information to forward into the Camio 
+Camio Integration drivers periodically poll an external integration's API for information to forward into the Camio 
 system. 
 
 ## Repo Structure
