@@ -32,7 +32,7 @@ requests:
     page_size: 100
 
 container:
-  image: camio-integration-driver-abc-fitness
+  image: us-central1-docker.pkg.dev/camiologger/public-containers/camio-integration-driver-abc-fitness:latest-linux-amd64
 
 # Note: Can supply no more than three nameservers
 dns:

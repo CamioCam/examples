@@ -102,9 +102,9 @@ class BaseRequestConfigMap(BaseModel):
     """
     Configs specific to the URL being called.
     """
-    devices: BaseDevicesRequestConfig = Field(description="Config for requests to the integration's devices URL")
-    events: BaseEventsRequestConfig = Field(description="Config for requests to the integration's events URL")
-    pacs: BasePACSRequestConfig = Field(description="Config for requests to the Camio PACS server")
+    devices: BaseDevicesRequestConfig = Field(BaseDevicesRequestConfig(), description="Config for requests to the integration's devices URL")
+    events: BaseEventsRequestConfig = Field(BaseEventsRequestConfig(), description="Config for requests to the integration's events URL")
+    pacs: BasePACSRequestConfig = Field(BasePACSRequestConfig(), description="Config for requests to the Camio PACS server")
 
 
 class BaseIntegrationDriverConfig(BaseModel, extra=Extra.allow):
@@ -116,7 +116,8 @@ class BaseIntegrationDriverConfig(BaseModel, extra=Extra.allow):
     log_level: Literal[logging.DEBUG,
                        logging.INFO,
                        logging.WARNING,
-                       logging.ERROR] = Field(10, description="Python logging level. 10 is debug, 20 info, etc.")
+                       logging.ERROR,
+                       logging.CRITICAL] = Field(10, description="Python logging level. 10 is debug, 20 info, etc.")
     credentials: BaseCredentials = Field(None,
                                          description="Credentials used to authenticate with the integration's API")
     credentials_filepath: str = Field(None,
