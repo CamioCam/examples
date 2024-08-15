@@ -1,4 +1,4 @@
-log_level: 10  # DEBUG
+log_level: 20
 
 credentials:
   app_key: "INSERT ABC FITNESS APP KEY"
@@ -7,32 +7,19 @@ credentials:
   camio_api_token: "INSERT CAMIO DEV TOKEN"
 
 urls:
-  devices: "https://api.abcfinancial.com/rest/{club_id}/clubs/stations"
-  events: "https://api.abcfinancial.com/rest/{club_id}/clubs/checkins/details"
-  members: "https://api.abcfinancial.com/rest/{club_id}/members"
   pacs_server: "https://incoming.integrations.camio.com/pacs"
   skip_ssl_verification: false
 
 requests:
   devices:
-    polling_interval: 43200  # in seconds, how frequently to request station information via the ABC Fitness API. Defaults to every 12 hours
-
-  pacs:
-    backoff_multiplier: 2.0  # multiplier for increasing sleep between retries
-    backoff_start: 2.0  # initial seconds until retry, gets multiplied by backoff_multiplier after each attempt
-    backoff_limit: 3  # max number of retries
-
+    polling_interval: 30  # seconds between calls to fetch devices
   events:
-    streaming: false  # ABC Fitness API does not support streaming
-    count_reset_interval: 86400  # reset the events count every 24 hours
-    polling_interval: 900  # in seconds, how frequently to request checkin information via the ABC Fitness API. Defaults to every 12 hours but for testing is set here to 15 minutes
-    timezone_offset:  # Timezone offset for the timestamps of the events. Format is +/-HHMM. Examples: -0700, +0100. Does not account for daylight savings time, since the number is always added/subtracted from the UTC time. Default is None.
-    timezone_name: "UTC"  # Name of the timezone that the event timestamps are in. Uses pytz timezones. If timezone_offset is also passed, will use the offset over the timezone name. Should account for daylight savings. Examples: US/Central, US/Eastern, US/Pacific, Europe/Paris. Default is UTC.
+    polling_interval: 10  # seconds between calls to fetch events
+    count_reset_interval: 180
     get_member_info: true
-    page_size: 100
-
+    page_size: 2
   members:
-    page_size: 100
+    page_size: 2
 
 test_values:
   create_events_url: "https://api.abcfinancial.com/rest/{club_id}/members/checkins/{member_id}"

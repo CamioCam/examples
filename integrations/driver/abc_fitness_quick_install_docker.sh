@@ -26,8 +26,5 @@ sed -i '' -e "s/\(app_key:\s*\).*/\1 \"$app_key\"/" \
 
 echo "abc_fitness_config.yaml has been updated."
 
-# Build the image
-docker build -t camio-integration-driver-abc-fitness:latest --no-cache -f abc-fitnessDockerfile .
-
 # Run the docker compose
 docker compose -f abc-fitness-docker-compose.yaml up -d

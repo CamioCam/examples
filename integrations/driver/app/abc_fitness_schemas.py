@@ -2,7 +2,8 @@ from typing import List
 
 from pydantic import BaseModel, Field, Extra
 
-from schemas import BaseIntegrationDriverConfig, BaseRequestConfigMap, BaseEventsRequestConfig, BaseUrls
+from schemas import BaseIntegrationDriverConfig, BaseRequestConfigMap, BaseEventsRequestConfig, BaseUrls, \
+    BaseDevicesRequestConfig
 
 
 # ----------------- ABC FITNESS API RESPONSE SCHEMAS -----------------
@@ -133,7 +134,8 @@ class ABCFitnessDevice(BaseModel):
     }
     """
 
-    stationId: str = Field(None, description="The ABCFitness GUID for the station, ex: F84273CC22A44655AE78FC04F6A8CA30")
+    stationId: str = Field(None,
+                           description="The ABCFitness GUID for the station, ex: F84273CC22A44655AE78FC04F6A8CA30")
     name: str = Field(None, description="Name of the ABCFitness device")
     status: str = Field(None, description="The status of the station, ['active', 'inactive']")
     abcCode: str = Field(None, description="The ABC Code for the station")
@@ -265,7 +267,15 @@ class ABCFitnessUrls(BaseUrls, extra=Extra.allow):
     Contains the full urls for each request type. Some urls are optional.
     """
 
-    members: str = Field(None, description="Url to call to get the member information")
+    devices: str = Field("https://api.abcfinancial.com/rest/{club_id}/clubs/stations",
+                         description="Url to call to get the user's ABC Fitness stations")
+    events: str = Field("https://api.abcfinancial.com/rest/{club_id}/clubs/checkins/details",
+                        description="Url to call to get the user's ABC Fitness checkin events")
+    pacs_server: str = Field("https://incoming.integrations.camio.com/pacs",
+                             description="Url to forward the devices and events to once they have been converted to "
+                                         "PACS format")
+    members: str = Field("https://api.abcfinancial.com/rest/{club_id}/members",
+                         description="Url to call to get the member information")
 
 
 class ABCFitnessEventsRequestConfig(BaseEventsRequestConfig):
@@ -273,8 +283,25 @@ class ABCFitnessEventsRequestConfig(BaseEventsRequestConfig):
     Config for calling the events (checkins) url. Include the number of checkins to request in one page.
     """
 
+    streaming: bool = Field(False, description="ABC Fitness API does not support streaming", const=True)
+    polling_interval: int = Field(43200,
+                                  description="In seconds, how frequently to request checkin information via the ABC "
+                                              "Fitness API. Defaults to every 12 hours")
+    timezone_offset: str = Field(None, description="Timezone offset for timestamps in the events, +/- is required. "
+                                                   "Note that daylight savings may not be accounted for. Ex: -0500")
+    timezone_name: str = Field("UTC", description="Timezone name for timestamps in the events. Supported timezones all "
+                                                  "pytz.all_timezones")
     get_member_info: bool = Field(True, description="If true, fetch the member info for all checkin events")
     page_size: int = Field(100, description="The number of checkins to request in one call to the ABCFitness API")
+
+
+class ABCFitnessDevicesRequestConfig(BaseDevicesRequestConfig):
+    """
+    Config for calling the events (checkins) url. Include the number of checkins to request in one page.
+    """
+
+    polling_interval: int = Field(43200, description="In seconds, how frequently to request station information "
+                                                     "via the ABC Fitness API. Defaults to every 12 hours")
 
 
 class ABCFitnessMembersRequestConfig(BaseModel):
@@ -289,6 +316,7 @@ class ABCFitnessRequestConfigMap(BaseRequestConfigMap):
     Configs specific to the URL being called.
     """
 
+    devices: ABCFitnessDevicesRequestConfig = Field(description="Config for requests to the integration's devices URL")
     events: ABCFitnessEventsRequestConfig = Field(description="Config for requests to the integration's events URL")
     members: ABCFitnessMembersRequestConfig = Field(description="Config for requests to the integration's members URL")
 
