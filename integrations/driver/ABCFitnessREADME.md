@@ -32,7 +32,7 @@ There are 3 options for running the ABC Fitness driver:
 ## Quick Install with Docker
 
 If docker is already installed, and you have cloned this repository, then you can use the provided quick install script, 
-`abc_fitness_quick_install.sh`, to run the Camio ABC Fitness driver. The quick install script:
+`abc_fitness_quick_install_docker.sh`, to run the Camio ABC Fitness driver. The quick install script:
 
 1. Populates the config file with your credentials
 2. Builds the docker image
@@ -46,7 +46,7 @@ need to contact ABC.
 Then, run from within this directory (`camio-integrations/driver`).
 
 ```
-bash abc_fitness_quick_install.sh [APP_KEY] [APP_ID] [CLUB_ID] [CAMIO_API_TOKEN]
+bash abc_fitness_quick_install_docker.sh [APP_KEY] [APP_ID] [CLUB_ID] [CAMIO_API_TOKEN]
 ```
 
 **NOTE**: The quick install uses the `linux-amd64` driver image by default. If you would like to run the `linux-arm64` 
