@@ -308,6 +308,7 @@ class ABCFitnessMembersRequestConfig(BaseModel):
     """
     Config for calling the events members url. Include the number of members to request in one page.
     """
+
     page_size: int = Field(100, description="The number of members to request in one call to the ABCFitness API")
 
 
@@ -316,9 +317,12 @@ class ABCFitnessRequestConfigMap(BaseRequestConfigMap):
     Configs specific to the URL being called.
     """
 
-    devices: ABCFitnessDevicesRequestConfig = Field(description="Config for requests to the integration's devices URL")
-    events: ABCFitnessEventsRequestConfig = Field(description="Config for requests to the integration's events URL")
-    members: ABCFitnessMembersRequestConfig = Field(description="Config for requests to the integration's members URL")
+    devices: ABCFitnessDevicesRequestConfig = Field(ABCFitnessDevicesRequestConfig(),
+                                                    description="Config for requests to the integration's devices URL")
+    events: ABCFitnessEventsRequestConfig = Field(ABCFitnessEventsRequestConfig(),
+                                                  description="Config for requests to the integration's events URL")
+    members: ABCFitnessMembersRequestConfig = Field(ABCFitnessMembersRequestConfig(),
+                                                    description="Config for requests to the integration's members URL")
 
 
 class ABCFitnessIntegrationDriverConfig(BaseIntegrationDriverConfig, extra=Extra.allow):
@@ -328,6 +332,7 @@ class ABCFitnessIntegrationDriverConfig(BaseIntegrationDriverConfig, extra=Extra
     should go into one of these Pydantic models instead of in the code directly.
     """
 
-    urls: ABCFitnessUrls = Field(description="The urls to be called by the integration driver")
-    requests: ABCFitnessRequestConfigMap = Field(description="Configurations for calls to various urls, such as "
+    urls: ABCFitnessUrls = Field(ABCFitnessUrls(), description="The urls to be called by the integration driver")
+    requests: ABCFitnessRequestConfigMap = Field(ABCFitnessRequestConfigMap(),
+                                                 description="Configurations for calls to various urls, such as "
                                                              "polling intervals and backoff attempts")

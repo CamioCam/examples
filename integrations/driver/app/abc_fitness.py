@@ -447,6 +447,39 @@ class TestABCFitnessDriver(TestBaseIntegrationDriver):
                                                                           task_names=task_names,
                                                                           member_id=self.member_id)
 
+    async def test_minimal_driver_config(self):
+        """
+        Test the driver schema taking the minimum required field.
+        """
+
+        # Currently, only the credential fields should be required
+        config = {
+            "credentials": {
+                "app_key": "1",
+                "app_id": "2",
+                "club_id": "3",
+                "camio_api_token": "4"
+            }
+        }
+
+        # Raises an error if any required fields are missing
+        driver_config = ABCFitnessIntegrationDriverConfig(**config)
+        print(f"Driver config: \n{driver_config}")
+        self.assertIsNotNone(driver_config)
+
+        # Assert default urls are populated
+        self.assertIsNotNone(driver_config.urls)
+        self.assertIsNotNone(driver_config.urls.devices)
+        self.assertIsNotNone(driver_config.urls.events)
+        self.assertIsNotNone(driver_config.urls.pacs_server)
+
+        # Assert default polling intervals are populated
+        self.assertIsNotNone(driver_config.requests)
+        self.assertIsNotNone(driver_config.requests.devices)
+        self.assertIsNotNone(driver_config.requests.devices.polling_interval)
+        self.assertIsNotNone(driver_config.requests.events)
+        self.assertIsNotNone(driver_config.requests.events.polling_interval)
+
     async def test_get_events(self):
         # Set last fetch time as now so that we only fetch the test events from now -> time of get_events
         self.driver.last_fetch_time = datetime.datetime.utcnow()
