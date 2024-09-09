@@ -29,7 +29,6 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
 
     def __init__(self, config_class=ABCFitnessIntegrationDriverConfig, **kwargs):
         super(ABCFitnessIntegrationDriver, self).__init__(config_class=config_class, **kwargs)
-        self.stations_map = {}  # For mapping station names -> ids
         self.last_fetch_time = None
 
     @staticmethod
@@ -87,60 +86,16 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
         }
         self.logger.info(f"Making request to ABCFitness API with url: {formatted_url} and payload: {data}")
         response = method(formatted_url, headers=headers, json=data, **kwargs)
-        self.logger.info(f"Response from calling the ABCFitness API: {response.text}")
+        self.logger.info(f"ABCFitness API response: {response.status_code} ({response.reason})")
         return response
 
     def convert_to_pacs_devices(self, response: requests.Response = None,
                                 devices_str: str = None) -> Union[List[dict], None]:
         """
-        Converts the response from getting the user's ABC Fitness stations (/clubs/stations) to Camio PACSDevices.
-        The stations also get stored in the driver's stations_map which maps station names to station IDs. This is so we
-        can get the station ID when the ABC Fitness events come in via /clubs/checkins/details (since the checkins only
-        include station name and not ID).
-
-        Args:
-            response (Response): response from calling devices_url
-            devices_str (str): text to convert to PACSDevices, this or response required
-
-        Returns:
-            List of converted PACSDevices as dicts, or None if no devices found
+        Not implemented for ABC Fitness.
         """
-        if response is None and devices_str is None:
-            raise ValueError(f"Response or devices_str is required to convert to PACS devices")
 
-        if response is not None:
-            devices_str = response.text
-
-        self.logger.info(f"Converting devices payload of length {len(devices_str)} to PACS devices")
-
-        if devices_str is None:
-            self.logger.error("Cannot convert None to PACSDevices")
-            return None
-
-        response_dict = Serializable.loads(devices_str)
-        devices_dict = response_dict.get("stations", [])
-        devices = []
-
-        for device_dict in devices_dict:
-            try:
-                abc_fitness_device = ABCFitnessDevice(**device_dict)
-                if abc_fitness_device.stationId is not None:
-                    pacs_device = PACSDevice(device_id=abc_fitness_device.stationId,
-                                             device_name=abc_fitness_device.name)
-                    self.logger.debug(f"Adding portal: {pacs_device}")
-                    self.stations_map[abc_fitness_device.name] = abc_fitness_device.stationId
-                    devices.append(pacs_device.dict())
-
-                else:
-                    self.logger.warning("Cannot store without stationId")
-
-            except ValidationError as e:
-                self.logger.error(f"Error converting dict to abc_fitness device: {e}")
-                self.logger.warning("Confirm that the abc_fitness response schema has not changed: "
-                                    "https://abcfinancial.3scale.net/docs/clubs#!/Clubs/getStationsUsingGET")
-
-        self.logger.debug(f"Portals map is now: {self.stations_map}")
-        return devices
+        return None
 
     def get_iso_date_from_timestamp(self, timestamp: str):
         """
@@ -220,16 +175,16 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
         pacs_events = []
 
         for checkin in payload.checkins:
-            station_id = self.stations_map.get(checkin.stationName, None)
-            if station_id is None:
-                self.logger.warning(f"No station ID found for station with name: {station_id}. Skipping.")
+            station_name = checkin.stationName
+            if station_name is None:
+                self.logger.warning(f"No station name found for check-in with ID: {checkin.checkInId}. Skipping.")
                 continue
 
             try:
                 event_type = self.DESC_MAP.get(checkin.checkInStatus,
                                                None)  # Get supported PACS event_type from the ABC check in status
 
-                pacs_event = PACSEvent(device_id=station_id,
+                pacs_event = PACSEvent(device_id=station_name,
                                        timestamp=self.get_iso_date_from_timestamp(checkin.checkInTimestamp),
                                        event_type=event_type,
                                        actor_id=checkin.member.memberId if checkin.member else None,
@@ -238,13 +193,14 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
                                            checkin.checkInMessage,
                                        ])  # Include checkin in status and message in labels always so they are searchable
 
-                self.logger.info(f"Parsed ABCFitness event as PACSEvent: {pacs_event}")
+                self.logger.debug(f"Parsed ABCFitness event as PACSEvent: {pacs_event}")
                 pacs_events.append(pacs_event)
 
             except ValidationError as e:
                 self.logger.error(f"Error converting ABCFitness event to PACSEvent: {e}")
                 continue  # continue for best effort reading events
 
+        self.logger.info(f"{len(pacs_events)} PACS events created from {len(payload.checkins) if payload.checkins else 0} checkins")
         return pacs_events
 
     def end_authenticated_session(self) -> bool:
@@ -256,9 +212,10 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
 
     def get_devices(self, method=requests.get, **kwargs) -> Union[List[dict], None]:
         """
-        Overrides the default get_devices method to change the request method to GET instead of POST.
+        Not implemented for ABC Fitness.
         """
-        return super(ABCFitnessIntegrationDriver, self).get_devices(method, **kwargs)
+
+        return None
 
     def get_events(self, method=requests.get, **kwargs) -> Union[List[dict], Response, None]:
         """
@@ -282,11 +239,10 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
         pacs_events = []
         now = datetime.datetime.utcnow()
         if not self.last_fetch_time:
-            self.logger.info(f"First time fetching checkins")
-            self.last_fetch_time = now
-            # If never fetched events before, set last fetch time as now and continue async loop
-            # Events will be fetched for the first time on the second call to this method
-            return None
+            # If never fetched events before, set last fetch time to now - the event polling interval
+            # e.g. if polling every 12 hours, fetch the last 12 hours of checkins on start
+            self.last_fetch_time = now - datetime.timedelta(seconds=self.events_polling_interval)
+            self.logger.info(f"First time fetching checkins. Retrieving checks from {self.last_fetch_time} to now ({now})")
 
         start_time_formatted = self.format_date_for_abc(self.last_fetch_time)
         end_time_formatted = self.format_date_for_abc(now)
@@ -447,6 +403,25 @@ class TestABCFitnessDriver(TestBaseIntegrationDriver):
                                                                           task_names=task_names,
                                                                           member_id=self.member_id)
 
+    def test_get_devices(self):
+        """
+        ABC Fitness driver does not fetch devices.
+        """
+        self.assertIsNone(self.driver.last_devices_fetch)
+        devices = self.driver.get_devices()
+        self.logger.info(f"Got devices: {devices}")
+        self.assertIsNone(devices)
+        self.assertIsNone(self.driver.last_devices_fetch)
+
+    def test_get_and_forward_devices(self):
+        """
+        ABC Fitness driver does not fetch devices.
+        """
+        self.assertIsNone(self.driver.last_devices_fetch)
+        response = self.driver.get_and_forward_devices()
+        self.assertIsNone(response)
+        self.assertIsNone(self.driver.last_devices_fetch)
+
     async def test_minimal_driver_config(self):
         """
         Test the driver schema taking the minimum required field.
@@ -469,14 +444,14 @@ class TestABCFitnessDriver(TestBaseIntegrationDriver):
 
         # Assert default urls are populated
         self.assertIsNotNone(driver_config.urls)
-        self.assertIsNotNone(driver_config.urls.devices)
+        # self.assertIsNotNone(driver_config.urls.devices)
         self.assertIsNotNone(driver_config.urls.events)
         self.assertIsNotNone(driver_config.urls.pacs_server)
 
         # Assert default polling intervals are populated
         self.assertIsNotNone(driver_config.requests)
-        self.assertIsNotNone(driver_config.requests.devices)
-        self.assertIsNotNone(driver_config.requests.devices.polling_interval)
+        # self.assertIsNotNone(driver_config.requests.devices)
+        # self.assertIsNotNone(driver_config.requests.devices.polling_interval)
         self.assertIsNotNone(driver_config.requests.events)
         self.assertIsNotNone(driver_config.requests.events.polling_interval)
 

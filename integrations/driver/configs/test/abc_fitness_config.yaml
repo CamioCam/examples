@@ -12,7 +12,7 @@ urls:
 
 requests:
   devices:
-    polling_interval: 30  # seconds between calls to fetch devices
+    polling_interval: 30  # seconds between calls to fetch devices, NOTE: This is important for testing because it determines when the event task will yield for the devices task. Without this, the test_run unittest may run for 12 hours.
   events:
     polling_interval: 10  # seconds between calls to fetch events
     count_reset_interval: 180

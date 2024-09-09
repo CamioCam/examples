@@ -11,15 +11,12 @@ data:
       camio_api_token: {{ .Values.credentials.camio_api_token | quote }}
 
     urls:
-      devices: "https://api.abcfinancial.com/rest/{club_id}/clubs/stations"
       events: "https://api.abcfinancial.com/rest/{club_id}/clubs/checkins/details"
       members: "https://api.abcfinancial.com/rest/{club_id}/members"
       pacs_server: {{ if .Values.urls.pacs_server }}{{ .Values.urls.pacs_server | quote }}{{ else }}"https://{{ .Values.urls.camio_domain }}/pacs"{{ end }}
       skip_ssl_verification: {{ .Values.urls.skip_ssl_verification }}
 
     requests:
-      devices:
-        polling_interval: {{ .Values.requests.devices.polling_interval | default 43200 }}
       pacs:
         backoff_multiplier:  {{ .Values.requests.pacs.backoff_multiplier }}
         backoff_start: {{ .Values.requests.pacs.backoff_start }}

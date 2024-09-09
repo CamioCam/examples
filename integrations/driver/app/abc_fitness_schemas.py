@@ -125,6 +125,7 @@ class ABCFitnessEvent(BaseModel, extra=Extra.allow):
 
 class ABCFitnessDevice(BaseModel):
     """
+    DEPRECATED
     In ABC Fitness terminology, a station. Ex:
     {
         "stationId": "F84273CC22A44655AE78FC04F6A8CA30",
@@ -267,8 +268,8 @@ class ABCFitnessUrls(BaseUrls, extra=Extra.allow):
     Contains the full urls for each request type. Some urls are optional.
     """
 
-    devices: str = Field("https://api.abcfinancial.com/rest/{club_id}/clubs/stations",
-                         description="Url to call to get the user's ABC Fitness stations")
+    devices: str = Field(None,
+                         description="DEPRECATED. Used to be https://api.abcfinancial.com/rest/{club_id}/clubs/stations")
     events: str = Field("https://api.abcfinancial.com/rest/{club_id}/clubs/checkins/details",
                         description="Url to call to get the user's ABC Fitness checkin events")
     pacs_server: str = Field("https://incoming.integrations.camio.com/pacs",
@@ -297,6 +298,7 @@ class ABCFitnessEventsRequestConfig(BaseEventsRequestConfig):
 
 class ABCFitnessDevicesRequestConfig(BaseDevicesRequestConfig):
     """
+    DEPRECATED
     Config for calling the events (checkins) url. Include the number of checkins to request in one page.
     """
 
@@ -317,8 +319,8 @@ class ABCFitnessRequestConfigMap(BaseRequestConfigMap):
     Configs specific to the URL being called.
     """
 
-    devices: ABCFitnessDevicesRequestConfig = Field(ABCFitnessDevicesRequestConfig(),
-                                                    description="Config for requests to the integration's devices URL")
+    # devices: ABCFitnessDevicesRequestConfig = Field(ABCFitnessDevicesRequestConfig(),
+    #                                                 description="DEPRECTAED. Config for requests to the integration's devices URL")
     events: ABCFitnessEventsRequestConfig = Field(ABCFitnessEventsRequestConfig(),
                                                   description="Config for requests to the integration's events URL")
     members: ABCFitnessMembersRequestConfig = Field(ABCFitnessMembersRequestConfig(),
