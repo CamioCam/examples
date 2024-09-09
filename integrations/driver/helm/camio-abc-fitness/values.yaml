@@ -11,8 +11,6 @@ urls:
   skip_ssl_verification: false
 
 requests:
-  devices:
-    polling_interval: 43200  # in seconds, how frequently to request station information via the ABC Fitness API. Defaults to every 12 hours
 
   pacs:
     backoff_multiplier: 2.0  # multiplier for increasing sleep between retries

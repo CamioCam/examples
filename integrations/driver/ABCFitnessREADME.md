@@ -90,7 +90,6 @@ need to contact ABC.
 | log_level | The base level of logs that will be printed in the driver container. 10 (DEBUG), 20 (INFO), 30 (WARNING), 40 (ERR0R), 50 (CRITICAL) | 10 (INFO logs and up) |
 | requests.events.polling_interval | How frequently to request the check in information from the ABC Fitness API. Defaults to every 12 hours. | 43200 (seconds) |
 | requests.events.get_member_info | If true, makes a request to the ABC Fitness API to fetch the member information for each checkin event. Enables Camio to send tailgating notifications to members by retrieving the member email. | true |
-| requests.devices.polling_interval | How frequently to request the station information from the ABC Fitness API. Defaults to every 12 hours. | 43200 (seconds) |
 
 ### Start the Docker Container
 
@@ -137,7 +136,6 @@ are all required in order for the driver to contact the ABC Fitness and Camio AP
 | log_level | The base level of logs that will be printed in the driver container. 10 (DEBUG), 20 (INFO), 30 (WARNING), 40 (ERR0R), 50 (CRITICAL) | 10 (INFO logs and up) |
 | requests.events.polling_interval | How frequently to request the check in information from the ABC Fitness API. Defaults to every 12 hours. | 43200 (seconds) |
 | requests.events.get_member_info | If true, makes a request to the ABC Fitness API to fetch the member information for each checkin event. Enables Camio to send tailgating notifications to members by retrieving the member email. | true |
-| requests.devices.polling_interval | How frequently to request the station information from the ABC Fitness API. Defaults to every 12 hours. | 43200 (seconds) |
 | container.image | The Camio ABC Fitness driver container image. Default to the amd-64 image. Can be changed to the arm64 image or to a custom image. | us-central1-docker.pkg.dev/camiologger/public-containers/camio-integration-driver-abc-fitness:latest-linux-amd64 |
 
 ### Install the Helm Chart
@@ -145,7 +143,7 @@ are all required in order for the driver to contact the ABC Fitness and Camio AP
 Run this command from the directory with your values.yaml file.
 
 ```
-helm install camio-abc-fitness oci://us-central1-docker.pkg.dev/camiologger/helm/camio-abc-fitness --version 1.0.0 -f values.yaml -n camio --create-namespace
+helm install camio-abc-fitness oci://us-central1-docker.pkg.dev/camiologger/helm/camio-abc-fitness --version 1.0.1 -f values.yaml -n camio --create-namespace
 ```
 
 ## Run the Driver Using Python [Not Recommended]
