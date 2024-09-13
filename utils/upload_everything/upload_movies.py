@@ -135,8 +135,8 @@ def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run
 def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_seconds, hostname, device_ids_to_check,
                  upload_queue_threshold, dry_run=False, upload_priority=80):
     # Proceeding with the search API request
-    for camera_name in cameras:
-        for time_range in time_ranges:
+    for time_range in time_ranges:
+        for camera_name in cameras:
             iteration_start_time = datetime.now()
 
             while True:
@@ -231,7 +231,7 @@ def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_secon
                         sys.stderr.write(
                             f"One or more queues are full, sleeping for {wait_seconds}s. Queue lengths: {queue_lengths}\n")
                         time.sleep(wait_seconds)
-
+                        sys.stdout.flush()
                 else:
                     print(f"{datetime.utcnow().isoformat()},{concatenated_string},0,{queue_lengths_string},N/A,dry run")
                     sys.stdout.flush()
