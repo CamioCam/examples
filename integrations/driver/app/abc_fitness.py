@@ -8,10 +8,9 @@ import json as Serializable
 from pydantic.error_wrappers import ValidationError
 from requests import Response
 
-from abc_fitness_schemas import ABCFitnessIntegrationDriverConfig, ABCFitnessDevice, ABCFitnessMember, \
-    ABCFitnessEventsPayload, ABCFitnessMembersPayload
+from abc_fitness_schemas import ABCFitnessIntegrationDriverConfig, ABCFitnessEventsPayload, ABCFitnessMembersPayload
 from base import BaseIntegrationDriver, TestBaseIntegrationDriver
-from schemas import PACSDevice, PACSEvent
+from schemas import PACSEvent
 from utils import Utils
 
 
@@ -138,11 +137,12 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
             self.logger.warning("Member ids is None")
             return None
 
-        self.logger.info(f"Fetching member info of {member_ids}")
+        size = self.requests_config.members.page_size
+        self.logger.info(f"Fetching member info of {len(member_ids)} members, page {page}, with size {size}")
         params = {
             "memberIds": ",".join(member_ids),
             "page": page,
-            "size": self.requests_config.members.page_size
+            "size": size
         }
         response = self.authenticated_request(url=self.urls.members, params=params)
         if self.response_ok(response):
@@ -183,15 +183,18 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
             try:
                 event_type = self.DESC_MAP.get(checkin.checkInStatus,
                                                None)  # Get supported PACS event_type from the ABC check in status
+                labels = []
+                # Only add fields to the labels if they are not None, otherwise a schema validation error occurs
+                # These values become searchable in the Camio app
+                for field in [checkin.checkInStatus, checkin.checkInMessage]:
+                    if field is not None:
+                        labels.append(field)
 
                 pacs_event = PACSEvent(device_id=station_name,
                                        timestamp=self.get_iso_date_from_timestamp(checkin.checkInTimestamp),
                                        event_type=event_type,
                                        actor_id=checkin.member.memberId if checkin.member else None,
-                                       labels=[
-                                           checkin.checkInStatus,
-                                           checkin.checkInMessage,
-                                       ])  # Include checkin in status and message in labels always so they are searchable
+                                       labels=labels)
 
                 self.logger.debug(f"Parsed ABCFitness event as PACSEvent: {pacs_event}")
                 pacs_events.append(pacs_event)
@@ -291,7 +294,7 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
                     else:
                         member_to_event_map[pacs_event.actor_id] = [pacs_event]
 
-            self.logger.info(f"Fetching {len(member_to_event_map)} unique members")
+            self.logger.info(f"Found {len(member_to_event_map)} unique members")
 
             member_page = 1
             members = []
