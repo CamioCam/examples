@@ -247,8 +247,18 @@ class ABCFitnessIntegrationDriver(BaseIntegrationDriver):
             self.last_fetch_time = now - datetime.timedelta(seconds=self.events_polling_interval)
             self.logger.info(f"First time fetching checkins. Retrieving checks from {self.last_fetch_time} to now ({now})")
 
-        start_time_formatted = self.format_date_for_abc(self.last_fetch_time)
-        end_time_formatted = self.format_date_for_abc(now)
+        # Convert UTC dates to the configured timezone
+        utc_start_date = pytz.UTC.localize(self.last_fetch_time)
+        localized_start_date = utc_start_date.astimezone(self.events_timezone)  # self.events_timezone is always defined, is UTC by default
+
+        utc_end_date = pytz.UTC.localize(now)
+        localized_end_date = utc_end_date.astimezone(self.events_timezone)
+
+        self.logger.info(f"Applied timezone {self.events_timezone} to checkin range. Converted "
+                         f"{self.last_fetch_time}, {now} to {localized_start_date}, {localized_end_date}")
+
+        start_time_formatted = self.format_date_for_abc(localized_start_date)
+        end_time_formatted = self.format_date_for_abc(localized_end_date)
 
         while True:
             params = {
