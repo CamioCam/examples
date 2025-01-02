@@ -94,13 +94,23 @@ def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run
     queue_lengths = []
 
     if device_response.status_code == 200:
-        devices_data = device_response.json()
-        for device in devices_data:
-            if device['device_id'] and device['device_id'].strip() in device_ids_to_check and device['state'] and \
-                    device['state']['queue_stats']:
-                queue_lengths.append(device['state']['queue_stats']['upload_queue_length'])
+        try:
+            devices_data = device_response.json()
+            for device in devices_data:
+                device_id = device.get('device_id', "").strip()
+                if device_id in device_ids_to_check:
+                    device_state = device.get("state", {})
+                    queue_stats = device_state.get("queue_stats", {})
+                    upload_queue_length = queue_stats.get('upload_queue_length', None)
+                    if upload_queue_length is not None:
+                        queue_lengths.append(upload_queue_length)
+        except Exception as e:
+            sys.stderr.write(f"Error parsing devices response {e}\n")
+            sys.stderr.flush()
+            raise e
     else:
         sys.stderr.write(f"Error retrieving device info: {device_response.status_code} ({device_response.reason})\n")
+        sys.stderr.flush()
 
     return queue_lengths
 
@@ -108,8 +118,8 @@ def get_upload_queue_lengths(user, token, hostname, device_ids_to_check, dry_run
 def process_user(user, cameras, time_ranges, token, wait_seconds, max_wait_seconds, hostname, device_ids_to_check,
                  upload_queue_threshold, dry_run=False):
     # Proceeding with the search API request
-    for camera_name in cameras:
-        for time_range in time_ranges:
+    for time_range in time_ranges:
+        for camera_name in cameras:
             iteration_start_time = datetime.now()
 
             while True:
