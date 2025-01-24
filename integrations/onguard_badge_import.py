@@ -116,7 +116,7 @@ def main():
                 f"Initial request failed with status code {badges_response.status_code}: {badges_response.text}")
 
     except requests.exceptions.RequestException as e:
-        logger.exception("An error occurred:")
+        logger.exception(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
