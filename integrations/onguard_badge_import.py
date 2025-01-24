@@ -21,7 +21,7 @@ python integrations/onguard_badge_import.py CAMIO_BEARER_TOKEN PATH_TO_BADGE_FIL
 
 You can obtain a Camio bearer token from the Camio OnGuard Integration settings page: https://camio.com/settings/integrations/onguard.
 
-The badge file must be a CSV with the following columns: badge_id, email. The file must contain all of the desired badges.
+The badge file must be a CSV with the following column headers: badge_id, email. The file must contain all of the desired badges.
 Any previously imported badges will be overwritten each time this script is run.
 
 Instructions on performing the badge import via the settings page UI can be found here: https://help.camio.com/hc/en-us/articles/360055730712-Camio-User-Guide-for-OnGuard-Tailgating-detection-and-real-time-video-search#h_01GHHRMKDMGSFKH8SFY5W1B94F.
@@ -116,7 +116,7 @@ def main():
                 f"Initial request failed with status code {badges_response.status_code}: {badges_response.text}")
 
     except requests.exceptions.RequestException as e:
-        logger.exception("An error occurred:")
+        logger.exception(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
